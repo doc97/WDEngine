@@ -11,6 +11,7 @@ public class GlobalSystem {
 	private RenderEngine renderEngine;
 	private InputManager inputManager;
 	private ModelSystem modelSystem;
+	private Camera camera;
 	
 	public void init() {
 		renderEngine = new RenderEngine(this);
@@ -23,6 +24,8 @@ public class GlobalSystem {
 		inputManager.init(renderEngine.getDisplayManager().getWindow());
 		
 		modelSystem = new ModelSystem();
+		
+		camera = new Camera(renderEngine.getDisplayManager());
 	}
 	
 	public void render() {
@@ -30,7 +33,7 @@ public class GlobalSystem {
 	}
 	
 	public void update(float delta) {
-		
+		camera.update();
 	}
 	
 	public void cleanup() {
@@ -51,5 +54,9 @@ public class GlobalSystem {
 	
 	public ModelSystem getModelSystem() {
 		return modelSystem;
+	}
+	
+	public Camera getCamera() {
+		return camera;
 	}
 }
