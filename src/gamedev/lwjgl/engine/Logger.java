@@ -1,4 +1,4 @@
-package gamedev.lwjgl;
+package gamedev.lwjgl.engine;
 
 public class Logger {
 	private static boolean debug = false;

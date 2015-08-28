@@ -1,4 +1,4 @@
-package gamedev.lwjgl.textures;
+package gamedev.lwjgl.engine.textures;
 
 public class ModelTexture {
 	private int textureID;

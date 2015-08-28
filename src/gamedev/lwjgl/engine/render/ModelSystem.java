@@ -1,12 +1,12 @@
-package gamedev.lwjgl.renderEngine;
+package gamedev.lwjgl.engine.render;
 
 import java.util.ArrayList;
 
-import gamedev.lwjgl.Logger;
-import gamedev.lwjgl.models.RawModel;
-import gamedev.lwjgl.models.TexturedModel;
-import gamedev.lwjgl.textures.ModelTexture;
-import gamedev.lwjgl.utils.AssetManager;
+import gamedev.lwjgl.engine.Logger;
+import gamedev.lwjgl.engine.models.RawModel;
+import gamedev.lwjgl.engine.models.TexturedModel;
+import gamedev.lwjgl.engine.textures.ModelTexture;
+import gamedev.lwjgl.engine.utils.AssetManager;
 
 public class ModelSystem {
 

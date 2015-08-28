@@ -2,8 +2,9 @@ package gamedev.lwjgl.game;
 
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
-import gamedev.lwjgl.textures.ModelTexture;
-import gamedev.lwjgl.utils.AssetManager;
+import gamedev.lwjgl.engine.GlobalSystem;
+import gamedev.lwjgl.engine.textures.ModelTexture;
+import gamedev.lwjgl.engine.utils.AssetManager;
 
 public class GameLauncher {
 	public static void main(String[] args) {

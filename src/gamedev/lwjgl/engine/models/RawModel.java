@@ -1,4 +1,4 @@
-package gamedev.lwjgl.models;
+package gamedev.lwjgl.engine.models;
 
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
@@ -16,8 +16,8 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 
-import gamedev.lwjgl.shaders.Shader;
-import gamedev.lwjgl.shaders.StaticShader;
+import gamedev.lwjgl.engine.shaders.Shader;
+import gamedev.lwjgl.engine.shaders.StaticShader;
 
 public class RawModel {
 

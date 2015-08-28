@@ -1,4 +1,4 @@
-package gamedev.lwjgl.utils;
+package gamedev.lwjgl.engine.utils;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.*;
@@ -23,8 +23,8 @@ import org.joml.Vector3f;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
-import gamedev.lwjgl.Logger;
-import gamedev.lwjgl.models.RawModel;
+import gamedev.lwjgl.engine.Logger;
+import gamedev.lwjgl.engine.models.RawModel;
 
 public class AssetManager {
 	

@@ -1,4 +1,4 @@
-package gamedev.lwjgl.renderEngine;
+package gamedev.lwjgl.engine.render;
 
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
@@ -16,9 +16,9 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 import org.lwjgl.opengl.GLContext;
 
-import gamedev.lwjgl.game.GlobalSystem;
-import gamedev.lwjgl.models.RawModel;
-import gamedev.lwjgl.models.TexturedModel;
+import gamedev.lwjgl.engine.GlobalSystem;
+import gamedev.lwjgl.engine.models.RawModel;
+import gamedev.lwjgl.engine.models.TexturedModel;
 
 public class RenderEngine {
 	private GlobalSystem gSys;

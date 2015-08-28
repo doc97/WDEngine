@@ -1,17 +1,43 @@
-package gamedev.lwjgl.shaders;
+package gamedev.lwjgl.engine.shaders;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL11.GL_FALSE;
+import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
+import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
+import static org.lwjgl.opengl.GL20.GL_LINK_STATUS;
+import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
+import static org.lwjgl.opengl.GL20.glAttachShader;
+import static org.lwjgl.opengl.GL20.glBindAttribLocation;
+import static org.lwjgl.opengl.GL20.glCompileShader;
+import static org.lwjgl.opengl.GL20.glCreateProgram;
+import static org.lwjgl.opengl.GL20.glCreateShader;
+import static org.lwjgl.opengl.GL20.glDeleteShader;
+import static org.lwjgl.opengl.GL20.glGetProgramInfoLog;
+import static org.lwjgl.opengl.GL20.glGetProgrami;
+import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
+import static org.lwjgl.opengl.GL20.glGetShaderi;
+import static org.lwjgl.opengl.GL20.glGetUniformLocation;
+import static org.lwjgl.opengl.GL20.glLinkProgram;
+import static org.lwjgl.opengl.GL20.glShaderSource;
+import static org.lwjgl.opengl.GL20.glUniform1f;
+import static org.lwjgl.opengl.GL20.glUniform3f;
+import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
+import static org.lwjgl.opengl.GL20.glUseProgram;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.FloatBuffer;
 
-import gamedev.lwjgl.Logger;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.lwjgl.BufferUtils;
+
+import gamedev.lwjgl.engine.Logger;
 
 public abstract class Shader {
 	private int program;
 	private String shaderFile;
+	private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
 	
 	public Shader(String shaderFile) {
 		program = loadShaderProgram(shaderFile);
@@ -77,6 +103,31 @@ public abstract class Shader {
 	}
 	
 	protected abstract void bindAttributes();
+	protected abstract void getAllUniformLocations();
+	
+	protected void loadFloat(int location, float value) {
+		glUniform1f(location, value);
+	}
+	
+	protected void loadVector(int location, Vector3f vector) {
+		glUniform3f(location, vector.x, vector.y, vector.z);
+	}
+	
+	protected void loadBoolean(int location, boolean bool) {
+		loadFloat(location, bool ? 1 : 0);
+	}
+	
+	protected void loadMatrix(int location, Matrix4f mat) {
+		mat.set(matrixBuffer);
+		matrixBuffer.flip();
+		glUniformMatrix4fv(location, false, matrixBuffer);
+	}
+	
+	protected int getUniformLocation(String variableName) {
+		return glGetUniformLocation(program, variableName);
+	}
+	
+	
 	
 	protected void bindAttribute(int attribute, String variableName) {
 		glBindAttribLocation(program, attribute, variableName);

@@ -1,12 +1,10 @@
-package gamedev.lwjgl.game;
+package gamedev.lwjgl.engine;
 
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 
-import gamedev.lwjgl.InputManager;
-import gamedev.lwjgl.Logger;
-import gamedev.lwjgl.renderEngine.ModelSystem;
-import gamedev.lwjgl.renderEngine.RenderEngine;
+import gamedev.lwjgl.engine.render.ModelSystem;
+import gamedev.lwjgl.engine.render.RenderEngine;
 
 public class GlobalSystem {
 	

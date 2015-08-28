@@ -1,4 +1,4 @@
-package gamedev.lwjgl;
+package gamedev.lwjgl.engine;
 
 import static org.lwjgl.glfw.Callbacks.errorCallbackPrint;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;

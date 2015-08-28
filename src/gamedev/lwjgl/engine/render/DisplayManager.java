@@ -1,4 +1,4 @@
-package gamedev.lwjgl.renderEngine;
+package gamedev.lwjgl.engine.render;
 
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
 import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
 import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL11;
 
-import gamedev.lwjgl.Logger;
+import gamedev.lwjgl.engine.Logger;
 
 public class DisplayManager {
 	

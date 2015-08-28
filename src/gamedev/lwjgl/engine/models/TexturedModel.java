@@ -1,6 +1,6 @@
-package gamedev.lwjgl.models;
+package gamedev.lwjgl.engine.models;
 
-import gamedev.lwjgl.textures.ModelTexture;
+import gamedev.lwjgl.engine.textures.ModelTexture;
 
 public class TexturedModel {
 
