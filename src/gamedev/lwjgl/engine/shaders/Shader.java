@@ -19,6 +19,7 @@ import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glLinkProgram;
 import static org.lwjgl.opengl.GL20.glShaderSource;
 import static org.lwjgl.opengl.GL20.glUniform1f;
+import static org.lwjgl.opengl.GL20.glUniform1i;
 import static org.lwjgl.opengl.GL20.glUniform3f;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import static org.lwjgl.opengl.GL20.glUseProgram;
@@ -30,17 +31,17 @@ import java.nio.FloatBuffer;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.lwjgl.BufferUtils;
 
 import gamedev.lwjgl.engine.Logger;
+import gamedev.lwjgl.engine.utils.Buffers;
 
 public abstract class Shader {
 	private int program;
 	private String shaderFile;
-	private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
 	
 	public Shader(String shaderFile) {
 		program = loadShaderProgram(shaderFile);
+		getAllUniformLocations();
 	}
 	
 	private int loadShaderProgram(String shaderFile) {
@@ -105,6 +106,10 @@ public abstract class Shader {
 	protected abstract void bindAttributes();
 	protected abstract void getAllUniformLocations();
 	
+	protected void loadInt(int location, int value) {
+		glUniform1i(location, 0);
+	}
+	
 	protected void loadFloat(int location, float value) {
 		glUniform1f(location, value);
 	}
@@ -118,16 +123,13 @@ public abstract class Shader {
 	}
 	
 	protected void loadMatrix(int location, Matrix4f mat) {
-		mat.set(matrixBuffer);
-		matrixBuffer.flip();
-		glUniformMatrix4fv(location, false, matrixBuffer);
+		FloatBuffer buf = Buffers.fillMatrixBuffer(mat);
+		glUniformMatrix4fv(location, false, buf);
 	}
 	
 	protected int getUniformLocation(String variableName) {
 		return glGetUniformLocation(program, variableName);
 	}
-	
-	
 	
 	protected void bindAttribute(int attribute, String variableName) {
 		glBindAttribLocation(program, attribute, variableName);

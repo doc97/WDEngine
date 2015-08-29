@@ -1,9 +1,12 @@
 package gamedev.lwjgl.engine;
 
 import static org.lwjgl.glfw.Callbacks.errorCallbackPrint;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetInputMode;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 import static org.lwjgl.opengl.GL11.GL_TRUE;
@@ -16,6 +19,7 @@ public class InputManager {
 	private static GLFWKeyCallback keyCallback;
 	
 	public void init(long window) {
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		glfwSetErrorCallback(errCallback = errorCallbackPrint(System.err));
 		glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
 			@Override

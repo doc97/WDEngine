@@ -1,8 +1,10 @@
 package gamedev.lwjgl.engine;
 
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import gamedev.lwjgl.engine.models.TexturedModel;
+import gamedev.lwjgl.engine.utils.Maths;
 
 public class Entity {
 	private TexturedModel model;
@@ -55,5 +57,13 @@ public class Entity {
 
 	public void setScale(Vector3f scale) {
 		this.scale = scale;
+	}
+	
+	public void scale(Vector3f factor) {
+		scale.mul(factor);
+	}
+	
+	public Matrix4f getTransformationMatrix() {
+		return Maths.createTransformationMatrix(position, rotation, scale);
 	}
 }

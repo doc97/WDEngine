@@ -15,10 +15,10 @@ public class Maths {
 	public static Matrix4f createTransformationMatrix(Vector3f pos, Vector3f rot, Vector3f scale) {
 		Matrix4f mat = new Matrix4f();
 		mat.identity();
-		mat.translate(pos, mat);
-		mat.rotate(rot.x, new Vector3f(1, 0, 0), mat);
-		mat.rotate(rot.y, new Vector3f(0, 1, 0), mat);
-		mat.rotate(rot.z, new Vector3f(0, 0, 1), mat);
+		mat.translate(pos);
+		mat.rotate(rot.x, new Vector3f(1, 0, 0));
+		mat.rotate(rot.y, new Vector3f(0, 1, 0));
+		mat.rotate(rot.z, new Vector3f(0, 0, 1));
 		mat.scale(scale, mat);
 		return mat;
 	}
@@ -41,8 +41,17 @@ public class Maths {
 		mat.m11 = yscale;
 		mat.m22 = -((farPlane + nearPlane) / frustumLength);
 		mat.m23 = -1;
-		mat.m32 = -((2 * farPlane * nearPlane) / frustumLength);
+		mat.m32 = -((2 * nearPlane * farPlane) / frustumLength);
 		mat.m33 = 0;
+		return mat;
+	}
+	
+	public static Matrix4f createViewMatrix(Vector3f position, float verticalAngle, float horizontalAngle) {
+		Matrix4f mat = new Matrix4f();
+		mat.identity();
+		mat.rotate(verticalAngle, new Vector3f(1, 0, 0));
+		mat.rotate(horizontalAngle, new Vector3f(0, 1, 0));
+		mat.translate(position.x, position.y, position.z);
 		return mat;
 	}
 }

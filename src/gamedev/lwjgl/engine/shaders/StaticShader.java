@@ -1,5 +1,7 @@
 package gamedev.lwjgl.engine.shaders;
 
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+
 import org.joml.Matrix4f;
 
 public class StaticShader extends Shader {
@@ -23,7 +25,13 @@ public class StaticShader extends Shader {
 		location_mvp = super.getUniformLocation("MVP");
 	}
 	
-	public void loadMVP(Matrix4f mat) {
-		super.loadMatrix(location_mvp, mat);
+	public void loadTexture(int textureUnit) {
+		super.loadInt(GL_TEXTURE0 + textureUnit, textureUnit);
+	}
+	
+	public void loadMVP(Matrix4f model, Matrix4f view, Matrix4f projection) {
+		Matrix4f result = new Matrix4f();
+		projection.mul(view.mul(model), result);
+		super.loadMatrix(location_mvp, result);
 	}
 }

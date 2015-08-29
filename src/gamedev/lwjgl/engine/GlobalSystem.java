@@ -3,14 +3,14 @@ package gamedev.lwjgl.engine;
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 
-import gamedev.lwjgl.engine.render.ModelSystem;
+import gamedev.lwjgl.engine.render.EntitySystem;
 import gamedev.lwjgl.engine.render.RenderEngine;
 
 public class GlobalSystem {
 	
 	private RenderEngine renderEngine;
 	private InputManager inputManager;
-	private ModelSystem modelSystem;
+	private EntitySystem entitySystem;
 	private Camera camera;
 	
 	public void init() {
@@ -23,7 +23,7 @@ public class GlobalSystem {
 		inputManager = new InputManager();
 		inputManager.init(renderEngine.getDisplayManager().getWindow());
 		
-		modelSystem = new ModelSystem();
+		entitySystem = new EntitySystem();
 		
 		camera = new Camera(renderEngine.getDisplayManager());
 	}
@@ -52,8 +52,8 @@ public class GlobalSystem {
 		return inputManager;
 	}
 	
-	public ModelSystem getModelSystem() {
-		return modelSystem;
+	public EntitySystem getEntitySystem() {
+		return entitySystem;
 	}
 	
 	public Camera getCamera() {

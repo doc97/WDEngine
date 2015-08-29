@@ -16,9 +16,11 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 import org.lwjgl.opengl.GLContext;
 
+import gamedev.lwjgl.engine.Entity;
 import gamedev.lwjgl.engine.GlobalSystem;
 import gamedev.lwjgl.engine.models.RawModel;
 import gamedev.lwjgl.engine.models.TexturedModel;
+import gamedev.lwjgl.engine.shaders.StaticShader;
 
 public class RenderEngine {
 	private GlobalSystem gSys;
@@ -41,11 +43,12 @@ public class RenderEngine {
 	public void render() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		
-		for(TexturedModel model : gSys.getModelSystem().getModels()) {
-			RawModel rawModel = model.getRawModel();
+		for(Entity entity : gSys.getEntitySystem().getEntities()) {
+			TexturedModel texModel = entity.getModel();
+			RawModel rawModel = texModel.getRawModel();
 			begin(rawModel);
-			bindTextures(model);
-			glDrawElements(GL_TRIANGLES, model.getRawModel().getIndexCount(), GL_UNSIGNED_INT, 0);
+			loadUniforms(entity);
+			glDrawElements(GL_TRIANGLES, texModel.getRawModel().getIndexCount(), GL_UNSIGNED_INT, 0);
 			unbindTextures();
 			end(rawModel);
 		}
@@ -65,9 +68,15 @@ public class RenderEngine {
 		model.getShader().stop();
 	}
 	
-	private void bindTextures(TexturedModel model) {
+	private void loadUniforms(Entity entity) {
+		// Textures
+		StaticShader shader = (StaticShader) entity.getModel().getRawModel().getShader();
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, model.getTexture().getTextureID());
+		glBindTexture(GL_TEXTURE_2D, entity.getModel().getTexture().getTextureID());
+		shader.loadTexture(0);
+		
+		// Model * View * Projection
+		shader.loadMVP(entity.getTransformationMatrix(), gSys.getCamera().getViewMatrix(), gSys.getCamera().getProjectionMatrix());
 	}
 	
 	private void unbindTextures() {
