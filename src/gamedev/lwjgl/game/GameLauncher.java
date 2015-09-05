@@ -16,10 +16,10 @@ public class GameLauncher {
 		gSys.init();
 		
 		String[] models = { };
-		String[] textures = { "lwjgl" };
+		String[] textures = { "lwjgl"};
 		AssetManager.loadAssets(models, textures);
 		
-		ModelTexture texture = new ModelTexture(AssetManager.getTexture("lwjgl"));
+		ModelTexture texture = AssetManager.getTexture("lwjgl");
 		TexturedModel model = gSys.getEntitySystem().createModel("Quad", texture);
 		Entity entity = new Entity(model, new Vector3f(0, 0, -2), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1));
 		gSys.getEntitySystem().addEntity(entity);

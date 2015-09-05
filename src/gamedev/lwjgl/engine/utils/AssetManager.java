@@ -25,13 +25,14 @@ import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
 import gamedev.lwjgl.engine.Logger;
 import gamedev.lwjgl.engine.models.RawModel;
+import gamedev.lwjgl.engine.textures.ModelTexture;
 
 public class AssetManager {
 	
 	private static final String MODEL_PATH = "models/";
 	private static final String TEXTURE_PATH = "textures/";
 	private static Map<String, RawModel> models = new HashMap<String, RawModel>();
-	private static Map<String, Integer> textures = new HashMap<String, Integer>();
+	private static Map<String, ModelTexture> textures = new HashMap<String, ModelTexture>();
 	
 	public static void loadAssets(String[] modelNames, String[] textureNames) {
 		loadModels(modelNames);
@@ -60,8 +61,8 @@ public class AssetManager {
 				Logger.message("AssetManager", "Texture with name: " + name + " already loaded");
 				continue;
 			}
-			int tex = loadTexture(name);
-			if(tex != 0)
+			ModelTexture tex = loadTexture(name);
+			if(tex.getTextureID() != 0)
 				textures.put(name, tex);
 		}
 	}
@@ -70,7 +71,7 @@ public class AssetManager {
 		return models.get(filename);
 	}
 	
-	public static int getTexture(String filename) {
+	public static ModelTexture getTexture(String filename) {
 		return textures.get(filename);
 	}
 	
@@ -187,7 +188,7 @@ public class AssetManager {
 		texArray[currentVertexPointer*2 + 1] = 1 - currentTex.y; // Blender starts bottom-left, not top-left		
 	}
 	
-	private static int loadTexture(String filename) {
+	private static ModelTexture loadTexture(String filename) {
 		ByteBuffer buf = null;
 		int tWidth = 0;
 		int tHeight = 0;
@@ -218,7 +219,8 @@ public class AssetManager {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tWidth, tHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		
-		return textureID;
+		ModelTexture texture = new ModelTexture(textureID, tWidth, tHeight);
+		return texture;
 	}
 	
 	public static void cleanup() {
@@ -229,7 +231,7 @@ public class AssetManager {
 		}
 		
 		for(String key : textures.keySet()) {
-			glDeleteTextures(textures.get(key));
+			glDeleteTextures(textures.get(key).getTextureID());
 		}
 		models.clear();
 	}

@@ -19,13 +19,13 @@ import org.lwjgl.opengl.GLContext;
 import gamedev.lwjgl.engine.Entity;
 import gamedev.lwjgl.engine.GlobalSystem;
 import gamedev.lwjgl.engine.models.RawModel;
-import gamedev.lwjgl.engine.models.TexturedModel;
 import gamedev.lwjgl.engine.shaders.StaticShader;
+import gamedev.lwjgl.engine.textures.ModelTexture;
 
 public class RenderEngine {
 	private GlobalSystem gSys;
 	private DisplayManager displayManager;
-	
+	private SpriteBatch sb;
 	public RenderEngine(GlobalSystem gSys) {
 		this.gSys = gSys;
 		displayManager = new DisplayManager();
@@ -35,6 +35,7 @@ public class RenderEngine {
 		if(displayManager.createDisplay(width, height)) {
 			GLContext.createFromCurrent();
 			glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+			sb = new SpriteBatch();
 			return true;
 		}
 		return false;
@@ -43,16 +44,12 @@ public class RenderEngine {
 	public void render() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		
-		for(Entity entity : gSys.getEntitySystem().getEntities()) {
-			TexturedModel texModel = entity.getModel();
-			RawModel rawModel = texModel.getRawModel();
-			begin(rawModel);
-			loadUniforms(entity);
-			glDrawElements(GL_TRIANGLES, texModel.getRawModel().getIndexCount(), GL_UNSIGNED_INT, 0);
-			unbindTextures();
-			end(rawModel);
-		}
+		sb.begin();
 		
+		ModelTexture tex = gSys.getEntitySystem().getEntities().get(0).getModel().getTexture();
+		sb.draw(tex, 0,0,0.25f,0.25f,3,0.25f,0.25f);
+		
+		sb.end();
 		displayManager.updateDisplay();
 	}
 	
