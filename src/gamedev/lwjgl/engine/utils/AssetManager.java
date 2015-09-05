@@ -1,9 +1,25 @@
 package gamedev.lwjgl.engine.utils;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL12.*;
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL11.GL_NEAREST;
+import static org.lwjgl.opengl.GL11.GL_RGBA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
+import static org.lwjgl.opengl.GL11.GL_UNPACK_ALIGNMENT;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glDeleteTextures;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glGenTextures;
+import static org.lwjgl.opengl.GL11.glPixelStorei;
+import static org.lwjgl.opengl.GL11.glTexImage2D;
+import static org.lwjgl.opengl.GL11.glTexParameteri;
+import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
+import static org.lwjgl.opengl.GL15.glDeleteBuffers;
+import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
+import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,19 +40,25 @@ import org.joml.Vector3f;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
 import gamedev.lwjgl.engine.Logger;
+import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.models.RawModel;
+import gamedev.lwjgl.engine.models.TexturedModel;
 import gamedev.lwjgl.engine.textures.ModelTexture;
 
 public class AssetManager {
 	
 	private static final String MODEL_PATH = "models/";
 	private static final String TEXTURE_PATH = "textures/";
+	private static final String FONT_PATH = "fonts/";
+	private static final String[] CHARACTERS = { "a", "b", "c", "d", "e", "f", "g", "h", "i" };
 	private static Map<String, RawModel> models = new HashMap<String, RawModel>();
 	private static Map<String, ModelTexture> textures = new HashMap<String, ModelTexture>();
+	private static Map<String, Font> fonts = new HashMap<String, Font>();
 	
-	public static void loadAssets(String[] modelNames, String[] textureNames) {
+	public static void loadAssets(String[] modelNames, String[] textureNames, String[] fontNames) {
 		loadModels(modelNames);
 		loadTextures(textureNames);
+		loadFonts(fontNames);
 	}
 	
 	private static void loadModels(String[] modelNames) {
@@ -61,18 +83,43 @@ public class AssetManager {
 				Logger.message("AssetManager", "Texture with name: " + name + " already loaded");
 				continue;
 			}
-			ModelTexture tex = loadTexture(name);
-			if(tex.getTextureID() != 0)
+			ModelTexture tex = loadTexture(TEXTURE_PATH + name);
+			if(tex != null)
 				textures.put(name, tex);
 		}
+	}
+	
+	private static void loadFonts(String[] fontNames) {
+		for(String name : fontNames) {
+			loadFont(name, CHARACTERS);
+		}
+	}
+	
+	private static void loadFont(String fontName, String[] characterNames) {
+		ModelTexture[] characters = new ModelTexture[characterNames.length];
+		for(int i = 0; i < characterNames.length; i++) {
+			characters[i] = loadTexture(FONT_PATH + fontName + "/" + characterNames[i]);
+		}
+		Font font = new Font(fontName, characters);
+		fonts.put(fontName, font);
 	}
 	
 	public static RawModel getModel(String filename) {
 		return models.get(filename);
 	}
 	
+	public static TexturedModel getTexturedModel(String modelName, String textureName) {
+		return new TexturedModel(getModel(modelName), getTexture(textureName));
+	}
+	
 	public static ModelTexture getTexture(String filename) {
 		return textures.get(filename);
+	}
+	
+	public static Font getFont(String name) {
+		if(!fonts.containsKey(name))
+			return fonts.get("serif");
+		return fonts.get(name);
 	}
 	
 	/**
@@ -193,7 +240,7 @@ public class AssetManager {
 		int tWidth = 0;
 		int tHeight = 0;
 		try {
-			InputStream in = new FileInputStream(TEXTURE_PATH + filename + ".png");
+			InputStream in = new FileInputStream(filename + ".png");
 			PNGDecoder decoder = new PNGDecoder(in);
 			
 			tWidth = decoder.getWidth();
@@ -219,8 +266,7 @@ public class AssetManager {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tWidth, tHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		
-		ModelTexture texture = new ModelTexture(textureID, tWidth, tHeight);
-		return texture;
+		return new ModelTexture(textureID, tWidth, tHeight);
 	}
 	
 	public static void cleanup() {

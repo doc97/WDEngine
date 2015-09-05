@@ -9,13 +9,14 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import gamedev.lwjgl.engine.Camera;
+import gamedev.lwjgl.engine.Engine;
+import gamedev.lwjgl.engine.cameras.Camera2d;
 import gamedev.lwjgl.engine.shaders.StaticShader;
 import gamedev.lwjgl.engine.textures.ModelTexture;
 
 public class SpriteBatch {
 	
-	private Camera camera;
+	private Camera2d camera;
 	private ModelTexture lastTexture;
 	private int idx = 0;
 	private int[] indices;
@@ -26,7 +27,8 @@ public class SpriteBatch {
 	private int vao;
 	private int ibo;
 	
-	public SpriteBatch(){
+	public void init() {
+		camera = Engine.INSTANCE.camera;
 		shader = new StaticShader();
 		indices = new int[6000];
 		vertices = new float[12000];
@@ -42,14 +44,14 @@ public class SpriteBatch {
 		vao = GL30.glGenVertexArrays();
 	}
 	
-	public void begin(){
+	public void begin() {
 		if (isDrawing)
 			return;
 		isDrawing = true;
 		shader.start();
 	}
 	
-	public void end(){
+	public void end() {
 		if (!isDrawing)
 			return;
 		flush();
@@ -58,7 +60,7 @@ public class SpriteBatch {
 		isDrawing = false;
 	}
 	
-	public void flush(){
+	public void flush() {
 		if (idx == 0)
 			return;
 		int sprites = idx / 12;
@@ -74,25 +76,25 @@ public class SpriteBatch {
 		idx = 0;
 	}
 	
-	public void changeTexture(ModelTexture texture){
+	public void changeTexture(ModelTexture texture) {
 		flush();
 		lastTexture = texture;
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTextureID());
 	}
 	
-	public void draw(ModelTexture texture, float xCoord, float yCoord, float width, float height){
+	public void draw(ModelTexture texture, float xCoord, float yCoord, float width, float height) {
 		draw(texture, xCoord, yCoord, width, height, 0, 0, texture.getWidth(), texture.getHeight(), 0,0,0);
 	}
 	
-	public void draw(ModelTexture texture, float xCoord, float yCoord, float width, float height, float srcX, float srcY, float srcWidth, float srcHeight){
+	public void draw(ModelTexture texture, float xCoord, float yCoord, float width, float height, float srcX, float srcY, float srcWidth, float srcHeight) {
 		draw(texture, xCoord, yCoord, width, height, srcX, srcY, srcWidth, srcHeight, 0,0,0);
 	}
 	
-	public void draw(ModelTexture texture, float xCoord, float yCoord, float width, float height, float rotation, float anchorX, float anchorY){
+	public void draw(ModelTexture texture, float xCoord, float yCoord, float width, float height, float rotation, float anchorX, float anchorY) {
 		draw(texture, xCoord, yCoord, width, height, 0, 0, texture.getWidth(), texture.getHeight(), rotation, anchorX, anchorY);
 	}
 	
-	public void draw(ModelTexture texture, float xCoord, float yCoord, float width, float height, float srcX, float srcY, float srcWidth, float srcHeight, float rotation, float anchorPX, float anchorPY){
+	public void draw(ModelTexture texture, float xCoord, float yCoord, float width, float height, float srcX, float srcY, float srcWidth, float srcHeight, float rotation, float anchorPX, float anchorPY) {
 		if(!isDrawing)
 			return;
 		if (texture != lastTexture)
@@ -100,15 +102,10 @@ public class SpriteBatch {
 		if (idx == vertices.length)
 			flush();
 		
-		float x1;
-		float y1;
-		float x2;
-		float y2;
-		
-		x1 = xCoord;
-		y1 = yCoord;
-		x2 = xCoord + width;
-		y2 = yCoord + height;
+		float x1 = xCoord / camera.getWidth();
+		float y1 = yCoord / camera.getHeight();
+		float x2 = (xCoord + width) / camera.getWidth();
+		float y2 = (yCoord + height) / camera.getHeight();
 		
 		//coords for the vertices
 		
@@ -180,7 +177,7 @@ public class SpriteBatch {
 	}
 	
 	
-	private void loadToVAO(float[] positions, float[] texCoords, int[] indices){
+	private void loadToVAO(float[] positions, float[] texCoords, int[] indices) {
 		bindVAO();
 		bindIndicesBuffer(indices);
 		storeDataInAttributeList(0, 3, positions);
@@ -188,29 +185,29 @@ public class SpriteBatch {
 		unbindVAO();
 	}
 	
-	private void bindVAO(){
+	private void bindVAO() {
 		GL30.glBindVertexArray(vao);
 	}
 	
-	private void unbindVAO(){
+	private void unbindVAO() {
 		GL30.glBindVertexArray(0);
 	}
 	
-	private void bindIndicesBuffer(int[] indices){
+	private void bindIndicesBuffer(int[] indices) {
 		ibo = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, ibo);
 		IntBuffer buffer = storeDataInIntBuffer(indices);
 		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
 	}
 	
-	private IntBuffer storeDataInIntBuffer(int[] data){
+	private IntBuffer storeDataInIntBuffer(int[] data) {
 		IntBuffer buffer = BufferUtils.createIntBuffer(data.length);
 		buffer.put(data);
 		buffer.flip();
 		return buffer;
 	}
 	
-	private void storeDataInAttributeList(int attribute, int size, float[] data){
+	private void storeDataInAttributeList(int attribute, int size, float[] data) {
 		int vbo = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
 		FloatBuffer buffer = storeDataInFloatBuffer(data);
@@ -219,7 +216,7 @@ public class SpriteBatch {
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 	}
 	
-	private FloatBuffer storeDataInFloatBuffer(float[] data){
+	private FloatBuffer storeDataInFloatBuffer(float[] data) {
 		FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);
 		buffer.put(data);
 		buffer.flip();

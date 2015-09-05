@@ -1,8 +1,7 @@
-package gamedev.lwjgl.engine.render;
+package gamedev.lwjgl.game.entities;
 
 import java.util.ArrayList;
 
-import gamedev.lwjgl.engine.Entity;
 import gamedev.lwjgl.engine.Logger;
 import gamedev.lwjgl.engine.models.RawModel;
 import gamedev.lwjgl.engine.models.TexturedModel;

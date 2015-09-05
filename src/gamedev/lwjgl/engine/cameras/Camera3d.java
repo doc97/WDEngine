@@ -1,4 +1,4 @@
-package gamedev.lwjgl.engine;
+package gamedev.lwjgl.engine.cameras;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -6,7 +6,7 @@ import org.joml.Vector3f;
 import gamedev.lwjgl.engine.render.DisplayManager;
 import gamedev.lwjgl.engine.utils.Maths;
 
-public class Camera {
+public class Camera3d {
 	
 	/*
 	 * Coordinate System
@@ -22,7 +22,7 @@ public class Camera {
 	private double horizontalAngle;
 	private float width, height;
 	
-	public Camera(DisplayManager display) {
+	public void init(DisplayManager display) {
 		width = display.getWindowWidth();
 		height = display.getWindowHeight();
 		projection = Maths.createProjectionMatrix((float) Math.toRadians(80), width / height, 0.1f, 1000.0f);

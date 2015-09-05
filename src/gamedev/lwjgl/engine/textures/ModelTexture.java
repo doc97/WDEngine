@@ -4,6 +4,7 @@ public class ModelTexture {
 	private int textureID;
 	private float width;
 	private float height;
+	
 	public ModelTexture(int textureID, float width, float height) {
 		this.textureID = textureID;
 		this.width = width;
@@ -14,11 +15,11 @@ public class ModelTexture {
 		return textureID;
 	}
 	
-	public float getWidth(){
+	public float getWidth() {
 		return width;
 	}
 	
-	public float getHeight(){
+	public float getHeight() {
 		return height;
 	}
 }

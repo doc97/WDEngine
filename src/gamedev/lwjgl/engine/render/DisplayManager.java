@@ -16,14 +16,14 @@ import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
-import static org.lwjgl.opengl.GL11.GL_TRUE;
-import static org.lwjgl.opengl.GL11.GL_FALSE;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.nio.ByteBuffer;
 
 import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GLContext;
 
 import gamedev.lwjgl.engine.Logger;
 
@@ -61,7 +61,17 @@ public class DisplayManager {
 		glfwSwapInterval(1);
 		glfwShowWindow(window);
 		
+		GLContext.createFromCurrent();
+		
 		return true;
+	}
+	
+	public void setBackgroundColor(float r, float g, float b, float  a) {
+		glClearColor(r, g, b, a);
+	}
+	
+	public void clearDisplay() {
+		glClear(GL_COLOR_BUFFER_BIT);
 	}
 	
 	public void updateDisplay() {
