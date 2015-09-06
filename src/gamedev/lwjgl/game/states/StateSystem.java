@@ -14,7 +14,6 @@ public class StateSystem {
 	public void create(GameLauncher launcher) {
 		this.launcher = launcher;
 		states.put(States.GAMESTATE, new GameState());
-		enterState(States.GAMESTATE);
 	}
 	
 	public void enterState(States s)

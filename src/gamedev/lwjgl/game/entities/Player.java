@@ -9,6 +9,7 @@ public class Player extends Entity {
 	
 	public Player(ModelTexture texture, float x, float y) {
 		super(x, y);
+		friction = 0.88f;
 		addTexture(texture, x - texture.getWidth() / 2, y - texture.getHeight() / 2, texture.getWidth(), texture.getHeight(), 0, 0, 0);
 		collisionShape = new Circle(x, y, 64);
 	}

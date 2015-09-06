@@ -3,8 +3,11 @@ package gamedev.lwjgl.game.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joml.Vector2f;
+
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.textures.ModelTexture;
+import gamedev.lwjgl.engine.utils.Maths;
 
 public class Entity {
 	private List<ModelTexture> textures = new ArrayList<ModelTexture>();
@@ -12,9 +15,12 @@ public class Entity {
 	private List<Float> dimensions = new ArrayList<Float>();
 	private List<Float> anchors = new ArrayList<Float>();
 	private List<Float> rotations = new ArrayList<Float>();
+	private Vector2f speed = new Vector2f();
+	private float maxSpeed = 10;
 	private float x, y;
 	private float anchorX, anchorY;
 	private float rotation;
+	protected float friction = 0.75f;
 	
 	public Entity(float x, float y) {
 		this.x = x;
@@ -30,6 +36,12 @@ public class Entity {
 		anchors.add(anchorX);
 		anchors.add(anchorY);
 		rotations.add(rotation);
+	}
+	
+	public void update(float dt) {
+		x += speed.x;
+		y += speed.y;
+		speed.mul(friction);
 	}
 	
 	public void render(SpriteBatch batch) {
@@ -49,6 +61,12 @@ public class Entity {
 		this.rotation += rotation;
 	}
 	
+	public void addSpeed(float dx, float dy) {
+		speed.x += dx;
+		speed.y += dy;
+		speed = Maths.maxLength(speed, maxSpeed);
+	}
+
 	public void setEntityPosition(float x, float y) {
 		this.x = x;
 		this.y = y;

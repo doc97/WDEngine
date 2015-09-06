@@ -1,13 +1,28 @@
 package gamedev.lwjgl.engine.render;
 
+import static org.lwjgl.opengl.GL11.GL_FLOAT;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glDrawElements;
+import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
+import static org.lwjgl.opengl.GL15.glBindBuffer;
+import static org.lwjgl.opengl.GL15.glBufferData;
+import static org.lwjgl.opengl.GL15.glDeleteBuffers;
+import static org.lwjgl.opengl.GL15.glGenBuffers;
+import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
 
 import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.cameras.Camera2d;
@@ -41,7 +56,7 @@ public class SpriteBatch {
 			indices[i+4] = (j+3);
 			indices[i+5] = j;
 		}
-		vao = GL30.glGenVertexArrays();
+		vao = glGenVertexArrays();
 	}
 	
 	public void begin() {
@@ -67,19 +82,20 @@ public class SpriteBatch {
 		
 		loadToVAO(vertices, texCoords, indices);
 		bindVAO();
-		GL20.glEnableVertexAttribArray(0);
-		GL20.glEnableVertexAttribArray(1);
-		GL11.glDrawElements(GL11.GL_TRIANGLES, sprites * 6, GL11.GL_UNSIGNED_INT, 0);
-		GL20.glDisableVertexAttribArray(0);
-		GL20.glDisableVertexAttribArray(1);
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glDrawElements(GL_TRIANGLES, sprites * 6, GL_UNSIGNED_INT, 0);
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
 		unbindVAO();
+		glDeleteBuffers(ibo);
 		idx = 0;
 	}
 	
 	public void changeTexture(ModelTexture texture) {
 		flush();
 		lastTexture = texture;
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTextureID());
+		glBindTexture(GL_TEXTURE_2D, texture.getTextureID());
 	}
 	
 	public void draw(ModelTexture texture, float xCoord, float yCoord, float width, float height) {
@@ -186,18 +202,18 @@ public class SpriteBatch {
 	}
 	
 	private void bindVAO() {
-		GL30.glBindVertexArray(vao);
+		glBindVertexArray(vao);
 	}
 	
 	private void unbindVAO() {
-		GL30.glBindVertexArray(0);
+		glBindVertexArray(0);
 	}
 	
 	private void bindIndicesBuffer(int[] indices) {
-		ibo = GL15.glGenBuffers();
-		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, ibo);
+		ibo = glGenBuffers();
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 		IntBuffer buffer = storeDataInIntBuffer(indices);
-		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
 	}
 	
 	private IntBuffer storeDataInIntBuffer(int[] data) {
@@ -208,12 +224,12 @@ public class SpriteBatch {
 	}
 	
 	private void storeDataInAttributeList(int attribute, int size, float[] data) {
-		int vbo = GL15.glGenBuffers();
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
+		int vbo = glGenBuffers();
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		FloatBuffer buffer = storeDataInFloatBuffer(data);
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
-		GL20.glVertexAttribPointer(attribute, size, GL11.GL_FLOAT, false, 0, 0);
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+		glVertexAttribPointer(attribute, size, GL_FLOAT, false, 0, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	
 	private FloatBuffer storeDataInFloatBuffer(float[] data) {

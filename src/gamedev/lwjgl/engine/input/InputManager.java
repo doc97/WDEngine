@@ -36,14 +36,14 @@ public class InputManager {
 				
 				// TODO implement observer pattern and input listeners
 				for(InputListener il : listeners) {
-					if(action == GLFW_RELEASE) {
+					if(action == GLFW_REPEAT) {
+						if(il.keyRepeat(key))
+							break;
+					} else if(action == GLFW_RELEASE) {
 						if(il.keyReleased(key))
 							break;
 					} else if(action == GLFW_PRESS) {
 						if(il.keyPressed(key))
-							break;
-					} else if(action == GLFW_REPEAT) {
-						if(il.keyRepeat(key))
 							break;
 					}
 				}

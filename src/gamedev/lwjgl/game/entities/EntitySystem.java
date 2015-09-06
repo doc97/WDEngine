@@ -35,6 +35,10 @@ public class EntitySystem {
 		entities.remove(entity);
 	}
 	
+	public void clear() {
+		entities.clear();
+	}
+	
 	public ArrayList<Entity> getEntities() {
 		return entities;
 	}

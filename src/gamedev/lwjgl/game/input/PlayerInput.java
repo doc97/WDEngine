@@ -5,16 +5,27 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
 
-import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.input.InputListener;
+import gamedev.lwjgl.game.entities.Player;
 
-public class CameraInput implements InputListener {
+public class PlayerInput implements InputListener {
 
 	private boolean right, left, up, down;
 	private int rightKey = GLFW_KEY_D, leftKey = GLFW_KEY_A, upKey = GLFW_KEY_W, downKey = GLFW_KEY_S;
+	private Player player;
+	
+	public PlayerInput(Player player) {
+		this.player = player;
+	}
 	
 	public void update() {
-		moveCamera();
+		float dx = 0, dy = 0;
+		if(right)	dx += 2;
+		if(left)	dx -= 2;
+		if(up)		dy += 2;
+		if(down)	dy -= 2;
+		
+		player.addSpeed(dx, dy);
 	}
 	
 	@Override
@@ -40,13 +51,10 @@ public class CameraInput implements InputListener {
 		return false;
 	}
 	
-	private void moveCamera() {
-		float dx = 0, dy = 0;
-		if(right)	dx += 2;
-		if(left)	dx -= 2;
-		if(up)		dy += 2;
-		if(down)	dy -= 2;
-		
-		Engine.INSTANCE.camera.addSpeed(dx, dy);
+	public void changeKeyBindings(int rightKey, int leftKey, int upKey, int downKey) {
+		this.rightKey = rightKey;
+		this.leftKey = leftKey;
+		this.upKey = upKey;
+		this.downKey = downKey;
 	}
 }

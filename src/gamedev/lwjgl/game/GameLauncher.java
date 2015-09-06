@@ -7,6 +7,7 @@ import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.entities.Entity;
 import gamedev.lwjgl.game.states.State;
+import gamedev.lwjgl.game.states.StateSystem.States;
 
 public class GameLauncher {
 	public static void main(String[] args) {
@@ -15,7 +16,7 @@ public class GameLauncher {
 		Game.INSTANCE.init(launcher);
 		
 		String[] models = { };
-		String[] textures = { "lwjgl"};
+		String[] textures = { "lwjgl", "Player", "map_background", "map_parallax1", "map_parallax2" };
 		String[] fonts = { "basic" };
 		AssetManager.loadAssets(models, textures, fonts);
 		
@@ -24,6 +25,8 @@ public class GameLauncher {
 		entity.addTexture(texture, 0, 0, 200, 200, 0, 0, 0);
 		Game.INSTANCE.entities.addEntity(entity);
 
+		Game.INSTANCE.states.enterState(States.GAMESTATE);
+		
 		double lastTime = glfwGetTime();
 		float deltaTime = 0;
 		while(!Engine.INSTANCE.display.displayShouldClose()) {
