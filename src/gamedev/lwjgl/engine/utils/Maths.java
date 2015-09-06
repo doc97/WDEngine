@@ -1,6 +1,7 @@
 package gamedev.lwjgl.engine.utils;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public class Maths {
@@ -53,5 +54,17 @@ public class Maths {
 		mat.rotate(horizontalAngle, new Vector3f(0, 1, 0));
 		mat.translate(position.x, position.y, position.z);
 		return mat;
+	}
+	
+	public static Vector2f maxLength(Vector2f vec, float length) {
+		if(vec.length() > length) {
+			Vector2f dest = new Vector2f();
+			dest.x = vec.x;
+			dest.y = vec.y;
+			dest.normalize();
+			dest.mul(length);
+			return dest;
+		}
+		return vec;
 	}
 }

@@ -8,6 +8,7 @@ import gamedev.lwjgl.game.Game;
 import gamedev.lwjgl.game.GamePhysics;
 import gamedev.lwjgl.game.entities.Entity;
 import gamedev.lwjgl.game.entities.Player;
+import gamedev.lwjgl.game.input.CameraInput;
 import gamedev.lwjgl.game.map.Map;
 
 public class GameState extends State {
@@ -59,6 +60,7 @@ public class GameState extends State {
 
 	@Override
 	public void enter() {
+		Engine.INSTANCE.input.addListener(new CameraInput());
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import static org.lwjgl.opengl.GL11.glEnable;
 import org.lwjgl.opengl.GL11;
 
 import gamedev.lwjgl.engine.cameras.Camera2d;
+import gamedev.lwjgl.engine.input.InputManager;
 import gamedev.lwjgl.engine.render.DisplayManager;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 
@@ -38,6 +39,7 @@ public enum Engine {
 	}
 	
 	public void update(float delta) {
+		input.update();
 		camera.update();
 	}
 	

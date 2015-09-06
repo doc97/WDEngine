@@ -102,10 +102,10 @@ public class SpriteBatch {
 		if (idx == vertices.length)
 			flush();
 		
-		float x1 = xCoord / camera.getWidth();
-		float y1 = yCoord / camera.getHeight();
-		float x2 = (xCoord + width) / camera.getWidth();
-		float y2 = (yCoord + height) / camera.getHeight();
+		float x1 = (-camera.getX() + xCoord) / camera.getWidth();
+		float y1 = (-camera.getY() + yCoord) / camera.getHeight();
+		float x2 = (-camera.getX() + xCoord + width) / camera.getWidth();
+		float y2 = (-camera.getY() + yCoord + height) / camera.getHeight();
 		
 		//coords for the vertices
 		
