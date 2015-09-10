@@ -40,7 +40,7 @@ public class Font {
 			
 			width = (height / charTex.getHeight()) * charTex.getWidth();
 			wordLength += width;
-		}
+	}
 		
 		float currentPosition = 0;
 		for(int i = 0; i < text.length(); i++) {

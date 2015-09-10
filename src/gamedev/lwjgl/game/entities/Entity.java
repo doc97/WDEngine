@@ -15,8 +15,8 @@ public class Entity {
 	private List<Float> dimensions = new ArrayList<Float>();
 	private List<Float> anchors = new ArrayList<Float>();
 	private List<Float> rotations = new ArrayList<Float>();
-	private Vector2f speed = new Vector2f();
-	private float maxSpeed = 10;
+	protected Vector2f speed = new Vector2f();
+	protected float maxSpeed = 10;
 	private float x, y;
 	private float anchorX, anchorY;
 	private float rotation;
@@ -27,7 +27,7 @@ public class Entity {
 		this.y = y;
 	}
 	
-	public void addTexture(ModelTexture texture, float x, float y, float width, float height, float anchorX, float anchorY, float rotation) {
+	public int addTexture(ModelTexture texture, float x, float y, float width, float height, float anchorX, float anchorY, float rotation) {
 		textures.add(texture);
 		positions.add(x);
 		positions.add(y);
@@ -36,6 +36,11 @@ public class Entity {
 		anchors.add(anchorX);
 		anchors.add(anchorY);
 		rotations.add(rotation);
+		return textures.size() - 1;
+	}
+	
+	public void setTexture(int index, ModelTexture texture) {
+		textures.set(index, texture);
 	}
 	
 	public void update(float dt) {

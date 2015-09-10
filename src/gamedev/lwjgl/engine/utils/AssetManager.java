@@ -44,12 +44,14 @@ import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.models.RawModel;
 import gamedev.lwjgl.engine.models.TexturedModel;
 import gamedev.lwjgl.engine.textures.ModelTexture;
+import gamedev.lwjgl.engine.textures.TextureRegion;
 
 public class AssetManager {
 	
 	private static final String MODEL_PATH = "models/";
 	private static final String TEXTURE_PATH = "textures/";
 	private static final String FONT_PATH = "fonts/";
+	private static final String ANIMATION_PATH = "animations/";
 	private static final String[] CHARACTERS = { "a", "b", "c", "d", "e", "f", "g", "h", "i" };
 	private static Map<String, RawModel> models = new HashMap<String, RawModel>();
 	private static Map<String, ModelTexture> textures = new HashMap<String, ModelTexture>();
@@ -267,6 +269,41 @@ public class AssetManager {
 		glGenerateMipmap(GL_TEXTURE_2D);
 		
 		return new ModelTexture(textureID, tWidth, tHeight);
+	}
+	
+	public static List<TextureRegion> loadAnimation(String filename){
+		filename = ANIMATION_PATH + filename;
+		ArrayList<TextureRegion> ts = new ArrayList<>();
+		int width, height, frameCount;
+		String texFileName;
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(filename));
+			String[] lines = new String[4];
+			for (int i = 0; i < 4; i++){
+				lines[i] = br.readLine();
+			}
+			texFileName = TEXTURE_PATH + lines[0].split("=")[1];
+			width = Integer.parseInt(lines[1].split("=")[1]);
+			height = Integer.parseInt(lines[2].split("=")[1]);
+			frameCount = Integer.parseInt(lines[3].split("=")[1]);
+			System.out.println(width + "    " + height);
+			ModelTexture tex = loadTexture(texFileName);
+		
+			int k = 0;
+			bigloop:
+			for (int i = 0; i*height < tex.getHeight(); i++){
+				for (int j = 0; j*height < tex.getWidth(); j++){
+					if (k++ > frameCount)
+						break bigloop;
+					ts.add(new TextureRegion(tex, j * width, i * height, width, height));
+				}
+			}
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return ts;
 	}
 	
 	public static void cleanup() {

@@ -46,9 +46,9 @@ public class GameState extends State {
 		// Render
 		Engine.INSTANCE.display.clearDisplay();
 		Engine.INSTANCE.batch.begin();
-		
+	
 		map.render(Engine.INSTANCE.batch);
-		
+	
 		for(Entity entity : Game.INSTANCE.entities.getEntities()) {
 			entity.render(Engine.INSTANCE.batch);
 		}

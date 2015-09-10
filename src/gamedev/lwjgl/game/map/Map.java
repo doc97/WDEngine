@@ -8,7 +8,7 @@ public class Map {
 	private ModelTexture background;
 	private ModelTexture parallax1;
 	private ModelTexture parallax2;
-	private float offsetFactor = 0.05f;
+	private float offsetFactor = 0.1f;
 	
 	public Map(ModelTexture background, ModelTexture parallax1, ModelTexture parallax2) {
 		this.background = background;
@@ -19,8 +19,8 @@ public class Map {
 	public void render(SpriteBatch batch) {
 		float camX = Engine.INSTANCE.camera.getX();
 		float camY = Engine.INSTANCE.camera.getY();
-		batch.draw(parallax2, camX * offsetFactor * 2, camY * offsetFactor * 2, parallax2.getWidth(), parallax2.getHeight());
-		batch.draw(parallax1, camX * offsetFactor, camY * offsetFactor, parallax1.getWidth(), parallax2.getHeight());
+		batch.draw(parallax2, 300 + camX * offsetFactor * 2, camY * offsetFactor * 2, parallax2.getWidth(), parallax2.getHeight());
+		batch.draw(parallax1, 600 + camX * offsetFactor, camY * offsetFactor, parallax1.getWidth(), parallax2.getHeight());
 		batch.draw(background, 0, 0, background.getWidth(), background.getHeight());
 	}
 }

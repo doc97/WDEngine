@@ -19,15 +19,19 @@ import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 
 import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.cameras.Camera2d;
 import gamedev.lwjgl.engine.shaders.StaticShader;
+import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.textures.ModelTexture;
+import gamedev.lwjgl.engine.textures.TextureRegion;
 
 public class SpriteBatch {
 	
@@ -37,10 +41,15 @@ public class SpriteBatch {
 	private int[] indices;
 	private float[] vertices;
 	private float[] texCoords;
+	private float[] colors;
+	private Color currentColor;
 	private boolean isDrawing;
 	private StaticShader shader;
 	private int vao;
 	private int ibo;
+	private ArrayList<Integer> vbos;
+	private IntBuffer intBuff;
+	private FloatBuffer floatBuff1, floatBuff2, floatBuff3;
 	
 	public void init() {
 		camera = Engine.INSTANCE.camera;
@@ -48,6 +57,13 @@ public class SpriteBatch {
 		indices = new int[6000];
 		vertices = new float[12000];
 		texCoords = new float[8000];
+		colors = new float[16000];
+		vbos = new ArrayList<>();
+		intBuff = BufferUtils.createIntBuffer(6000);
+		floatBuff1 = BufferUtils.createFloatBuffer(12000);
+		floatBuff2 = BufferUtils.createFloatBuffer(8000);
+		floatBuff3 = BufferUtils.createFloatBuffer(16000);
+		currentColor = Color.WHITE;
 		for (int i = 0, j = 0; i < 6000; i += 6, j += 4){
 			indices[i] = j;
 			indices[i+1] = (j+1);
@@ -80,40 +96,38 @@ public class SpriteBatch {
 			return;
 		int sprites = idx / 12;
 		
-		loadToVAO(vertices, texCoords, indices);
+		loadToVAO(vertices, texCoords, colors, indices);
 		bindVAO();
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
 		glDrawElements(GL_TRIANGLES, sprites * 6, GL_UNSIGNED_INT, 0);
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
 		unbindVAO();
 		glDeleteBuffers(ibo);
+		for (int vbo : vbos){
+			glDeleteBuffers(vbo);
+		}
+		vbos.clear();
 		idx = 0;
 	}
 	
 	public void changeTexture(ModelTexture texture) {
 		flush();
-		lastTexture = texture;
+		lastTexture = texture.getTexture();
 		glBindTexture(GL_TEXTURE_2D, texture.getTextureID());
 	}
 	
 	public void draw(ModelTexture texture, float xCoord, float yCoord, float width, float height) {
-		draw(texture, xCoord, yCoord, width, height, 0, 0, texture.getWidth(), texture.getHeight(), 0,0,0);
+		draw(texture, xCoord, yCoord, width, height, 0,0,0);
 	}
 	
-	public void draw(ModelTexture texture, float xCoord, float yCoord, float width, float height, float srcX, float srcY, float srcWidth, float srcHeight) {
-		draw(texture, xCoord, yCoord, width, height, srcX, srcY, srcWidth, srcHeight, 0,0,0);
-	}
-	
-	public void draw(ModelTexture texture, float xCoord, float yCoord, float width, float height, float rotation, float anchorX, float anchorY) {
-		draw(texture, xCoord, yCoord, width, height, 0, 0, texture.getWidth(), texture.getHeight(), rotation, anchorX, anchorY);
-	}
-	
-	public void draw(ModelTexture texture, float xCoord, float yCoord, float width, float height, float srcX, float srcY, float srcWidth, float srcHeight, float rotation, float anchorPX, float anchorPY) {
+	public void draw(ModelTexture texture, float xCoord, float yCoord, float width, float height, float rotation, float anchorPX, float anchorPY) {
 		if(!isDrawing)
 			return;
-		if (texture != lastTexture)
+		if (texture.getTexture() != lastTexture)
 			changeTexture(texture);
 		if (idx == vertices.length)
 			flush();
@@ -135,7 +149,9 @@ public class SpriteBatch {
 		float vy4 = y1;
 		
 		int idx = this.idx;
-		int tdx = (idx / 3) << 1;
+		int vertexCount = idx / 3;
+		int cdx = vertexCount << 2;
+		int tdx = vertexCount << 1;
 		
 		if (rotation != 0){
 			float p1d = (float) Math.hypot(anchorPX - vx1, anchorPY - vy1);
@@ -174,30 +190,37 @@ public class SpriteBatch {
 		vertices[idx++] = vy4;
 		vertices[idx++] = 0;
 		
-		float tWidth = texture.getWidth();
-		float tHeight = texture.getHeight();
+		float[] uvs = texture.getUVs();
 		
-		texCoords[tdx++] = srcX / tWidth;
-		texCoords[tdx++] = srcY / tHeight;
+		texCoords[tdx++] = uvs[0];
+		texCoords[tdx++] = uvs[1];
 		
-		texCoords[tdx++] = (srcX + srcWidth) / tWidth;
-		texCoords[tdx++] = srcY / tHeight;
+		texCoords[tdx++] = uvs[2];
+		texCoords[tdx++] = uvs[1];
 		
-		texCoords[tdx++] = (srcX + srcWidth) /  tWidth;
-		texCoords[tdx++] = (srcY + srcHeight) / tHeight;
+		texCoords[tdx++] = uvs[2];
+		texCoords[tdx++] = uvs[3];
 		
-		texCoords[tdx++] = srcX / tWidth;
-		texCoords[tdx++] = (srcY + srcHeight) / tHeight;
+		texCoords[tdx++] = uvs[0];
+		texCoords[tdx++] = uvs[3];
+		
+		for (int i = 0; i < 4; i++){
+			colors[cdx++] = currentColor.red;
+			colors[cdx++] = currentColor.green;
+			colors[cdx++] = currentColor.blue;
+			colors[cdx++] = currentColor.alpha;
+		}
 		
 		this.idx = idx;
 	}
 	
 	
-	private void loadToVAO(float[] positions, float[] texCoords, int[] indices) {
+	private void loadToVAO(float[] positions, float[] texCoords, float[] colors, int[] indices) {
 		bindVAO();
-		bindIndicesBuffer(indices);
-		storeDataInAttributeList(0, 3, positions);
-		storeDataInAttributeList(1, 2, texCoords);
+		bindIndicesBuffer(indices, intBuff);
+		storeDataInAttributeList(0, floatBuff1, 3, positions);
+		storeDataInAttributeList(1, floatBuff2, 2, texCoords);
+		storeDataInAttributeList(2, floatBuff3, 4, colors);
 		unbindVAO();
 	}
 	
@@ -209,34 +232,43 @@ public class SpriteBatch {
 		glBindVertexArray(0);
 	}
 	
-	private void bindIndicesBuffer(int[] indices) {
+	private void bindIndicesBuffer(int[] indices, IntBuffer buffer) {
 		ibo = glGenBuffers();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-		IntBuffer buffer = storeDataInIntBuffer(indices);
+		storeDataInIntBuffer(buffer, indices);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
 	}
 	
-	private IntBuffer storeDataInIntBuffer(int[] data) {
-		IntBuffer buffer = BufferUtils.createIntBuffer(data.length);
+	private IntBuffer storeDataInIntBuffer(IntBuffer buffer, int[] data) {
+		buffer.clear();
 		buffer.put(data);
 		buffer.flip();
 		return buffer;
 	}
 	
-	private void storeDataInAttributeList(int attribute, int size, float[] data) {
+	private void storeDataInAttributeList(int attribute, FloatBuffer buffer, int size, float[] data) {
 		int vbo = glGenBuffers();
+		vbos.add(vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		FloatBuffer buffer = storeDataInFloatBuffer(data);
+		storeDataInFloatBuffer(buffer,data);
 		glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
 		glVertexAttribPointer(attribute, size, GL_FLOAT, false, 0, 0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	
-	private FloatBuffer storeDataInFloatBuffer(float[] data) {
-		FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);
+	private FloatBuffer storeDataInFloatBuffer(FloatBuffer buffer, float[] data) {
+		buffer.clear();
 		buffer.put(data);
 		buffer.flip();
 		return buffer;
+	}
+	
+	public Color getColor(){
+		return currentColor;
+	}
+	
+	public void setColor(Color color){
+		this.currentColor = color;
 	}
 	
 }

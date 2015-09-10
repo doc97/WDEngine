@@ -32,7 +32,7 @@ public class GameLauncher {
 		while(!Engine.INSTANCE.display.displayShouldClose()) {
 			// Update timers
 			double currentTime = glfwGetTime();
-			deltaTime = (float) (currentTime - lastTime);
+			deltaTime = (float) (currentTime - lastTime) * 60;
 			lastTime = currentTime;
 			
 			launcher.getCurrentState().render(deltaTime);
