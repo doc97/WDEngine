@@ -8,8 +8,11 @@ public enum Game {
 	
 	public final StateSystem states = new StateSystem();
 	public final EntitySystem entities = new EntitySystem();
+	public final GameContainer container = new GameContainer();
+	public final GamePhysics physics = new GamePhysics();
 	
 	public void init(GameLauncher launcher) {
+		container.init();
 		states.create(launcher);
 	}
 }

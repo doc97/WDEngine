@@ -5,7 +5,7 @@ import gamedev.lwjgl.engine.render.DisplayManager;
 public class Camera2d {
 	
 	private float x, y;
-	private float width, height;
+	private int width, height;
 	
 	public void init(DisplayManager display) {
 		width = display.getWindowWidth();
@@ -33,11 +33,11 @@ public class Camera2d {
 		return y;
 	}
 	
-	public float getWidth() {
+	public int getWidth() {
 		return width;
 	}
 	
-	public float getHeight() {
+	public int getHeight() {
 		return height;
 	}
 }

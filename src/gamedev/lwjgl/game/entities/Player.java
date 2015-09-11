@@ -14,22 +14,19 @@ public class Player extends Entity {
 	
 	public Player(ModelTexture texture, float x, float y) {
 		super(x, y);
-		friction = 0.88f;
-		addTexture(texture, -250, -250, 500, 500, 0, 0, 0);
+		addTexture(texture, -texture.getWidth() / 2, -texture.getHeight() / 2, texture.getWidth(), texture.getHeight(), 0, 0, 0);
 		collisionShape = new Circle(x, y, 64);
 		animation = new AnimatedTexture(AssetManager.loadAnimation("Test.anim"), 60/30);
+		dynamic = true;
 	}
-	
-	
 	
 	@Override
 	public void update(float dt) {
 		animation.update(dt);
+		collisionShape.setPosition(x, y);
 		super.update(dt);
 	}
-
-
-
+	
 	@Override
 	public void render(SpriteBatch batch) {
 		batch.setColor(Color.CUSTOM.setColor(1, 1, 0, 1));
@@ -37,7 +34,7 @@ public class Player extends Entity {
 		super.render(batch);
 		batch.setColor(Color.WHITE);
 	}
-
+	
 	@Override
 	public void addEntityPosition(float dx, float dy) {
 		super.addEntityPosition(dx, dy);
@@ -48,6 +45,7 @@ public class Player extends Entity {
 	public void setEntityPosition(float x, float y) {
 		super.setEntityPosition(x, y);
 		collisionShape.setPosition(x, y);
+		System.out.println(x + ", " + y);
 	}
 
 	public Circle getCollisionShape() {

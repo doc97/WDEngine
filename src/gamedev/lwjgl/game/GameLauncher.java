@@ -12,19 +12,17 @@ import gamedev.lwjgl.game.states.StateSystem.States;
 public class GameLauncher {
 	public static void main(String[] args) {
 		GameLauncher launcher = new GameLauncher();
+
 		Engine.INSTANCE.init();
-		Game.INSTANCE.init(launcher);
 		
+		// Load assets
 		String[] models = { };
 		String[] textures = { "lwjgl", "Player", "map_background", "map_parallax1", "map_parallax2" };
 		String[] fonts = { "basic" };
 		AssetManager.loadAssets(models, textures, fonts);
 		
-		ModelTexture texture = AssetManager.getTexture("lwjgl");
-		Entity entity = new Entity(-300, -300);
-		entity.addTexture(texture, 0, 0, 200, 200, 0, 0, 0);
-		Game.INSTANCE.entities.addEntity(entity);
-
+		Game.INSTANCE.init(launcher);
+//		Game.INSTANCE.container.getMap().getCollisionMap().addRectangle(rect);
 		Game.INSTANCE.states.enterState(States.GAMESTATE);
 		
 		double lastTime = glfwGetTime();

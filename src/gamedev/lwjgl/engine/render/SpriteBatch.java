@@ -19,7 +19,6 @@ import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
-import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -31,7 +30,6 @@ import gamedev.lwjgl.engine.cameras.Camera2d;
 import gamedev.lwjgl.engine.shaders.StaticShader;
 import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.textures.ModelTexture;
-import gamedev.lwjgl.engine.textures.TextureRegion;
 
 public class SpriteBatch {
 	
@@ -73,6 +71,7 @@ public class SpriteBatch {
 			indices[i+5] = j;
 		}
 		vao = glGenVertexArrays();
+		ibo = glGenBuffers();
 	}
 	
 	public void begin() {
@@ -96,8 +95,8 @@ public class SpriteBatch {
 			return;
 		int sprites = idx / 12;
 		
-		loadToVAO(vertices, texCoords, colors, indices);
 		bindVAO();
+		loadToVAO(vertices, texCoords, colors, indices);
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
@@ -132,10 +131,12 @@ public class SpriteBatch {
 		if (idx == vertices.length)
 			flush();
 		
-		float x1 = (-camera.getX() + xCoord) / camera.getWidth();
-		float y1 = (-camera.getY() + yCoord) / camera.getHeight();
-		float x2 = (-camera.getX() + xCoord + width) / camera.getWidth();
-		float y2 = (-camera.getY() + yCoord + height) / camera.getHeight();
+		float x1 = 2 * (-camera.getX() + xCoord) / camera.getWidth();
+		float y1 = 2 * (-camera.getY() + yCoord) / camera.getHeight();
+		float x2 = 2 * (-camera.getX() + xCoord + width) / camera.getWidth();
+		float y2 = 2 * (-camera.getY() + yCoord + height) / camera.getHeight();
+		
+//		System.out.println(xCoord + ", " + yCoord);
 		
 		//coords for the vertices
 		
@@ -216,12 +217,10 @@ public class SpriteBatch {
 	
 	
 	private void loadToVAO(float[] positions, float[] texCoords, float[] colors, int[] indices) {
-		bindVAO();
 		bindIndicesBuffer(indices, intBuff);
 		storeDataInAttributeList(0, floatBuff1, 3, positions);
 		storeDataInAttributeList(1, floatBuff2, 2, texCoords);
 		storeDataInAttributeList(2, floatBuff3, 4, colors);
-		unbindVAO();
 	}
 	
 	private void bindVAO() {
@@ -270,5 +269,4 @@ public class SpriteBatch {
 	public void setColor(Color color){
 		this.currentColor = color;
 	}
-	
 }

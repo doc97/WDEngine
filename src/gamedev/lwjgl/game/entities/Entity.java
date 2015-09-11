@@ -7,7 +7,6 @@ import org.joml.Vector2f;
 
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.textures.ModelTexture;
-import gamedev.lwjgl.engine.utils.Maths;
 
 public class Entity {
 	private List<ModelTexture> textures = new ArrayList<ModelTexture>();
@@ -17,10 +16,10 @@ public class Entity {
 	private List<Float> rotations = new ArrayList<Float>();
 	protected Vector2f speed = new Vector2f();
 	protected float maxSpeed = 10;
-	private float x, y;
+	protected float x, y;
 	private float anchorX, anchorY;
 	private float rotation;
-	protected float friction = 0.75f;
+	protected boolean dynamic;
 	
 	public Entity(float x, float y) {
 		this.x = x;
@@ -44,9 +43,6 @@ public class Entity {
 	}
 	
 	public void update(float dt) {
-		x += speed.x;
-		y += speed.y;
-		speed.mul(friction);
 	}
 	
 	public void render(SpriteBatch batch) {
@@ -69,7 +65,7 @@ public class Entity {
 	public void addSpeed(float dx, float dy) {
 		speed.x += dx;
 		speed.y += dy;
-		speed = Maths.maxLength(speed, maxSpeed);
+//		Maths.clampVector(speed, maxSpeed);
 	}
 
 	public void setEntityPosition(float x, float y) {
@@ -80,6 +76,14 @@ public class Entity {
 	public void setEntityAnchorPoint(float x, float y) {
 		anchorX = x;
 		anchorY = y;
+	}
+	
+	public void setSpeed(float dx, float dy) {
+		speed.x = dx;
+		speed.y = dy;
+		if(Math.abs(speed.x) < 0.01f) speed.x = 0;
+		if(Math.abs(speed.y) < 0.01f) speed.y = 0;
+//		Maths.clampVector(speed, maxSpeed);
 	}
 	
 	public void setEntityRotation(float rotation) {
@@ -125,5 +129,17 @@ public class Entity {
 	
 	public float getY() {
 		return y;
+	}
+
+	public float getMaxSpeed() {
+		return maxSpeed;
+	}
+	
+	public Vector2f getSpeed() {
+		return speed;
+	}
+	
+	public boolean isDynamic() {
+		return dynamic;
 	}
 }

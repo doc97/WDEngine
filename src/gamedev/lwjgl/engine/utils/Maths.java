@@ -56,15 +56,78 @@ public class Maths {
 		return mat;
 	}
 	
-	public static Vector2f maxLength(Vector2f vec, float length) {
-		if(vec.length() > length) {
-			Vector2f dest = new Vector2f();
-			dest.x = vec.x;
-			dest.y = vec.y;
-			dest.normalize();
-			dest.mul(length);
-			return dest;
+	public static void clampVector(Vector2f vec, float length) {
+		if(vec.lengthSquared() > length * length)
+		vec.normalize().mul(length);
+	}
+	
+	public static float clamp(float min, float max, float value) {
+		if(value <= min) return min;
+		if(value >= max) return max;
+		return value;
+	}
+	
+	/**
+	 * Returns the distance from a point to a line segment
+	 * @param point - The point to which the distance is calculated
+	 * @param coord1 - One end point of the line segment
+	 * @param coord2 - Second end point of the line segment
+	 * @return
+	 */
+	public static float distanceFromLineToPointSqrd(Vector2f point, Vector2f coord1, Vector2f coord2) {
+		Vector2f line = new Vector2f(coord2.x - coord1.x, coord2.y - coord1.y);
+		float dot = point.dot(line);
+		float len_sq = line.lengthSquared();
+		float param = -1;
+		if (len_sq != 0) //in case of 0 length line
+			param = dot / len_sq;
+
+		Vector2f pos;
+
+		if (param < 0) {
+			pos = coord1;
 		}
-		return vec;
+		else if (param > 1) {
+			pos = coord2;
+		}
+		else {
+			pos = new Vector2f(coord1.x + param * (coord2.x - coord1.x), coord1.y + param * (coord2.y - coord1.y));
+		}
+
+		float dx = point.x - pos.x;
+		float dy = point.y - pos.y;
+		return dx * dx + dy * dy;
+	}
+	
+	/**
+	 * Calculates if a given point is inside a rectangle
+	 * @param point - The point that is checked
+	 * @param v1 - first vertex of the rectangle
+	 * @param v2 - second vertex of the rectangle
+	 * @param v4 - the fourth vertex of the rectangle
+	 * @return
+	 */
+	public static boolean pointInRectangle(Vector2f point, Vector2f v1, Vector2f v2, Vector2f v4) {
+		Vector2f v1p = new Vector2f();
+		Vector2f.sub(v1, point, v1p);
+		
+		Vector2f v1v2 = new Vector2f();
+		Vector2f.sub(v1, v2, v1v2);
+		
+		Vector2f v1v4 = new Vector2f();
+		Vector2f.sub(v1, v4, v1v4);
+		
+		float dotV1pV1v2 = v1p.dot(v1v2);		// AP dot AB
+		float dotV1v2V1v2 = v1v2.dot(v1v2);		// AB dot AB
+		float dotV1pV1v4 = v1p.dot(v1v4);		// AP dot AD
+		float dotV1v4V1v4 = v1v4.dot(v1v4);		// AD dot AD
+		
+		// 0 <= AP dot AB <= AB dot AB and 0 <= AP dot AD <= AD dot AD
+		return (dotV1pV1v2 >= 0 && dotV1pV1v2 <= dotV1v2V1v2) && (dotV1pV1v4 >= 0 && dotV1pV1v4 <= dotV1v4V1v4);
+	}
+	
+	public static double getAngle(Vector2f line1, Vector2f line2) {
+		float dot = line1.dot(line2);
+		return Math.acos(dot);
 	}
 }

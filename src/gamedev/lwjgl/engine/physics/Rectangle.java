@@ -46,6 +46,15 @@ public class Rectangle {
 		return sides;
 	}
 	
+	public Vector2f getCenterPosition() {
+		Vector2f result = new Vector2f();
+		Vector2f.add(points[0], points[1], result);
+		Vector2f.add(result, points[2], result);
+		Vector2f.add(result, points[3], result);
+		result.mul(1 / points.length); // Divide
+		return result;
+	}
+	
 	public Vector2f[] getPoints() {
 		return points;
 	}

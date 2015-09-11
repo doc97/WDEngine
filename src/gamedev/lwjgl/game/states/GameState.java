@@ -2,10 +2,8 @@ package gamedev.lwjgl.game.states;
 
 import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.font.Font;
-import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.Game;
-import gamedev.lwjgl.game.GamePhysics;
 import gamedev.lwjgl.game.entities.Entity;
 import gamedev.lwjgl.game.entities.Player;
 import gamedev.lwjgl.game.input.PlayerInput;
@@ -13,9 +11,8 @@ import gamedev.lwjgl.game.map.Map;
 
 public class GameState extends State {
 	
-	private GamePhysics physics;
-	private Map map;
 	private Player player;
+	private Map map;
 	private Font basicFont;
 	private boolean initialized;
 	
@@ -25,14 +22,6 @@ public class GameState extends State {
 	
 	public void init() {
 		basicFont = AssetManager.getFont("basic");
-		
-		ModelTexture background = AssetManager.getTexture("map_background");
-		ModelTexture parallax1 = AssetManager.getTexture("map_parallax1");
-		ModelTexture parallax2 = AssetManager.getTexture("map_parallax2");
-		map = new Map(background, parallax1, parallax2);
-		
-		player = new Player(AssetManager.getTexture("Player"), 0, 0);
-		
 		initialized = true;
 	}
 	
@@ -40,7 +29,8 @@ public class GameState extends State {
 	public void render(float dt) {
 		// Update
 		Engine.INSTANCE.update(dt);
-		player.update(dt);
+		Game.INSTANCE.physics.update(player);
+		Game.INSTANCE.container.getPlayer().update(dt);
 		Engine.INSTANCE.camera.setPosition(player.getX(), player.getY());
 		
 		// Render
@@ -53,7 +43,7 @@ public class GameState extends State {
 			entity.render(Engine.INSTANCE.batch);
 		}
 		
-		basicFont.drawString("abcdefg", 64, 0, 0);
+		basicFont.drawString("abcdefg", 32, 0, 0);
 		
 		Engine.INSTANCE.batch.end();
 		Engine.INSTANCE.display.updateDisplay();
@@ -64,7 +54,6 @@ public class GameState extends State {
 	}
 	
 	public void update() {
-		physics.update();
 	}
 
 	@Override
@@ -72,8 +61,13 @@ public class GameState extends State {
 		if(!initialized)
 			init();
 		
-		Engine.INSTANCE.input.addListener(new PlayerInput(player));
+		// Map initialisation
+		map = Game.INSTANCE.container.getMap();
+		
+		// Player initialisation
+		player = Game.INSTANCE.container.getPlayer();
 		addEntity(player);
+		Engine.INSTANCE.input.addListener(new PlayerInput(player));
 	}
 
 	@Override
