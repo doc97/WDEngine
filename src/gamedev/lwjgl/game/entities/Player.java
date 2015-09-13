@@ -45,7 +45,6 @@ public class Player extends Entity {
 	public void setEntityPosition(float x, float y) {
 		super.setEntityPosition(x, y);
 		collisionShape.setPosition(x, y);
-		System.out.println(x + ", " + y);
 	}
 
 	public Circle getCollisionShape() {

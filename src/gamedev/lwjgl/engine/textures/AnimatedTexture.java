@@ -13,7 +13,6 @@ public class AnimatedTexture {
 	public AnimatedTexture(List<TextureRegion> texs, float frameTime){
 		textures = new LinkedList<>();
 		textures.addAll(texs);
-		System.out.println(textures.size());
 		this.frameTime = frameTime;
 		this.current = textures.getFirst();
 		last = 0;

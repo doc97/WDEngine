@@ -43,11 +43,13 @@ import gamedev.lwjgl.engine.Logger;
 import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.models.RawModel;
 import gamedev.lwjgl.engine.models.TexturedModel;
+import gamedev.lwjgl.engine.physics.Line;
 import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.engine.textures.TextureRegion;
 
 public class AssetManager {
 	
+	private static final String MAP_PATH = "maps/";
 	private static final String MODEL_PATH = "models/";
 	private static final String TEXTURE_PATH = "textures/";
 	private static final String FONT_PATH = "fonts/";
@@ -56,11 +58,13 @@ public class AssetManager {
 	private static Map<String, RawModel> models = new HashMap<String, RawModel>();
 	private static Map<String, ModelTexture> textures = new HashMap<String, ModelTexture>();
 	private static Map<String, Font> fonts = new HashMap<String, Font>();
+	private static Map<String, gamedev.lwjgl.game.map.Map> maps = new HashMap<String, gamedev.lwjgl.game.map.Map>();
 	
-	public static void loadAssets(String[] modelNames, String[] textureNames, String[] fontNames) {
+	public static void loadAssets(String[] modelNames, String[] textureNames, String[] fontNames, String[] mapNames) {
 		loadModels(modelNames);
 		loadTextures(textureNames);
 		loadFonts(fontNames);
+		loadMaps(mapNames);
 	}
 	
 	private static void loadModels(String[] modelNames) {
@@ -97,6 +101,19 @@ public class AssetManager {
 		}
 	}
 	
+	private static void loadMaps(String[] mapNames) {
+		for(String name : mapNames) {
+			if(maps.containsKey(name)) {
+				Logger.message("AssetManager", "Map with name: " + name + " already loaded");
+				continue;
+			}
+			gamedev.lwjgl.game.map.Map map = loadMap(name);
+			
+			if(map != null)
+				maps.put(name, map);
+		}
+	}
+	
 	private static void loadFont(String fontName, String[] characterNames) {
 		ModelTexture[] characters = new ModelTexture[characterNames.length];
 		for(int i = 0; i < characterNames.length; i++) {
@@ -124,6 +141,10 @@ public class AssetManager {
 		return fonts.get(name);
 	}
 	
+	public static gamedev.lwjgl.game.map.Map getMap(String name) {
+		return maps.get(name);
+	}
+	
 	/**
 	 * Temporary method for creating an easy testing model
 	 * @return
@@ -149,6 +170,83 @@ public class AssetManager {
 		};
 		
 		return new RawModel("Quad", vertices, indices, texcoords);
+	}
+	
+	private static gamedev.lwjgl.game.map.Map loadMap(String filename) {
+		FileReader fr = null;
+		try {
+			fr = new FileReader(new File(MAP_PATH + filename + "/" + filename + ".map"));
+		} catch(FileNotFoundException e) {
+			Logger.error("AssetManager", "No map file found with name: " + filename + ".map");
+			return null;
+		}
+		
+		BufferedReader br = new BufferedReader(fr);
+		String line;
+		List<String> objs = new ArrayList<String>();
+		List<Line> lines = new ArrayList<Line>();
+		ModelTexture background = null;
+		ModelTexture parallax1 = null;
+		ModelTexture parallax2 = null;
+		try {
+			while((line = br.readLine()) != null) {
+				String[] data = line.split(" ");
+				if(data[0].equals("obj"))
+					objs.add(data[1]);
+				else if(data[0].equals("background"))
+					background = getTexture(data[1]);
+				else if(data[0].equals("parallax1"))
+					parallax1 = getTexture(data[1]);
+				else if(data[0].equals("parallax2"))
+					parallax2 = getTexture(data[1]);
+			}
+			br.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		// Load collision map
+		for(String name : objs)
+			lines.addAll(loadLineSegments(filename + "/" + name));
+		
+		gamedev.lwjgl.game.map.Map map = new gamedev.lwjgl.game.map.Map(background, parallax1, parallax2);
+		map.setCollisionMap(lines);
+		return map;
+	}
+	
+	private static List<Line> loadLineSegments(String filename) {
+		FileReader fr = null;
+		String path = MAP_PATH + filename + ".obj";
+		try {
+			fr = new FileReader(new File(path));
+		} catch(FileNotFoundException e) {
+			Logger.error("AssetManager", "No collision map file found with name: " + path);
+			return null;
+		}
+		
+		List<Line> edges = new ArrayList<Line>();
+		List<Vector2f> vertices = new ArrayList<Vector2f>();
+		BufferedReader br = new BufferedReader(fr);
+		String line;
+		try {
+			while((line = br.readLine()) != null) {
+				String data[] = line.split(" ");
+				if(data[0].equals("v")) {
+					Vector2f vertex = new Vector2f(Float.parseFloat(data[1]), Float.parseFloat(data[2]));
+					vertices.add(vertex);
+				} else if(data[0].equals("l")) {
+					Line edge = new Line(vertices.get(Integer.parseInt(data[1]) - 1),
+							vertices.get(Integer.parseInt(data[2]) - 1));
+					edges.add(edge);
+				}
+			}
+			br.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		return edges;
 	}
 	
 	private static RawModel loadOBJModel(String filename) {
@@ -286,7 +384,6 @@ public class AssetManager {
 			width = Integer.parseInt(lines[1].split("=")[1]);
 			height = Integer.parseInt(lines[2].split("=")[1]);
 			frameCount = Integer.parseInt(lines[3].split("=")[1]);
-			System.out.println(width + "    " + height);
 			ModelTexture tex = loadTexture(texFileName);
 		
 			int k = 0;

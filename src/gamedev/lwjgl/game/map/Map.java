@@ -1,11 +1,15 @@
 package gamedev.lwjgl.game.map;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import gamedev.lwjgl.engine.Engine;
+import gamedev.lwjgl.engine.physics.Line;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.textures.ModelTexture;
 
 public class Map {
-	private CollisionMap collisionMap;
+	private List<Line> collisionMap;
 	private ModelTexture background;
 	private ModelTexture parallax1;
 	private ModelTexture parallax2;
@@ -15,7 +19,7 @@ public class Map {
 		this.background = background;
 		this.parallax1 = parallax1;
 		this.parallax2 = parallax2;
-		collisionMap = new CollisionMap();
+		collisionMap = new ArrayList<Line>();
 	}
 	
 	public void render(SpriteBatch batch) {
@@ -26,7 +30,11 @@ public class Map {
 		batch.draw(background, 0, 0, background.getWidth(), background.getHeight());
 	}
 	
-	public CollisionMap getCollisionMap() {
+	public void setCollisionMap(List<Line> lines) {
+		collisionMap = lines;
+	}
+	
+	public List<Line> getCollisionMap() {
 		return collisionMap;
 	}
 }

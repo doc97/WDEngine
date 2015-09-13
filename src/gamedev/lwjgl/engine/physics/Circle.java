@@ -15,7 +15,6 @@ public class Circle {
 	public Circle(float x, float y, float radius) {
 		position.x = x;
 		position.y = y;
-		System.out.println(position.x + ", " + position.y);
 		this.radius = radius;
 	}
 	

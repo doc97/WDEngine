@@ -3,9 +3,7 @@ package gamedev.lwjgl.game;
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 import gamedev.lwjgl.engine.Engine;
-import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.engine.utils.AssetManager;
-import gamedev.lwjgl.game.entities.Entity;
 import gamedev.lwjgl.game.states.State;
 import gamedev.lwjgl.game.states.StateSystem.States;
 
@@ -19,7 +17,8 @@ public class GameLauncher {
 		String[] models = { };
 		String[] textures = { "lwjgl", "Player", "map_background", "map_parallax1", "map_parallax2" };
 		String[] fonts = { "basic" };
-		AssetManager.loadAssets(models, textures, fonts);
+		String[] maps = { "level1" };
+		AssetManager.loadAssets(models, textures, fonts, maps);
 		
 		Game.INSTANCE.init(launcher);
 //		Game.INSTANCE.container.getMap().getCollisionMap().addRectangle(rect);
@@ -33,7 +32,7 @@ public class GameLauncher {
 			deltaTime = (float) (currentTime - lastTime) * 60;
 			lastTime = currentTime;
 			
-			launcher.getCurrentState().render(deltaTime);
+			launcher.getCurrentState().loop(deltaTime);
 		}
 		
 		AssetManager.cleanup();
