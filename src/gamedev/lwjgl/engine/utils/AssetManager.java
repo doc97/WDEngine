@@ -41,6 +41,7 @@ import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
 import gamedev.lwjgl.engine.Logger;
 import gamedev.lwjgl.engine.font.Font;
+import gamedev.lwjgl.engine.font.Glyph;
 import gamedev.lwjgl.engine.models.RawModel;
 import gamedev.lwjgl.engine.models.TexturedModel;
 import gamedev.lwjgl.engine.physics.Line;
@@ -54,7 +55,6 @@ public class AssetManager {
 	private static final String TEXTURE_PATH = "textures/";
 	private static final String FONT_PATH = "fonts/";
 	private static final String ANIMATION_PATH = "animations/";
-	private static final String[] CHARACTERS = { "a", "b", "c", "d", "e", "f", "g", "h", "i" };
 	private static Map<String, RawModel> models = new HashMap<String, RawModel>();
 	private static Map<String, ModelTexture> textures = new HashMap<String, ModelTexture>();
 	private static Map<String, Font> fonts = new HashMap<String, Font>();
@@ -89,7 +89,7 @@ public class AssetManager {
 				Logger.message("AssetManager", "Texture with name: " + name + " already loaded");
 				continue;
 			}
-			ModelTexture tex = loadTexture(TEXTURE_PATH + name);
+			ModelTexture tex = loadTexture(TEXTURE_PATH + name, Format.RGBA);
 			if(tex != null)
 				textures.put(name, tex);
 		}
@@ -97,7 +97,7 @@ public class AssetManager {
 	
 	private static void loadFonts(String[] fontNames) {
 		for(String name : fontNames) {
-			loadFont(name, CHARACTERS);
+			loadFont(name);
 		}
 	}
 	
@@ -114,13 +114,56 @@ public class AssetManager {
 		}
 	}
 	
-	private static void loadFont(String fontName, String[] characterNames) {
-		ModelTexture[] characters = new ModelTexture[characterNames.length];
-		for(int i = 0; i < characterNames.length; i++) {
-			characters[i] = loadTexture(FONT_PATH + fontName + "/" + characterNames[i]);
+	private static void loadFont(String filename) {
+		FileReader fr = null;
+		try {
+			fr = new FileReader(new File(FONT_PATH + filename + "/" + filename + ".fnt"));
+		} catch(FileNotFoundException e) {
+			Logger.error("AssetManager", "No font file found with name: " + filename);
 		}
-		Font font = new Font(fontName, characters);
-		fonts.put(fontName, font);
+		
+		// Load font texture
+		ModelTexture texture = loadTexture(FONT_PATH + filename + "/" + filename, Format.RGBA);
+		
+		BufferedReader br = new BufferedReader(fr);
+		String line;
+		int size = 0;
+		String fontName = "";
+		Map<Integer, Glyph> glyphs = new HashMap<Integer, Glyph>();
+		try {
+			while((line = br.readLine()) != null) {
+				if(line.startsWith("char ")) {
+					String[] values = line.split("\\s+");
+					
+					// Reading data
+					int id = Integer.parseInt(values[1].split("=")[1]); 	// id
+					float x = Integer.parseInt(values[2].split("=")[1]);	// x
+					float y = Integer.parseInt(values[3].split("=")[1]);	// y
+					int width = Integer.parseInt(values[4].split("=")[1]);	// width
+					int height = Integer.parseInt(values[5].split("=")[1]);	// height
+
+					int xoffset = Integer.parseInt(values[6].split("=")[1]);
+					int yoffset = Integer.parseInt(values[7].split("=")[1]);
+					int xadvance = Integer.parseInt(values[8].split("=")[1]);
+					
+					// Creating texture region out of data
+					TextureRegion region = new TextureRegion(texture, x, y, width, height);
+					
+					Glyph glyph = new Glyph(region, id, width, height, xoffset, yoffset, xadvance);
+					glyphs.put(id, glyph);
+				} else if(line.startsWith("info")) {
+					String[] data = line.split(" ");
+					fontName = data[1].split("=")[1];
+					size = Integer.parseInt(data[2].split("=")[1]);
+				}
+			}
+		} catch (IOException e) {
+			Logger.error("AssetManager", "Failed to read font file with name: " + filename);
+			return;
+		}
+		
+		Font font = new Font(fontName, size, texture, glyphs);
+		fonts.put(filename, font);
 	}
 	
 	public static RawModel getModel(String filename) {
@@ -335,7 +378,7 @@ public class AssetManager {
 		texArray[currentVertexPointer*2 + 1] = 1 - currentTex.y; // Blender starts bottom-left, not top-left		
 	}
 	
-	private static ModelTexture loadTexture(String filename) {
+	private static ModelTexture loadTexture(String filename, Format format) {
 		ByteBuffer buf = null;
 		int tWidth = 0;
 		int tHeight = 0;
@@ -347,7 +390,7 @@ public class AssetManager {
 			tHeight = decoder.getHeight();
 			
 			buf = ByteBuffer.allocateDirect(4 * decoder.getWidth() * decoder.getHeight());
-			decoder.decode(buf, decoder.getWidth() * 4, Format.RGBA);
+			decoder.decode(buf, decoder.getWidth() * 4, format);
 			buf.flip();
 			in.close();
 		} catch (IOException e) {
@@ -384,7 +427,7 @@ public class AssetManager {
 			width = Integer.parseInt(lines[1].split("=")[1]);
 			height = Integer.parseInt(lines[2].split("=")[1]);
 			frameCount = Integer.parseInt(lines[3].split("=")[1]);
-			ModelTexture tex = loadTexture(texFileName);
+			ModelTexture tex = loadTexture(texFileName, Format.RGBA);
 		
 			int k = 0;
 			bigloop:

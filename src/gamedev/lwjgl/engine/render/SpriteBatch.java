@@ -120,10 +120,11 @@ public class SpriteBatch {
 	}
 	
 	public void draw(ModelTexture texture, float xCoord, float yCoord, float width, float height) {
-		draw(texture, xCoord, yCoord, width, height, 0,0,0);
+		draw(texture, xCoord, yCoord, width, height, texture.getUVs(), 0,0,0);
 	}
 	
-	public void draw(ModelTexture texture, float xCoord, float yCoord, float width, float height, float rotation, float anchorPX, float anchorPY) {
+	public void draw(ModelTexture texture, float x, float y, float width, float height,
+			float[] uvs, float rotation, float anchorPX, float anchorPY) {
 		if(!isDrawing)
 			return;
 		if (texture.getTexture() != lastTexture)
@@ -131,10 +132,10 @@ public class SpriteBatch {
 		if (idx == vertices.length)
 			flush();
 		
-		float x1 = 2 * (-camera.getX() + xCoord) / camera.getWidth();
-		float y1 = 2 * (-camera.getY() + yCoord) / camera.getHeight();
-		float x2 = 2 * (-camera.getX() + xCoord + width) / camera.getWidth();
-		float y2 = 2 * (-camera.getY() + yCoord + height) / camera.getHeight();
+		float x1 = 2 * (-camera.getX() + x) / camera.getWidth();
+		float y1 = 2 * (-camera.getY() + y) / camera.getHeight();
+		float x2 = 2 * (-camera.getX() + x + width) / camera.getWidth();
+		float y2 = 2 * (-camera.getY() + y + height) / camera.getHeight();
 		
 //		System.out.println(xCoord + ", " + yCoord);
 		
@@ -190,8 +191,6 @@ public class SpriteBatch {
 		vertices[idx++] = vx4;
 		vertices[idx++] = vy4;
 		vertices[idx++] = 0;
-		
-		float[] uvs = texture.getUVs();
 		
 		texCoords[tdx++] = uvs[0];
 		texCoords[tdx++] = uvs[1];

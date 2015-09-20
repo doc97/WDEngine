@@ -48,7 +48,7 @@ public class Entity {
 	public void render(SpriteBatch batch) {
 		for(int i = 0; i < textures.size(); i++) {
 			batch.draw(textures.get(i), x + positions.get(i),  y + positions.get(i + 1),
-					dimensions.get(i), dimensions.get(i + 1),
+					dimensions.get(i), dimensions.get(i + 1), textures.get(i).getUVs(),
 					rotation + rotations.get(i), anchorX + anchors.get(i), anchorY + anchors.get(i + 1));
 		}
 	}

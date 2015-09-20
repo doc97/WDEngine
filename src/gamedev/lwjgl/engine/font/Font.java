@@ -1,5 +1,8 @@
 package gamedev.lwjgl.engine.font;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.Logger;
 import gamedev.lwjgl.engine.textures.ModelTexture;
@@ -9,60 +12,71 @@ public class Font {
 		LEFT, RIGHT, CENTER;
 	}
 	
-	private ModelTexture[] characters;
+	private Map<Integer, Glyph> glyphs = new HashMap<Integer, Glyph>();
 	private String name;
+	private int originalFontSize;
 	private Alignment alignment = Alignment.CENTER;
 	
-	public Font(String name, ModelTexture[] characters) {
+	public Font(String name, int fontSize, ModelTexture texture, Map<Integer, Glyph> glyphs) {
 		this.name = name;
-		this.characters = characters;
+		this.glyphs = glyphs;
+		originalFontSize = fontSize;
 	}
 	
-	public ModelTexture getCharacterTexture(char character) {
-		int index = (int) (character - 'a');
-		if(index < characters.length)
-			return characters[index];
-		else
-			return null;
-	}
-	
-	public void drawString(String text, float fontSize, float x, float y) {
-		float wordLength = 0;
-		float width = 0;
-		float height = fontSize;
+	public void drawString(String text, int fontSize, float x, float y) {
+		float currentOffset = 0;
+		float textWidth = 0;
+		float scale = (float) fontSize / (float) originalFontSize;
+		Glyph[] characters = new Glyph[text.length()];
 		
+		// Calculate text width and place glyphs in array
 		for(int i = 0; i < text.length(); i++) {
-			ModelTexture charTex = getCharacterTexture(text.charAt(i));
-			if(charTex == null) {
-				Logger.error("Font", "No such character in font: " + name);
-				return;
+			int code = (int) text.charAt(i);
+			Glyph glyph = glyphs.get(code);
+			if(glyph == null) {
+				Logger.message("Font", "No such character loaded as: " + code);
+				continue;
 			}
 			
-			width = (height / charTex.getHeight()) * charTex.getWidth();
-			wordLength += width;
-	}
-		
-		float currentPosition = 0;
-		for(int i = 0; i < text.length(); i++) {
-			ModelTexture charTex = getCharacterTexture(text.charAt(i));
-			width = (height / charTex.getHeight()) * charTex.getWidth();
-			
-			float charX = 0;
-			if(alignment == Alignment.CENTER) {
-				charX = -wordLength / 2 + currentPosition;
-			} else if(alignment == Alignment.LEFT) {
-				charX = currentPosition;
-			} else if(alignment == Alignment.RIGHT) {
-				charX = -wordLength + currentPosition;
-			}
-			Engine.INSTANCE.batch.draw(charTex, charX, 0, width, height, 0, 0, 0);
-			currentPosition += width;
+			textWidth += glyph.getAdvanceX();
+			characters[i] = glyph;
 		}
-		
+
+		// Draw characters
+		for(Glyph glyph : characters) {
+			float width = glyph.getWidth() * scale;
+			float height = glyph.getHeight() * scale;
+			
+			float drawX = 0;
+			float drawY = 0;
+			switch(alignment) {
+			case LEFT :
+				drawX = x + currentOffset + glyph.getOffsetX();
+				drawY = y + glyph.getOffsetY();
+				break;
+			case CENTER :
+				drawX = x + currentOffset + glyph.getOffsetX() - scale * textWidth / 2;
+				drawY = y + glyph.getOffsetY();
+				break;
+			case RIGHT :
+				drawX = x + currentOffset + glyph.getOffsetX() - scale * textWidth;
+				drawY = y + glyph.getOffsetY();
+				break;
+			}
+			
+			Engine.INSTANCE.batch.draw(glyph.getTexture(), drawX, drawY,
+					width, height, glyph.getTexture().getUVs(),
+					0, 0, 0);
+			currentOffset += glyph.getAdvanceX() * scale;
+		}
 	}
 	
 	public void setAlignment(Alignment alignment) {
 		this.alignment = alignment;
+	}
+	
+	public int getOriginalSize() {
+		return originalFontSize;
 	}
 	
 	public String getName() {

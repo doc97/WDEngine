@@ -2,6 +2,7 @@ package gamedev.lwjgl.game.states;
 
 import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.font.Font;
+import gamedev.lwjgl.engine.font.Font.Alignment;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.Game;
 import gamedev.lwjgl.game.entities.Entity;
@@ -16,6 +17,7 @@ public class GameState extends State {
 	
 	public void init() {
 		basicFont = AssetManager.getFont("basic");
+		basicFont.setAlignment(Alignment.LEFT);
 		initialized = true;
 	}
 	
@@ -46,7 +48,7 @@ public class GameState extends State {
 			entity.render(Engine.INSTANCE.batch);
 		}
 		
-		basicFont.drawString("abcdefg", 32, 0, 0);
+		basicFont.drawString("0123456789", basicFont.getOriginalSize(), 0, 0);
 		
 		Engine.INSTANCE.batch.end();
 		Engine.INSTANCE.display.updateDisplay();
