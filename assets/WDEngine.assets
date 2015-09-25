@@ -1,0 +1,6 @@
+models:
+textures:lwjgl;Player;willowis2;map_background;map_parallax1;map_parallax2
+animations:
+fonts:basic;font01_2
+maps:level1
+datafiles:player

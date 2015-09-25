@@ -1,5 +1,7 @@
 package gamedev.lwjgl.game.entities;
 
+import java.util.Map;
+
 import gamedev.lwjgl.engine.physics.Circle;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.textures.AnimatedTexture;
@@ -11,14 +13,23 @@ public class Player extends Entity {
 
 	private Circle collisionShape;
 	private AnimatedTexture animation;
-	private int radius = 64;
+	private int radius;
 	
-	public Player(ModelTexture texture, float x, float y) {
+	public Player(float x, float y) {
 		super(x, y);
-		addTexture(texture, -radius, -radius / 2, 2 * radius, 2 * radius, 0, 0, 0);
+		init();
 		collisionShape = new Circle(x, y, radius);
 		//animation = new AnimatedTexture(AssetManager.loadAnimation("Test.anim"), 60/30);
 		dynamic = true;
+	}
+	
+	private void init() {
+		Map<String, String> data = AssetManager.getData("player");
+		String coretex = data.get("coretexture");
+		String rad = data.get("radius");
+
+		radius = Integer.parseInt(rad);
+		addTexture(AssetManager.getTexture(coretex), -radius, -radius / 2, 2 * radius, 2 * radius, 0, 0, 0);
 	}
 	
 	@Override

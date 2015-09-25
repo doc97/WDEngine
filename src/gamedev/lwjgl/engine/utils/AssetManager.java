@@ -55,19 +55,74 @@ public class AssetManager {
 	private static final String TEXTURE_PATH = "textures/";
 	private static final String FONT_PATH = "fonts/";
 	private static final String ANIMATION_PATH = "animations/";
+	private static final String DATA_FILE_PATH = "data/";
 	private static Map<String, RawModel> models = new HashMap<String, RawModel>();
 	private static Map<String, ModelTexture> textures = new HashMap<String, ModelTexture>();
 	private static Map<String, Font> fonts = new HashMap<String, Font>();
+	private static Map<String, List<TextureRegion>> animationTextures = new HashMap<String, List<TextureRegion>>();
 	private static Map<String, gamedev.lwjgl.game.map.Map> maps = new HashMap<String, gamedev.lwjgl.game.map.Map>();
+	private static Map<String, Map<String, String>> data = new HashMap<String, Map<String, String>>();
 	
-	public static void loadAssets(String[] modelNames, String[] textureNames, String[] fontNames, String[] mapNames) {
+	public static void loadAssets(String assetFile) {
+		FileReader fr = null;
+		try {
+			fr = new FileReader(new File(assetFile + ".assets"));
+		} catch(FileNotFoundException e) {
+			Logger.error("AssetManager", "No asset file found with name: " + assetFile);
+		}
+		
+		List<String> modelNames = new ArrayList<String>();
+		List<String> textureNames = new ArrayList<String>();
+		List<String> animationNames = new ArrayList<String>();
+		List<String> fontNames = new ArrayList<String>();
+		List<String> mapNames = new ArrayList<String>();
+		List<String> dataFileNames = new ArrayList<String>();
+		BufferedReader br = new BufferedReader(fr);
+		String line;
+		try {
+			while((line = br.readLine()) != null) {
+				String assetLine = line.substring(line.indexOf(":"));
+				assetLine = assetLine.replace(":", "");
+				
+				String[] values = assetLine.split(";");
+				
+				if(values[0].equals(""))
+					continue;
+				
+				if(line.startsWith("models")) {
+					for(String value : values)
+						modelNames.add(value);
+				} else if(line.startsWith("textures")) {
+					for(String value : values)
+						textureNames.add(value);
+				} else if(line.startsWith("animations")) {
+					for(String value : values)
+						animationNames.add(value);
+				} else if(line.startsWith("fonts")) {
+					for(String value : values)
+						fontNames.add(value);
+				} else if(line.startsWith("maps")) {
+					for(String value : values)
+						mapNames.add(value);
+				} else if(line.startsWith("datafiles")) {
+					for(String value : values)
+						dataFileNames.add(value);
+				}
+			}
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		loadModels(modelNames);
 		loadTextures(textureNames);
+		loadAnimations(animationNames);
 		loadFonts(fontNames);
 		loadMaps(mapNames);
+		loadDataFiles(dataFileNames);
 	}
 	
-	private static void loadModels(String[] modelNames) {
+	private static void loadModels(List<String> modelNames) {
 		for(String name : modelNames) {
 			if(models.containsKey(name)) {
 				Logger.message("AssetManager", "Model with name: " + name + " already loaded");
@@ -83,7 +138,7 @@ public class AssetManager {
 			models.put("Quad", quad);
 	}
 	
-	private static void loadTextures(String[] textureNames) {
+	private static void loadTextures(List<String> textureNames) {
 		for(String name : textureNames) {
 			if(textures.containsKey(name)) {
 				Logger.message("AssetManager", "Texture with name: " + name + " already loaded");
@@ -95,13 +150,25 @@ public class AssetManager {
 		}
 	}
 	
-	private static void loadFonts(String[] fontNames) {
+	private static void loadAnimations(List<String> animationNames) {
+		for(String name : animationNames) {
+			if(animationTextures.containsKey(name)) {
+				Logger.message("AssetManager", "Animation with name: " + name + " already loaded");
+				continue;
+			}
+			List<TextureRegion> frames = loadAnimation(name);
+			if(frames != null)
+				animationTextures.put(name, frames);
+		}
+	}
+	
+	private static void loadFonts(List<String> fontNames) {
 		for(String name : fontNames) {
 			loadFont(name);
 		}
 	}
 	
-	private static void loadMaps(String[] mapNames) {
+	private static void loadMaps(List<String> mapNames) {
 		for(String name : mapNames) {
 			if(maps.containsKey(name)) {
 				Logger.message("AssetManager", "Map with name: " + name + " already loaded");
@@ -111,6 +178,18 @@ public class AssetManager {
 			
 			if(map != null)
 				maps.put(name, map);
+		}
+	}
+	
+	private static void loadDataFiles(List<String> dataFileNames) {
+		for(String name : dataFileNames) {
+			if(data.containsKey(name)) {
+				Logger.message("AssetManager", "Data file with name: " + name + " already loaded");
+				continue;
+			}
+			
+			Map<String, String> map = loadDataFile(name);
+			data.put(name, map);
 		}
 	}
 	
@@ -166,6 +245,35 @@ public class AssetManager {
 		fonts.put(filename, font);
 	}
 	
+	private static Map<String, String> loadDataFile(String filename) {
+		FileReader fr = null;
+		try {
+			fr = new FileReader(new File(DATA_FILE_PATH + filename + ".data"));
+		} catch(FileNotFoundException e) {
+			Logger.error("AssetManager", "No data file found with name: " + filename);
+		}
+		
+		Map<String, String> data = new HashMap<String, String>();
+		BufferedReader br = new BufferedReader(fr);
+		String line;
+		try {
+			while((line = br.readLine()) != null) {
+				String[] values = line.split("=");
+
+				if(values.length == 0)
+					continue;
+				if(data.containsKey(values[0]))
+					Logger.message("AssetManager", "Asset data with name: " + values[0] + " already loaded");
+				else
+					data.put(values[0], values[1]);
+			}
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return data;
+	}
+	
 	public static RawModel getModel(String filename) {
 		return models.get(filename);
 	}
@@ -178,6 +286,10 @@ public class AssetManager {
 		return textures.get(filename);
 	}
 	
+	public static List<TextureRegion> getAnimationTexture(String filename) {
+		return animationTextures.get(filename);
+	}
+	
 	public static Font getFont(String name) {
 		return fonts.get(name);
 	}
@@ -187,6 +299,10 @@ public class AssetManager {
 			return maps.get(name);
 		else
 			return null;
+	}
+	
+	public static Map<String, String> getData(String name) {
+		return data.get(name);
 	}
 	
 	/**
@@ -413,7 +529,7 @@ public class AssetManager {
 		return new ModelTexture(textureID, tWidth, tHeight);
 	}
 	
-	public static List<TextureRegion> loadAnimation(String filename){
+	private static List<TextureRegion> loadAnimation(String filename) {
 		filename = ANIMATION_PATH + filename;
 		ArrayList<TextureRegion> ts = new ArrayList<>();
 		int width, height, frameCount;
