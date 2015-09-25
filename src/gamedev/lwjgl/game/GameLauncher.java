@@ -14,7 +14,7 @@ public class GameLauncher {
 		Engine.INSTANCE.init();
 		
 		// Load assets
-		AssetManager.loadAssets("WDEngine");
+		AssetManager.loadAssets("assets/WDEngine");
 		
 		Game.INSTANCE.init(launcher);
 //		Game.INSTANCE.container.getMap().getCollisionMap().addRectangle(rect);

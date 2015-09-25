@@ -50,12 +50,13 @@ import gamedev.lwjgl.engine.textures.TextureRegion;
 
 public class AssetManager {
 	
-	private static final String MAP_PATH = "maps/";
-	private static final String MODEL_PATH = "models/";
-	private static final String TEXTURE_PATH = "textures/";
-	private static final String FONT_PATH = "fonts/";
-	private static final String ANIMATION_PATH = "animations/";
-	private static final String DATA_FILE_PATH = "data/";
+	private static final String ASSET_PATH = "assets/";
+	private static final String MAP_PATH = ASSET_PATH + "maps/";
+	private static final String MODEL_PATH = ASSET_PATH + "assets/models/";
+	private static final String TEXTURE_PATH = ASSET_PATH + "textures/";
+	private static final String FONT_PATH = ASSET_PATH + "fonts/";
+	private static final String ANIMATION_PATH = ASSET_PATH + "animations/";
+	private static final String DATA_FILE_PATH = ASSET_PATH + "data/";
 	private static Map<String, RawModel> models = new HashMap<String, RawModel>();
 	private static Map<String, ModelTexture> textures = new HashMap<String, ModelTexture>();
 	private static Map<String, Font> fonts = new HashMap<String, Font>();
@@ -120,6 +121,7 @@ public class AssetManager {
 		loadFonts(fontNames);
 		loadMaps(mapNames);
 		loadDataFiles(dataFileNames);
+		Logger.message("AssetManager", "Assets loaded");
 	}
 	
 	private static void loadModels(List<String> modelNames) {

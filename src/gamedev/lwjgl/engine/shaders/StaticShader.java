@@ -6,7 +6,7 @@ import org.joml.Matrix4f;
 
 public class StaticShader extends Shader {
 
-	private static final String SHADER_FILE = "shaders/staticshader.ss";
+	private static final String SHADER_FILE = "assets/shaders/staticshader.ss";
 	
 	private int location_mvp;
 	

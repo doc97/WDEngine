@@ -4,15 +4,23 @@ import org.joml.Vector2f;
 
 import gamedev.lwjgl.engine.physics.Circle;
 import gamedev.lwjgl.engine.physics.Line;
+import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.entities.Entity;
 import gamedev.lwjgl.game.entities.Player;
 import gamedev.lwjgl.game.map.Map;
 
 public class GamePhysics {
 	
-	private float friction = 0.75f;
-	private float airResistance = 0.97f;
-	private final Vector2f gravitation = new Vector2f(0, -1.0f);
+	private float friction;
+	private float airResistance;
+	private Vector2f gravitation;
+	
+	public GamePhysics() {
+		java.util.Map<String, String> data = AssetManager.getData("physics");
+		friction = Float.parseFloat(data.get("friction"));
+		airResistance = Float.parseFloat(data.get("airResistance"));
+		gravitation = new Vector2f(0, -Float.parseFloat(data.get("gravitation")));
+	}
 	
 	public void update() {
 		collisionDetection(Game.INSTANCE.container.getPlayer(), Game.INSTANCE.container.getMap());
