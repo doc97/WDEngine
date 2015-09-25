@@ -7,7 +7,6 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 import org.joml.Vector2f;
 
 import gamedev.lwjgl.engine.input.InputListener;
-import gamedev.lwjgl.engine.utils.Maths;
 import gamedev.lwjgl.game.entities.Player;
 
 public class PlayerInput implements InputListener {
@@ -21,16 +20,16 @@ public class PlayerInput implements InputListener {
 	}
 	
 	public void update() {
-		float dx = 0, dy = 0;
+		float dx = 0;
 		if(right)	dx += 2;
 		if(left)	dx -= 2;
 		
 		Vector2f speed = player.getSpeed();
 		float maxSpeed = player.getMaxSpeed();
-		if(speed.lengthSquared() < maxSpeed * maxSpeed) {
+		if((speed.x + dx) * (speed.x + dx) > maxSpeed * maxSpeed) {
+			speed.x = Math.signum(speed.x) * maxSpeed;
+		} else {
 			speed.x += dx;
-			speed.y += dy;
-			Maths.clampVector(speed, maxSpeed);
 		}
 	}
 	
@@ -38,8 +37,9 @@ public class PlayerInput implements InputListener {
 	public boolean keyPressed(int key) {
 		if(key == rightKey) right 	= true;
 		if(key == leftKey)	left 	= true;
-		if(key == jumpKey)
-			player.addSpeed(0, 40.0f);
+		if(key == jumpKey) {
+			player.setSpeed(0, 20.0f);
+		}
 		return false;
 	}
 

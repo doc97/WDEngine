@@ -15,7 +15,7 @@ public class Entity {
 	private List<Float> anchors = new ArrayList<Float>();
 	private List<Float> rotations = new ArrayList<Float>();
 	protected Vector2f speed = new Vector2f();
-	protected float maxSpeed = 10;
+	protected float maxSpeed = 8;
 	protected float x, y;
 	private float anchorX, anchorY;
 	private float rotation;
@@ -47,9 +47,9 @@ public class Entity {
 	
 	public void render(SpriteBatch batch) {
 		for(int i = 0; i < textures.size(); i++) {
-			batch.draw(textures.get(i), x + positions.get(i),  y + positions.get(i + 1),
-					dimensions.get(i), dimensions.get(i + 1), textures.get(i).getUVs(),
-					rotation + rotations.get(i), anchorX + anchors.get(i), anchorY + anchors.get(i + 1));
+			batch.draw(textures.get(i), x + positions.get(2 * i),  y + positions.get(2 * i + 1),
+					dimensions.get(2 * i), dimensions.get(2 * i + 1), textures.get(i).getUVs(),
+					rotation + rotations.get(i), anchorX + anchors.get(2 * i), anchorY + anchors.get(2 * i + 1));
 		}
 	}
 	
@@ -65,7 +65,6 @@ public class Entity {
 	public void addSpeed(float dx, float dy) {
 		speed.x += dx;
 		speed.y += dy;
-//		Maths.clampVector(speed, maxSpeed);
 	}
 
 	public void setEntityPosition(float x, float y) {
@@ -83,7 +82,6 @@ public class Entity {
 		speed.y = dy;
 		if(Math.abs(speed.x) < 0.01f) speed.x = 0;
 		if(Math.abs(speed.y) < 0.01f) speed.y = 0;
-//		Maths.clampVector(speed, maxSpeed);
 	}
 	
 	public void setEntityRotation(float rotation) {

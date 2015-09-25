@@ -10,12 +10,9 @@ import gamedev.lwjgl.game.map.Map;
 
 public class GamePhysics {
 	
-	private float friction = 0.5f;
-	private float airResistance = 0.9f;
+	private float friction = 0.75f;
+	private float airResistance = 0.97f;
 	private final Vector2f gravitation = new Vector2f(0, -1.0f);
-	
-	public GamePhysics() {
-	}
 	
 	public void update() {
 		collisionDetection(Game.INSTANCE.container.getPlayer(), Game.INSTANCE.container.getMap());

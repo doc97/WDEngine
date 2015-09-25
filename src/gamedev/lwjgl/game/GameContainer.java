@@ -11,7 +11,11 @@ public class GameContainer {
 	
 	public void init() {
 		map = AssetManager.getMap("level1");
-		player = new Player(AssetManager.getTexture("Player"), 0, 500);
+		player = new Player(AssetManager.getTexture("willowis2"), 0, 500);
+		
+		if(map == null) {
+			System.exit(1);
+		}
 	}
 	
 	public void setMap(Map map) {

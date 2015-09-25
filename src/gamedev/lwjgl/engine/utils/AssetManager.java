@@ -179,13 +179,14 @@ public class AssetManager {
 	}
 	
 	public static Font getFont(String name) {
-		if(!fonts.containsKey(name))
-			return fonts.get("serif");
 		return fonts.get(name);
 	}
 	
 	public static gamedev.lwjgl.game.map.Map getMap(String name) {
-		return maps.get(name);
+		if(maps.containsKey(name))
+			return maps.get(name);
+		else
+			return null;
 	}
 	
 	/**

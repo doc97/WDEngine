@@ -15,8 +15,8 @@ public class GameLauncher {
 		
 		// Load assets
 		String[] models = { };
-		String[] textures = { "lwjgl", "Player", "map_background", "map_parallax1", "map_parallax2" };
-		String[] fonts = { "basic" };
+		String[] textures = { "lwjgl", "Player", "willowis2", "map_background", "map_parallax1", "map_parallax2" };
+		String[] fonts = { "basic", "font01_2" };
 		String[] maps = { "level1" };
 		AssetManager.loadAssets(models, textures, fonts, maps);
 		

@@ -52,15 +52,15 @@ public class Font {
 			switch(alignment) {
 			case LEFT :
 				drawX = x + currentOffset + glyph.getOffsetX();
-				drawY = y + glyph.getOffsetY();
+				drawY = y;// - glyph.getOffsetY();
 				break;
 			case CENTER :
 				drawX = x + currentOffset + glyph.getOffsetX() - scale * textWidth / 2;
-				drawY = y + glyph.getOffsetY();
+				drawY = y - glyph.getOffsetY();
 				break;
 			case RIGHT :
 				drawX = x + currentOffset + glyph.getOffsetX() - scale * textWidth;
-				drawY = y + glyph.getOffsetY();
+				drawY = y - glyph.getOffsetY();
 				break;
 			}
 			

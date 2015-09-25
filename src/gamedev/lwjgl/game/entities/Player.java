@@ -11,26 +11,26 @@ public class Player extends Entity {
 
 	private Circle collisionShape;
 	private AnimatedTexture animation;
+	private int radius = 64;
 	
 	public Player(ModelTexture texture, float x, float y) {
 		super(x, y);
-		addTexture(texture, -texture.getWidth() / 2, -texture.getHeight() / 2, texture.getWidth(), texture.getHeight(), 0, 0, 0);
-		collisionShape = new Circle(x, y, 64);
-		animation = new AnimatedTexture(AssetManager.loadAnimation("Test.anim"), 60/30);
+		addTexture(texture, -radius, -radius / 2, 2 * radius, 2 * radius, 0, 0, 0);
+		collisionShape = new Circle(x, y, radius);
+		//animation = new AnimatedTexture(AssetManager.loadAnimation("Test.anim"), 60/30);
 		dynamic = true;
 	}
 	
 	@Override
 	public void update(float dt) {
-		animation.update(dt);
+//		animation.update(dt);
 		collisionShape.setPosition(x, y);
 		super.update(dt);
 	}
 	
 	@Override
 	public void render(SpriteBatch batch) {
-		batch.setColor(Color.CUSTOM.setColor(1, 1, 0, 1));
-		super.setTexture(0, animation.getCurrent());
+		//super.setTexture(0, animation.getCurrent());
 		super.render(batch);
 		batch.setColor(Color.WHITE);
 	}

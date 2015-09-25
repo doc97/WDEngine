@@ -16,7 +16,7 @@ public class GameState extends State {
 	private boolean initialized;
 	
 	public void init() {
-		basicFont = AssetManager.getFont("basic");
+		basicFont = AssetManager.getFont("font01_2");
 		basicFont.setAlignment(Alignment.LEFT);
 		initialized = true;
 	}
@@ -48,7 +48,7 @@ public class GameState extends State {
 			entity.render(Engine.INSTANCE.batch);
 		}
 		
-		basicFont.drawString("0123456789", basicFont.getOriginalSize(), 0, 0);
+		basicFont.drawString("Wille, Dani ja Reetu!?_,", basicFont.getOriginalSize(), 0, 300);
 		
 		Engine.INSTANCE.batch.end();
 		Engine.INSTANCE.display.updateDisplay();
