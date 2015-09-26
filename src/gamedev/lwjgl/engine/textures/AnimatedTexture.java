@@ -12,33 +12,39 @@ public class AnimatedTexture {
 	private boolean looping;
 	private boolean finished;
 	
-	public AnimatedTexture(List<TextureRegion> texs, float frameTime, boolean looping){
+	public AnimatedTexture(List<TextureRegion> texs, float frameTime, boolean looping) {
 		textures = new LinkedList<>();
-		textures.addAll(texs);
+		if(texs != null)
+			textures.addAll(texs);
 		this.frameTime = frameTime;
-		this.current = textures.getFirst();
+		
+		if(!textures.isEmpty())
+			this.current = textures.getFirst();
 		last = 0;
 		this.looping = looping;
 	}
 	
-	public TextureRegion getCurrent(){
+	public TextureRegion getCurrent() {
 		return current;
 	}
 	
-	public void update(float delta){
+	public void update(float delta) {
 		last += delta;
 		if(textures.isEmpty() && !looping) {
 			finished = true;
 			return;
 		}
 		
-		if (last > frameTime){
-				
+		if (last > frameTime) {
 			current = textures.removeFirst();
 			if(looping)
 				textures.add(current);
 			last = 0;
 		}
+	}
+	
+	public float getLength() {
+		return textures.size() * frameTime;
 	}
 	
 	public boolean isFinished() {

@@ -5,7 +5,9 @@ import java.util.Map;
 
 import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.Logger;
+import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.textures.ModelTexture;
+import gamedev.lwjgl.game.states.Timer;
 
 public class Font {
 	public enum Alignment {
@@ -16,11 +18,21 @@ public class Font {
 	private String name;
 	private int originalFontSize;
 	private Alignment alignment = Alignment.CENTER;
+	private Timer fadeTimer = new Timer();
+	private boolean fadeEffect;
 	
 	public Font(String name, int fontSize, ModelTexture texture, Map<Integer, Glyph> glyphs) {
 		this.name = name;
 		this.glyphs = glyphs;
 		originalFontSize = fontSize;
+	}
+	
+	public void update(float dt) {
+		if(fadeTimer.isActive()) {
+			fadeTimer.update(dt);
+			if(fadeTimer.getPercentage() == 1)
+				fadeTimer.setActive(false);
+		}
 	}
 	
 	public void drawString(String text, int fontSize, float x, float y) {
@@ -43,7 +55,8 @@ public class Font {
 		}
 
 		// Draw characters
-		for(Glyph glyph : characters) {
+		for(int i = 0; i < characters.length; i++) {
+			Glyph glyph = characters[i];
 			float width = glyph.getWidth() * scale;
 			float height = glyph.getHeight() * scale;
 			
@@ -52,16 +65,25 @@ public class Font {
 			switch(alignment) {
 			case LEFT :
 				drawX = x + currentOffset + glyph.getOffsetX();
-				drawY = y;// - glyph.getOffsetY();
+				drawY = y;
 				break;
 			case CENTER :
 				drawX = x + currentOffset + glyph.getOffsetX() - scale * textWidth / 2;
-				drawY = y - glyph.getOffsetY();
+				drawY = y;
 				break;
 			case RIGHT :
 				drawX = x + currentOffset + glyph.getOffsetX() - scale * textWidth;
-				drawY = y - glyph.getOffsetY();
+				drawY = y;
 				break;
+			}
+			
+			if(fadeEffect) {
+				if(fadeTimer.isActive()) {
+					Color color = Engine.INSTANCE.batch.getColor();
+					color.a = fadeTimer.getCurrentTime() / ((i + 1) * fadeTimer.getTarget() / characters.length);
+				} else if(fadeTimer.getPercentage() < 1){
+					Engine.INSTANCE.batch.setColor(Color.TRANSPARENT);
+				}
 			}
 			
 			Engine.INSTANCE.batch.draw(glyph.getTexture(), drawX, drawY,
@@ -71,8 +93,20 @@ public class Font {
 		}
 	}
 	
+	public void setFadeEffect(boolean fade) {
+		fadeEffect = fade;
+	}
+	
+	public void setFadeTimer(float timer) {
+		fadeTimer.set(timer);
+	}
+	
 	public void setAlignment(Alignment alignment) {
 		this.alignment = alignment;
+	}
+	
+	public Timer getFadeTimer() {
+		return fadeTimer;
 	}
 	
 	public int getOriginalSize() {

@@ -26,6 +26,7 @@ public class Timer {
 	}
 	
 	public float getPercentage() {
+		if(targetTime == 0) return 1;
 		return Math.min(currentTime / targetTime, 1);
 	}
 	

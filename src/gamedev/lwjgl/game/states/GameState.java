@@ -1,5 +1,7 @@
 package gamedev.lwjgl.game.states;
 
+import java.util.Map;
+
 import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.font.Font.Alignment;
@@ -19,7 +21,10 @@ public class GameState extends State {
 	private Timer fadeTimer = new Timer();
 	
 	public void init() {
-		basicFont = AssetManager.getFont("font01_2");
+		Map<String, String> data = AssetManager.getData("intro");
+		String fontname = data.get("font");
+		
+		basicFont = AssetManager.getFont(fontname);
 		basicFont.setAlignment(Alignment.LEFT);
 		initialized = true;
 	}

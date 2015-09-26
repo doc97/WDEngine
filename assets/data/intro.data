@@ -1,2 +1,4 @@
-cutscene=cutscene
-introtexture=intro_texture
+cutscene=Cutscene
+introtexture1=intro_texture
+introtexture2=intro_texture
+font=curly

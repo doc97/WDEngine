@@ -82,8 +82,8 @@ public class AssetManager {
 		String line;
 		try {
 			while((line = br.readLine()) != null) {
-				String assetLine = line.substring(line.indexOf(":"));
-				assetLine = assetLine.replace(":", "");
+				String assetLine = line.substring(line.indexOf("="));
+				assetLine = assetLine.replace("=", "");
 				
 				String[] values = assetLine.split(";");
 				
@@ -288,7 +288,7 @@ public class AssetManager {
 		return textures.get(filename);
 	}
 	
-	public static List<TextureRegion> getAnimationTexture(String filename) {
+	public static List<TextureRegion> getAnimationFrames(String filename) {
 		return animationTextures.get(filename);
 	}
 	
@@ -532,7 +532,7 @@ public class AssetManager {
 	}
 	
 	private static List<TextureRegion> loadAnimation(String filename) {
-		filename = ANIMATION_PATH + filename;
+		filename = ANIMATION_PATH + filename + ".anim";
 		ArrayList<TextureRegion> ts = new ArrayList<>();
 		int width, height, frameCount;
 		String texFileName;
@@ -551,7 +551,7 @@ public class AssetManager {
 			int k = 0;
 			bigloop:
 			for (int i = 0; i*height < tex.getHeight(); i++){
-				for (int j = 0; j*height < tex.getWidth(); j++){
+				for (int j = 0; j*width < tex.getWidth(); j++){
 					if (k++ > frameCount)
 						break bigloop;
 					ts.add(new TextureRegion(tex, j * width, i * height, width, height));
