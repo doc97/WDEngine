@@ -1,32 +1,34 @@
 package gamedev.lwjgl.engine.textures;
 
-public enum Color {
+public class Color {
 	
-	RED(1,0,0,1),
-	GREEN(0,1,0,1),
-	BLUE(0,0,1,1),
-	BLACK(0,0,0,1),
-	WHITE(1,1,1,1),
-	GRAY(0.5f,0.5f,0.5f,1),
-	CUSTOM(0,0,0,0);
+	public static final Color WHITE = new Color(1, 1, 1, 1);
+	public static final Color BLACK = new Color(0, 0, 0, 1);
+	public static final Color TRANSPARENT = new Color(1, 1, 1, 0);
 	
-	public float red;
-	public float green;
-	public float blue;
-	public float alpha;
+	public float r;
+	public float g;
+	public float b;
+	public float a;
 	
-	Color(float r, float g, float b, float a){
-		red = Math.min(Math.max(r, 0), 1);
-		green = Math.min(Math.max(g, 0), 1);
-		blue = Math.min(Math.max(b, 0), 1);
-		alpha = Math.min(Math.max(a, 0), 1);
+	public Color(float r, float g, float b, float a) {
+		this.r = Math.min(Math.max(r, 0), 1);
+		this.g = Math.min(Math.max(g, 0), 1);
+		this.b = Math.min(Math.max(b, 0), 1);
+		this.a = Math.min(Math.max(a, 0), 1);
 	}
 	
-	public Color setColor(float r, float g, float b, float a){
-		red = Math.min(Math.max(r, 0), 1);
-		green = Math.min(Math.max(g, 0), 1);
-		blue = Math.min(Math.max(b, 0), 1);
-		alpha = Math.min(Math.max(a, 0), 1);
-		return this;
+	public void setColor(float r, float g, float b, float a) {
+		this.r = Math.min(Math.max(r, 0), 1);
+		this.g = Math.min(Math.max(g, 0), 1);
+		this.b = Math.min(Math.max(b, 0), 1);
+		this.a = Math.min(Math.max(a, 0), 1);
+	}
+	
+	public void addColor(float r, float g, float b, float a) {
+		this.r = Math.min(Math.max(this.r + r, 0), 1);
+		this.g = Math.min(Math.max(this.g + g, 0), 1);
+		this.b = Math.min(Math.max(this.b + b, 0), 1);
+		this.a = Math.min(Math.max(this.a + a, 0), 1);
 	}
 }

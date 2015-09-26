@@ -61,7 +61,7 @@ public class SpriteBatch {
 		floatBuff1 = BufferUtils.createFloatBuffer(12000);
 		floatBuff2 = BufferUtils.createFloatBuffer(8000);
 		floatBuff3 = BufferUtils.createFloatBuffer(16000);
-		currentColor = Color.WHITE;
+		currentColor = new Color(1, 1, 1, 1);
 		for (int i = 0, j = 0; i < 6000; i += 6, j += 4){
 			indices[i] = j;
 			indices[i+1] = (j+1);
@@ -205,10 +205,10 @@ public class SpriteBatch {
 		texCoords[tdx++] = uvs[3];
 		
 		for (int i = 0; i < 4; i++){
-			colors[cdx++] = currentColor.red;
-			colors[cdx++] = currentColor.green;
-			colors[cdx++] = currentColor.blue;
-			colors[cdx++] = currentColor.alpha;
+			colors[cdx++] = currentColor.r;
+			colors[cdx++] = currentColor.g;
+			colors[cdx++] = currentColor.b;
+			colors[cdx++] = currentColor.a;
 		}
 		
 		this.idx = idx;
@@ -265,7 +265,17 @@ public class SpriteBatch {
 		return currentColor;
 	}
 	
-	public void setColor(Color color){
-		this.currentColor = color;
+	public void setColor(Color color) {
+		currentColor.r = color.r;
+		currentColor.g = color.g;
+		currentColor.b = color.b;
+		currentColor.a = color.a;
+	}
+	
+	public void setColor(float r, float g, float b, float a) {
+		currentColor.r = r;
+		currentColor.g = g;
+		currentColor.b = b;
+		currentColor.a = a;
 	}
 }

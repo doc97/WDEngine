@@ -43,7 +43,6 @@ public class Player extends Entity {
 	public void render(SpriteBatch batch) {
 		//super.setTexture(0, animation.getCurrent());
 		super.render(batch);
-		batch.setColor(Color.WHITE);
 	}
 	
 	@Override

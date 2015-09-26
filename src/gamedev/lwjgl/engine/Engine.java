@@ -28,7 +28,7 @@ public enum Engine {
 			return;
 		}
 		
-		display.setBackgroundColor(0.1f, 0.1f, 0.2f, 1);
+		display.setBackgroundColor(0, 0, 0, 1);
 		batch.init();
 		input.init(display.getWindow());
 		camera.init(display);

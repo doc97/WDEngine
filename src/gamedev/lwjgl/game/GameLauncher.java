@@ -18,7 +18,7 @@ public class GameLauncher {
 		
 		Game.INSTANCE.init(launcher);
 //		Game.INSTANCE.container.getMap().getCollisionMap().addRectangle(rect);
-		Game.INSTANCE.states.enterState(States.GAMESTATE);
+		Game.INSTANCE.states.enterState(States.INTROSTATE);
 		
 		double lastTime = glfwGetTime();
 		float deltaTime = 0;

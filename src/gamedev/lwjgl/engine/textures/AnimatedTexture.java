@@ -9,13 +9,16 @@ public class AnimatedTexture {
 	private TextureRegion current;
 	private float frameTime;
 	private float last;
+	private boolean looping;
+	private boolean finished;
 	
-	public AnimatedTexture(List<TextureRegion> texs, float frameTime){
+	public AnimatedTexture(List<TextureRegion> texs, float frameTime, boolean looping){
 		textures = new LinkedList<>();
 		textures.addAll(texs);
 		this.frameTime = frameTime;
 		this.current = textures.getFirst();
 		last = 0;
+		this.looping = looping;
 	}
 	
 	public TextureRegion getCurrent(){
@@ -24,11 +27,21 @@ public class AnimatedTexture {
 	
 	public void update(float delta){
 		last += delta;
+		if(textures.isEmpty() && !looping) {
+			finished = true;
+			return;
+		}
+		
 		if (last > frameTime){
+				
 			current = textures.removeFirst();
-			textures.add(current);
+			if(looping)
+				textures.add(current);
 			last = 0;
 		}
 	}
 	
+	public boolean isFinished() {
+		return finished;
+	}
 }
