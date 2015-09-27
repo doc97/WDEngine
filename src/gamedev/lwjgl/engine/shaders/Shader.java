@@ -107,7 +107,7 @@ public abstract class Shader {
 	protected abstract void getAllUniformLocations();
 	
 	protected void loadInt(int location, int value) {
-		glUniform1i(location, 0);
+		glUniform1i(location, value);
 	}
 	
 	protected void loadFloat(int location, float value) {

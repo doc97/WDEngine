@@ -34,7 +34,6 @@ public class InputManager {
 				if(key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
 					glfwSetWindowShouldClose(window, GL_TRUE);
 				
-				// TODO implement observer pattern and input listeners
 				for(InputListener il : listeners) {
 					if(action == GLFW_REPEAT) {
 						if(il.keyRepeat(key))

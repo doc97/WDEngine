@@ -95,6 +95,12 @@ public class SpriteBatch {
 			return;
 		int sprites = idx / 12;
 		
+		if(lastTexture == null) {
+			shader.loadInt(shader.location_textures, 0);
+		} else {
+			shader.loadInt(shader.location_textures, 1);
+		}
+		
 		bindVAO();
 		loadToVAO(vertices, texCoords, colors, indices);
 		glEnableVertexAttribArray(0);
@@ -115,8 +121,13 @@ public class SpriteBatch {
 	
 	public void changeTexture(ModelTexture texture) {
 		flush();
-		lastTexture = texture.getTexture();
-		glBindTexture(GL_TEXTURE_2D, texture.getTextureID());
+		if(texture != null) {
+			lastTexture = texture;
+			glBindTexture(GL_TEXTURE_2D, texture.getTextureID());
+		} else {
+			lastTexture = null;
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
 	}
 	
 	public void draw(ModelTexture texture, float xCoord, float yCoord, float width, float height) {
@@ -125,30 +136,31 @@ public class SpriteBatch {
 	
 	public void draw(ModelTexture texture, float x, float y, float width, float height,
 			float[] uvs, float rotation, float anchorPX, float anchorPY) {
+		Color[] colors = { currentColor, currentColor, currentColor, currentColor };
+		draw(texture, x, y + height, x + width, y + height, x + width, y, x, y, uvs,
+				colors, rotation, anchorPX, anchorPY);
+	}
+	
+	public void draw(ModelTexture texture, float x1, float y1, float x2, float y2,
+			float x3, float y3, float x4, float y4, float[] uvs,
+			Color[] colours, float rotation, float anchorPX, float anchorPY) {
 		if(!isDrawing)
 			return;
-		if (texture.getTexture() != lastTexture)
+		if (texture != lastTexture)
 			changeTexture(texture);
 		if (idx == vertices.length)
 			flush();
 		
-		float x1 = 2 * (-camera.getX() + x) / camera.getWidth();
-		float y1 = 2 * (-camera.getY() + y) / camera.getHeight();
-		float x2 = 2 * (-camera.getX() + x + width) / camera.getWidth();
-		float y2 = 2 * (-camera.getY() + y + height) / camera.getHeight();
-		
-//		System.out.println(xCoord + ", " + yCoord);
-		
 		//coords for the vertices
 		
-		float vx1 = x1;
-		float vy1 = y2;
-		float vx2 = x2;
-		float vy2 = y2;
-		float vx3 = x2;
-		float vy3 = y1;
-		float vx4 = x1;
-		float vy4 = y1;
+		float vx1 = 2 * (-camera.getX() + x1) / camera.getWidth();
+		float vy1 = 2 * (-camera.getY() + y1) / camera.getHeight();
+		float vx2 = 2 * (-camera.getX() + x2) / camera.getWidth();
+		float vy2 = 2 * (-camera.getY() + y2) / camera.getHeight();
+		float vx3 = 2 * (-camera.getX() + x3) / camera.getWidth();
+		float vy3 = 2 * (-camera.getY() + y3) / camera.getHeight();
+		float vx4 = 2 * (-camera.getX() + x4) / camera.getWidth();
+		float vy4 = 2 * (-camera.getY() + y4) / camera.getHeight();
 		
 		int idx = this.idx;
 		int vertexCount = idx / 3;
@@ -192,23 +204,25 @@ public class SpriteBatch {
 		vertices[idx++] = vy4;
 		vertices[idx++] = 0;
 		
-		texCoords[tdx++] = uvs[0];
-		texCoords[tdx++] = uvs[1];
-		
-		texCoords[tdx++] = uvs[2];
-		texCoords[tdx++] = uvs[1];
-		
-		texCoords[tdx++] = uvs[2];
-		texCoords[tdx++] = uvs[3];
-		
-		texCoords[tdx++] = uvs[0];
-		texCoords[tdx++] = uvs[3];
-		
-		for (int i = 0; i < 4; i++){
-			colors[cdx++] = currentColor.r;
-			colors[cdx++] = currentColor.g;
-			colors[cdx++] = currentColor.b;
-			colors[cdx++] = currentColor.a;
+		if(texture != null) {
+			texCoords[tdx++] = uvs[0];
+			texCoords[tdx++] = uvs[1];
+			
+			texCoords[tdx++] = uvs[2];
+			texCoords[tdx++] = uvs[1];
+			
+			texCoords[tdx++] = uvs[2];
+			texCoords[tdx++] = uvs[3];
+			
+			texCoords[tdx++] = uvs[0];
+			texCoords[tdx++] = uvs[3];
+		}
+
+		for (int i = 0; i < 4; i++) {
+			colors[cdx++] = colours[i].r;
+			colors[cdx++] = colours[i].g;
+			colors[cdx++] = colours[i].b;
+			colors[cdx++] = colours[i].a;
 		}
 		
 		this.idx = idx;

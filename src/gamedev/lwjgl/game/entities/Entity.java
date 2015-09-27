@@ -20,6 +20,7 @@ public class Entity {
 	private float anchorX, anchorY;
 	private float rotation;
 	protected boolean dynamic;
+	private Vector2f waterLift = new Vector2f();
 	
 	public Entity(float x, float y) {
 		this.x = x;
@@ -120,6 +121,10 @@ public class Entity {
 	public void setTextureRotation(int textureIndex, float rotation) {
 		rotations.set(textureIndex, rotation);
 	}
+	
+	public void setWaterLift(float lift) {
+		waterLift.y = lift;
+	}
 
 	public float getX() {
 		return x;
@@ -139,5 +144,9 @@ public class Entity {
 	
 	public boolean isDynamic() {
 		return dynamic;
+	}
+	
+	public Vector2f getWaterLift() {
+		return waterLift;
 	}
 }

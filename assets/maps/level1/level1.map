@@ -1,5 +1,6 @@
-background map_background
-parallax1 map_parallax1
-parallax2 map_parallax2
-obj curve
-obj line
+background=map_background
+parallax1=map_parallax1
+parallax2=map_parallax2
+obj=curve
+obj=line
+water=800, 370, 950, 125

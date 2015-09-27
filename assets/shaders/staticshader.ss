@@ -25,8 +25,14 @@ in vec4 v_color;
 out vec4 frag_colour;
 
 uniform sampler2D tex;
+uniform int textures;
 
 void main() {
 	vec4 texCol = texture(tex, v_texcoords);
-	frag_colour = texCol * v_color;
+	
+	if(textures == 1) {
+		frag_colour = texCol * v_color;
+	} else if(textures == 0) {
+		frag_colour = v_color;
+	}
 }

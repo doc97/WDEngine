@@ -45,6 +45,7 @@ import gamedev.lwjgl.engine.font.Glyph;
 import gamedev.lwjgl.engine.models.RawModel;
 import gamedev.lwjgl.engine.models.TexturedModel;
 import gamedev.lwjgl.engine.physics.Line;
+import gamedev.lwjgl.engine.physics.Water;
 import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.engine.textures.TextureRegion;
 
@@ -347,12 +348,13 @@ public class AssetManager {
 		String line;
 		List<String> objs = new ArrayList<String>();
 		List<Line> lines = new ArrayList<Line>();
+		List<Water> waters = new ArrayList<Water>();
 		ModelTexture background = null;
 		ModelTexture parallax1 = null;
 		ModelTexture parallax2 = null;
 		try {
 			while((line = br.readLine()) != null) {
-				String[] data = line.split(" ");
+				String[] data = line.split("=");
 				if(data[0].equals("obj"))
 					objs.add(data[1]);
 				else if(data[0].equals("background"))
@@ -361,6 +363,14 @@ public class AssetManager {
 					parallax1 = getTexture(data[1]);
 				else if(data[0].equals("parallax2"))
 					parallax2 = getTexture(data[1]);
+				else if(data[0].equals("water")) {
+					String[] waterData = data[1].split(",");
+					float x = Float.parseFloat(waterData[0]);
+					float y = Float.parseFloat(waterData[1]);
+					float width = Float.parseFloat(waterData[2]);
+					float height = Float.parseFloat(waterData[3]);
+					waters.add(new Water(x, y, width, height));
+				}
 			}
 			br.close();
 		} catch(IOException e) {
@@ -372,8 +382,10 @@ public class AssetManager {
 		for(String name : objs)
 			lines.addAll(loadLineSegments(filename + "/" + name));
 		
-		gamedev.lwjgl.game.map.Map map = new gamedev.lwjgl.game.map.Map(background, parallax1, parallax2);
+		gamedev.lwjgl.game.map.Map map = new gamedev.lwjgl.game.map.Map();
+		map.setTextures(background, parallax1, parallax2);
 		map.setCollisionMap(lines);
+		map.setWaters(waters);
 		return map;
 	}
 	

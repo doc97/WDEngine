@@ -52,6 +52,7 @@ public class GameState extends State {
 	
 		Engine.INSTANCE.update(dt);
 		Game.INSTANCE.physics.update();
+		Game.INSTANCE.container.getMap().update(dt);
 		Game.INSTANCE.container.getPlayer().update(dt);
 		Engine.INSTANCE.camera.setPosition(player.getX(), player.getY());
 	}
@@ -61,11 +62,12 @@ public class GameState extends State {
 		Engine.INSTANCE.batch.begin();
 		Engine.INSTANCE.batch.setColor(fadeColor);
 
-		Game.INSTANCE.container.getMap().render(Engine.INSTANCE.batch);
-	
+		Game.INSTANCE.container.getMap().renderParallax(Engine.INSTANCE.batch);
 		for(Entity entity : Game.INSTANCE.entities.getEntities()) {
 			entity.render(Engine.INSTANCE.batch);
 		}
+		Game.INSTANCE.container.getMap().renderWater(Engine.INSTANCE.batch);
+		Game.INSTANCE.container.getMap().renderLevel(Engine.INSTANCE.batch);
 		
 		basicFont.drawString("Wille, Dani ja Reetu!?_,", basicFont.getOriginalSize(), 0, 300);
 

@@ -2,9 +2,11 @@ package gamedev.lwjgl.engine;
 
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 
 import org.lwjgl.opengl.GL11;
@@ -32,6 +34,9 @@ public enum Engine {
 		batch.init();
 		input.init(display.getWindow());
 		camera.init(display);
+		
+		// We are not using depth, might speed up things a little
+		glDisable(GL_DEPTH_TEST);
 		
 		// Enable blending and therefore transparency
 		glEnable(GL11.GL_BLEND);

@@ -5,8 +5,6 @@ import java.util.Map;
 import gamedev.lwjgl.engine.physics.Circle;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.textures.AnimatedTexture;
-import gamedev.lwjgl.engine.textures.Color;
-import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.engine.utils.AssetManager;
 
 public class Player extends Entity {

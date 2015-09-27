@@ -8,7 +8,8 @@ public class StaticShader extends Shader {
 
 	private static final String SHADER_FILE = "assets/shaders/staticshader.ss";
 	
-	private int location_mvp;
+	public int location_mvp;
+	public int location_textures;
 	
 	public StaticShader() {
 		super(SHADER_FILE);
@@ -24,10 +25,15 @@ public class StaticShader extends Shader {
 	@Override
 	protected void getAllUniformLocations() {
 		location_mvp = super.getUniformLocation("MVP");
+		location_textures = super.getUniformLocation("textures");
 	}
 	
 	public void loadTexture(int textureUnit) {
 		super.loadInt(GL_TEXTURE0 + textureUnit, textureUnit);
+	}
+	
+	public void loadInt(int loc, int i) {
+		super.loadInt(loc, i);
 	}
 	
 	public void loadMVP(Matrix4f model, Matrix4f view, Matrix4f projection) {
