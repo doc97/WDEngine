@@ -17,8 +17,7 @@ public class GameLauncher {
 		AssetManager.loadAssets("assets/WDEngine");
 		
 		Game.INSTANCE.init(launcher);
-//		Game.INSTANCE.container.getMap().getCollisionMap().addRectangle(rect);
-		Game.INSTANCE.states.enterState(States.INTROSTATE);
+		Game.INSTANCE.states.enterState(States.MAINMENUSTATE);
 		
 		double lastTime = glfwGetTime();
 		float deltaTime = 0;

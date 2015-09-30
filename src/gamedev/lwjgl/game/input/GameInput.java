@@ -5,18 +5,23 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 
 import org.joml.Vector2f;
+import org.lwjgl.glfw.GLFW;
 
 import gamedev.lwjgl.engine.input.InputListener;
+import gamedev.lwjgl.game.Game;
 import gamedev.lwjgl.game.entities.Player;
+import gamedev.lwjgl.game.states.GameState;
 
-public class PlayerInput implements InputListener {
+public class GameInput implements InputListener {
 
 	private boolean right, left;
 	private int rightKey = GLFW_KEY_D, leftKey = GLFW_KEY_A, jumpKey = GLFW_KEY_SPACE;
 	private Player player;
+	private GameState gs;
 	
-	public PlayerInput(Player player) {
-		this.player = player;
+	public GameInput(GameState gs) {
+		this.player = Game.INSTANCE.container.getPlayer();
+		this.gs = gs;
 	}
 	
 	public void update() {
@@ -35,12 +40,17 @@ public class PlayerInput implements InputListener {
 	
 	@Override
 	public boolean keyPressed(int key) {
-		if(key == rightKey) right 	= true;
-		if(key == leftKey)	left 	= true;
-		if(key == jumpKey) {
+		if(key == rightKey)
+			right = true;
+		else if(key == leftKey)
+			left = true;
+		else if(key == jumpKey)
 			player.setSpeed(0, 20.0f);
-		}
-		return false;
+		else if(key == GLFW.GLFW_KEY_ESCAPE)
+			gs.pause();
+			
+			
+		return true;
 	}
 
 	@Override
@@ -52,6 +62,16 @@ public class PlayerInput implements InputListener {
 	public boolean keyReleased(int key) {
 		if(key == rightKey) right 	= false;
 		if(key == leftKey)	left 	= false;
+		return false;
+	}
+	
+	@Override
+	public boolean mousePressed(int button) {
+		return false;
+	}
+
+	@Override
+	public boolean mouseReleased(int button) {
 		return false;
 	}
 	

@@ -1,6 +1,7 @@
 models=
-textures=lwjgl;Player;willowis2;map_background;map_parallax1;map_parallax2;intro_texture;frames
+textures=lwjgl;Player;willowis2;map_background;map_parallax1;map_parallax2;intro_texture;frames;title_screen;button;
+textures=pausemenu_resume;pausemenu_options;pausemenu_mainmenu;pausemenu_frame;pausemenu_pointer
 animations=Cutscene
 fonts=basic;curly
 maps=level1
-datafiles=player;physics;intro
+datafiles=player;physics;intro;game;mainmenu
