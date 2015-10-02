@@ -9,6 +9,7 @@ import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.font.Font.Alignment;
 import gamedev.lwjgl.engine.input.InputListener;
+import gamedev.lwjgl.engine.sound.Sound;
 import gamedev.lwjgl.engine.textures.AnimatedTexture;
 import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.textures.ModelTexture;
@@ -88,6 +89,8 @@ public class IntroState extends State {
 		fadeInTimer.setActive(true);
 		font.setFadeTimer(60);
 		font.setFadeEffect(true);
+		
+		Game.INSTANCE.sounds.playSound(AssetManager.getSound("intro"));
 	}
 	
 	public void update(float dt) {
@@ -225,5 +228,8 @@ public class IntroState extends State {
 	@Override
 	public void exit() {
 		Engine.INSTANCE.input.removeListener(introInput);
+		Sound s = AssetManager.getSound("intro");
+		if (Game.INSTANCE.sounds.isSoundPlaying(s))
+			Game.INSTANCE.sounds.stopSound(s);
 	}
 }

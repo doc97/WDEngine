@@ -9,6 +9,8 @@ import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.physics.Circle;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.textures.ModelTexture;
+import gamedev.lwjgl.engine.utils.AssetManager;
+import gamedev.lwjgl.game.Game;
 
 public class Entity {
 	private List<ModelTexture> textures = new ArrayList<ModelTexture>();
@@ -24,6 +26,7 @@ public class Entity {
 	protected Circle collisionShape;
 	protected boolean dynamic;
 	private Vector2f waterLift = new Vector2f();
+	private boolean isInWater;
 	
 	public Entity(float x, float y) {
 		this.x = x;
@@ -157,5 +160,11 @@ public class Entity {
 	public Circle getCollisionShape(){
 		return collisionShape;
 
+	}
+	
+	public void isInWater(boolean b){
+		if (b && !isInWater)
+			Game.INSTANCE.sounds.playSound(AssetManager.getSound("splash"));
+		isInWater = b;
 	}
 }

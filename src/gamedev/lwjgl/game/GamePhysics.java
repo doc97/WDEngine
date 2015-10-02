@@ -45,6 +45,7 @@ public class GamePhysics {
 			if (e instanceof Item){
 				if (isColliding(e, pl)){
 					toRemove.add((Item) e);
+					Game.INSTANCE.sounds.playSound(AssetManager.getSound("testSound"));
 				}
 			}
 		}
@@ -215,9 +216,16 @@ public class GamePhysics {
 			calculateWaves(entity, w);
 
 			if(s != null && entity.getY() >= s.getY() && entity.getY() <= s.getTargetHeight()) {
-				float limit = s.getTargetHeight() + entity.getCollisionShape().getRadius();
+				float limit = s.getTargetHeight() + entity.getCollisionShape().getRadius() / 2;
 				entity.setWaterLift(0.999f + 2 * (limit - entity.getY()) / limit);
 			} else {
+				if (s != null) {
+					if (entity.getY() - entity.getCollisionShape().getRadius() >= s.getHeight()) {
+						entity.isInWater(false);
+					} else {
+						entity.isInWater(true);
+					}
+				}
 				entity.setWaterLift(0);
 			}
 		}

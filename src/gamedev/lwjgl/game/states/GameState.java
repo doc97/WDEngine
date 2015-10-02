@@ -7,7 +7,6 @@ import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.font.Font.Alignment;
 import gamedev.lwjgl.engine.textures.Color;
-import gamedev.lwjgl.engine.textures.TextureRegion;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.Game;
 import gamedev.lwjgl.game.entities.Entity;
@@ -43,7 +42,7 @@ public class GameState extends State {
 	
 	@Override
 	public void loop(float dt) {
-//		if (Math.random() < 0.5)
+		if (Math.random() < 0.05)
 			addEntity(new Item(ItemType.COIN, (float)(Math.random() * 3800), (float) (700 + Math.random() * 3000), 0.2f));
 //		else 
 //			addEntity(new Item(ItemType.ENERGY, (float)(Math.random() * 3800), (float) (700 + Math.random() * 3000), 0.2f));
@@ -170,11 +169,14 @@ public class GameState extends State {
 		fadeTimer.setActive(true);
 		
 		paused = false;
+		
+		Game.INSTANCE.sounds.loopSound(AssetManager.getSound("background"));
 	}
 
 	@Override
 	public void exit() {
 		Game.INSTANCE.entities.clear();
 		pauseMenu.hide();
+		Game.INSTANCE.sounds.stopSound(AssetManager.getSound("background"));
 	}
 }

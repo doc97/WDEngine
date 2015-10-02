@@ -46,6 +46,7 @@ import gamedev.lwjgl.engine.models.RawModel;
 import gamedev.lwjgl.engine.models.TexturedModel;
 import gamedev.lwjgl.engine.physics.Line;
 import gamedev.lwjgl.engine.physics.Water;
+import gamedev.lwjgl.engine.sound.Sound;
 import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.engine.textures.TextureRegion;
 
@@ -58,12 +59,14 @@ public class AssetManager {
 	private static final String FONT_PATH = ASSET_PATH + "fonts/";
 	private static final String ANIMATION_PATH = ASSET_PATH + "animations/";
 	private static final String DATA_FILE_PATH = ASSET_PATH + "data/";
+	private static final String SOUND_FILE_PATH = ASSET_PATH + "sounds/";
 	private static Map<String, RawModel> models = new HashMap<String, RawModel>();
 	private static Map<String, ModelTexture> textures = new HashMap<String, ModelTexture>();
 	private static Map<String, Font> fonts = new HashMap<String, Font>();
 	private static Map<String, List<TextureRegion>> animationTextures = new HashMap<String, List<TextureRegion>>();
 	private static Map<String, gamedev.lwjgl.game.map.Map> maps = new HashMap<String, gamedev.lwjgl.game.map.Map>();
 	private static Map<String, Map<String, String>> data = new HashMap<String, Map<String, String>>();
+	private static Map<String, Sound> sounds = new HashMap<String, Sound>();
 	
 	public static void loadAssets(String assetFile) {
 		FileReader fr = null;
@@ -79,6 +82,7 @@ public class AssetManager {
 		List<String> fontNames = new ArrayList<String>();
 		List<String> mapNames = new ArrayList<String>();
 		List<String> dataFileNames = new ArrayList<String>();
+		List<String> soundFileNames = new ArrayList<String>();
 		BufferedReader br = new BufferedReader(fr);
 		String line;
 		try {
@@ -109,6 +113,10 @@ public class AssetManager {
 				} else if(line.startsWith("datafiles")) {
 					for(String value : values)
 						dataFileNames.add(value);
+				} else if (line.startsWith("sounds")) {
+					for (String value : values) {
+						soundFileNames.add(value);
+					}
 				}
 			}
 			br.close();
@@ -122,9 +130,22 @@ public class AssetManager {
 		loadFonts(fontNames);
 		loadMaps(mapNames);
 		loadDataFiles(dataFileNames);
+		loadSoundFiles(soundFileNames);
 		Logger.message("AssetManager", "Assets loaded");
 	}
 	
+	private static void loadSoundFiles(List<String> soundFileNames) {
+		for (String name : soundFileNames){
+			if (sounds.containsKey(name)){
+				Logger.message("AssetManager", "Sound with name: " + name + " already loaded");
+				continue;
+			}
+			Sound s = new Sound(SOUND_FILE_PATH + name + ".wav");
+			if (s != null)
+				sounds.put(name, s);
+		}
+	}
+
 	private static void loadModels(List<String> modelNames) {
 		for(String name : modelNames) {
 			if(models.containsKey(name)) {
@@ -295,6 +316,10 @@ public class AssetManager {
 	
 	public static Font getFont(String name) {
 		return fonts.get(name);
+	}
+	
+	public static Sound getSound(String name) {
+		return sounds.get(name);
 	}
 	
 	public static gamedev.lwjgl.game.map.Map getMap(String name) {
