@@ -1,24 +1,22 @@
 package gamedev.lwjgl.game.states;
 
+import gamedev.lwjgl.game.GameSettings;
+
 public class Timer {
 
 	private boolean active;
-	private float currentTime;
-	private float targetTime;
+	private int currentTick;
+	private int targetTick;
 	
-	public void update(float dt) {
-		if(getPercentage() < 1) {
-			if(currentTime < targetTime)
-				currentTime += dt;
-			else
-				currentTime = targetTime;
-		}
+	public void update() {
+		if(currentTick < targetTick)
+			currentTick++;
 	}
 	
-	public void set(float target) {
+	public void set(int target) {
 		active = false;
-		currentTime = 0;
-		this.targetTime = target;
+		currentTick = 0;
+		targetTick = target;
 	}
 	
 	public void setActive(boolean active) {
@@ -26,19 +24,23 @@ public class Timer {
 	}
 	
 	public float getPercentage() {
-		if(targetTime == 0) return 1;
-		return Math.min(currentTime / targetTime, 1);
+		if(targetTick == 0) return 1;
+		return Math.min((float) (currentTick) / (float) (targetTick), 1);
 	}
 	
-	public float getTarget() {
-		return targetTime;
+	public int getTarget() {
+		return targetTick;
 	}
 	
 	public float getCurrentTime() {
-		return currentTime;
+		return currentTick;
 	}
 	
 	public boolean isActive() {
 		return active;
+	}
+	
+	public static int getTicks(float milliseconds) {
+		return (int) (GameSettings.UPS * milliseconds / 1000);
 	}
 }

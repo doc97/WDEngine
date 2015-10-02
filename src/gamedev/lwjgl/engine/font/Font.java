@@ -31,9 +31,9 @@ public class Font {
 		originalFontSize = fontSize;
 	}
 	
-	public void update(float dt) {
+	public void update() {
 		if(fadeTimer.isActive()) {
-			fadeTimer.update(dt);
+			fadeTimer.update();
 			if(fadeTimer.getPercentage() == 1)
 				fadeTimer.setActive(false);
 		}
@@ -103,8 +103,8 @@ public class Font {
 		fadeEffect = fade;
 	}
 	
-	public void setFadeTimer(float timer) {
-		fadeTimer.set(timer);
+	public void setFadeTimer(int ticks) {
+		fadeTimer.set(ticks);
 	}
 	
 	public void setAlignment(Alignment alignment) {

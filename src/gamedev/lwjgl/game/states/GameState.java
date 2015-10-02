@@ -1,8 +1,9 @@
 package gamedev.lwjgl.game.states;
 
 
-import java.util.Map;
 import java.util.ArrayList;
+import java.util.Map;
+
 import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.font.Font.Alignment;
@@ -11,7 +12,6 @@ import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.Game;
 import gamedev.lwjgl.game.entities.Entity;
 import gamedev.lwjgl.game.entities.Item;
-import gamedev.lwjgl.game.entities.ItemType;
 import gamedev.lwjgl.game.entities.Player;
 import gamedev.lwjgl.game.input.GameInput;
 import gamedev.lwjgl.game.ui.PauseMenu;
@@ -40,18 +40,6 @@ public class GameState extends State {
 		pauseMenu = new PauseMenu(this);
 	}
 	
-	@Override
-	public void loop(float dt) {
-		if (Math.random() < 0.05)
-			addEntity(new Item(ItemType.COIN, (float)(Math.random() * 3800), (float) (700 + Math.random() * 3000), 0.2f));
-//		else 
-//			addEntity(new Item(ItemType.ENERGY, (float)(Math.random() * 3800), (float) (700 + Math.random() * 3000), 0.2f));
-		if (Game.INSTANCE.entities.getEntities().size() > 1000)
-			Game.INSTANCE.entities.removeEntity(Game.INSTANCE.entities.getEntities().get(1));
-		update(dt);
-		render();
-	}
-
 	public void addEntity(Entity entity) {
 		Game.INSTANCE.entities.addEntity(entity);
 	}
@@ -76,13 +64,13 @@ public class GameState extends State {
 		return paused;
 	}
 	
-	private void update(float dt) {
-		Engine.INSTANCE.update(dt);
-
+	@Override
+	public void update() {
+		Engine.INSTANCE.update();
 
 		if(!paused) {
 			if(fadeTimer.isActive()) {
-				fadeTimer.update(dt);
+				fadeTimer.update();
 				float value = fadeTimer.getPercentage();
 				fadeColor.setColor(0.5f + value / 2, 0.5f + value / 2, 0.5f + value / 2, 1);
 				Engine.INSTANCE.display.setBackgroundColor(0.1f * value, 0.1f * value, 0.2f * value, 1);
@@ -92,10 +80,10 @@ public class GameState extends State {
 			}
 		
 			Game.INSTANCE.physics.update();
-			Game.INSTANCE.container.getMap().update(dt);
+			Game.INSTANCE.container.getMap().update();
 			
 			for (Entity e : Game.INSTANCE.entities.getEntities()){
-				e.update(dt);
+				e.update();
 			}
 			
 			Engine.INSTANCE.camera.setPosition(player.getX(), player.getY());
@@ -105,7 +93,8 @@ public class GameState extends State {
 
 	}
 	
-	private void render() {
+	@Override
+	public void render() {
 		
 		Engine.INSTANCE.display.clearDisplay();
 

@@ -48,7 +48,7 @@ public enum Engine {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
-	public void update(float delta) {
+	public void update() {
 		input.update();
 		camera.update();
 	}

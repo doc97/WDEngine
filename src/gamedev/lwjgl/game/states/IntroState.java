@@ -41,7 +41,7 @@ public class IntroState extends State {
 		String fontname = data.get("font");
 
 		List<TextureRegion> frames = AssetManager.getAnimationFrames(cutscene);
-		introCutscene = new AnimatedTexture(frames, 60 / 1, false);
+		introCutscene = new AnimatedTexture(frames, Timer.getTicks(60), false);
 		texture1 = AssetManager.getTexture(texname1);
 		texture2 = AssetManager.getTexture(texname2);
 		font = AssetManager.getFont(fontname);
@@ -85,18 +85,19 @@ public class IntroState extends State {
 		
 		scene = 0;
 		fontFades = 0;
-		fadeInTimer.set(60);
+		fadeInTimer.set(Timer.getTicks(60));
 		fadeInTimer.setActive(true);
-		font.setFadeTimer(60);
+		font.setFadeTimer(Timer.getTicks(60));
 		font.setFadeEffect(true);
 		
 		Game.INSTANCE.sounds.playSound(AssetManager.getSound("intro"));
 	}
 	
-	public void update(float dt) {
-		Engine.INSTANCE.update(dt);
+	@Override
+	public void update() {
+		Engine.INSTANCE.update();
 		if(showTimer.isActive()) {
-			showTimer.update(dt);
+			showTimer.update();
 			if(showTimer.getPercentage() == 1) {
 				showTimer.setActive(false);
 				fadeOutTimer.set(60);
@@ -105,7 +106,7 @@ public class IntroState extends State {
 			}
 		}
 		if(fadeOutTimer.isActive()) {
-			fadeOutTimer.update(dt);
+			fadeOutTimer.update();
 			float value = 1 - fadeOutTimer.getPercentage();
 			color.setColor(value, value, value, 1);
 			if(fadeOutTimer.getPercentage() == 1) {
@@ -130,7 +131,7 @@ public class IntroState extends State {
 			}
 		}
 		if(fadeInTimer.isActive()) {
-			fadeInTimer.update(dt);
+			fadeInTimer.update();
 			float value = fadeInTimer.getPercentage();
 			if(scene > 0)
 				color.setColor(value, value, value, 1);
@@ -139,12 +140,12 @@ public class IntroState extends State {
 				fadeInTimer.setActive(false);
 				
 				if(scene == 0) {
-					showTimer.set(300);
+					showTimer.set(Timer.getTicks(300));
 					font.getFadeTimer().setActive(true);
 				} else if(scene == 6) {
 					showTimer.set(introCutscene.getLength());
 				} else {
-					showTimer.set(180);
+					showTimer.set(Timer.getTicks(180));
 				}
 				
 				showTimer.setActive(true);
@@ -152,7 +153,7 @@ public class IntroState extends State {
 			}
 		}
 		if(blackTimer.isActive()) {
-			blackTimer.update(dt);
+			blackTimer.update();
 			if(blackTimer.getPercentage() == 1) {
 				blackTimer.setActive(false);
 				Game.INSTANCE.states.enterState(States.GAMESTATE);
@@ -160,12 +161,13 @@ public class IntroState extends State {
 		}
 		
 		if(scene > 5 && scene < 9)
-			introCutscene.update(dt);
+			introCutscene.update();
 
-		font.update(dt);
+		font.update();
 		fontOffsetX += 0.1f;
 	}
 	
+	@Override
 	public void render() {
 		Engine.INSTANCE.display.clearDisplay();
 		Engine.INSTANCE.batch.begin();
@@ -182,7 +184,7 @@ public class IntroState extends State {
 
 			if(font.getFadeTimer().getPercentage() == 1) {
 				fontFades++;
-				font.getFadeTimer().set(120);
+				font.getFadeTimer().set(Timer.getTicks(120));
 				font.getFadeTimer().setActive(true);
 			}
 			
@@ -200,8 +202,8 @@ public class IntroState extends State {
 
 		} else if(scene < 6) {
 			Engine.INSTANCE.batch.draw(texture2, -100, -100,
-
-					Engine.INSTANCE.camera.getWidth() + 200, Engine.INSTANCE.camera.getHeight() + 200);
+					Engine.INSTANCE.camera.getWidth() + 200,
+					Engine.INSTANCE.camera.getHeight() + 200);
 			
 			float textX = Engine.INSTANCE.camera.getX();
 			float textY = Engine.INSTANCE.camera.getY();
@@ -217,12 +219,6 @@ public class IntroState extends State {
 		Engine.INSTANCE.batch.setColor(1, 1, 1, 1);
 		Engine.INSTANCE.batch.end();
 		Engine.INSTANCE.display.updateDisplay();
-	}
-
-	@Override
-	public void loop(float dt) {
-		update(dt);
-		render();
 	}
 
 	@Override

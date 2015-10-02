@@ -3,7 +3,6 @@ package gamedev.lwjgl.game.states;
 import java.util.EnumMap;
 import java.util.Map;
 
-import gamedev.lwjgl.engine.utils.MainMenuState;
 import gamedev.lwjgl.game.GameLauncher;
 
 public class StateSystem {

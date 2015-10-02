@@ -16,9 +16,9 @@ public class Item extends Entity{
 		collisionShape = new Circle(x, y, texture.getWidth() / 2 * scale);
 	}
 	
-	public void update(float delta){
+	public void update(){
 		collisionShape.setPosition(x, y);
-		super.update(delta);
+		super.update();
 	}
 	
 	

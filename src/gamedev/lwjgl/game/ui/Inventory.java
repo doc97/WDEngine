@@ -1,6 +1,8 @@
 package gamedev.lwjgl.game.ui;
 
-import gamedev.lwjgl.engine.Engine;
+import java.util.HashMap;
+import java.util.Map.Entry;
+
 import gamedev.lwjgl.engine.cameras.Camera2d;
 import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.render.SpriteBatch;
@@ -8,9 +10,6 @@ import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.entities.Item;
 import gamedev.lwjgl.game.entities.ItemType;
-
-import java.util.HashMap;
-import java.util.Map.Entry;
 
 public class Inventory {
 	

@@ -4,13 +4,12 @@ import java.util.Map;
 
 import gamedev.lwjgl.engine.physics.Circle;
 import gamedev.lwjgl.engine.render.SpriteBatch;
-import gamedev.lwjgl.engine.textures.AnimatedTexture;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.ui.Inventory;
 
 public class Player extends Entity {
 
-	private AnimatedTexture animation;
+//	private AnimatedTexture animation;
 
 	private int radius;
 
@@ -36,10 +35,10 @@ public class Player extends Entity {
 	}
 	
 	@Override
-	public void update(float dt) {
+	public void update() {
 //		animation.update(dt);
 		collisionShape.setPosition(x, y);
-		super.update(dt);
+		super.update();
 	}
 	
 	@Override

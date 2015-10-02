@@ -1,4 +1,4 @@
-package gamedev.lwjgl.engine.utils;
+package gamedev.lwjgl.game.states;
 
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
@@ -12,10 +12,9 @@ import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.input.InputListener;
 import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.textures.ModelTexture;
+import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.Game;
-import gamedev.lwjgl.game.states.State;
 import gamedev.lwjgl.game.states.StateSystem.States;
-import gamedev.lwjgl.game.states.Timer;
 import gamedev.lwjgl.game.ui.Button;
 
 public class MainMenuState extends State {
@@ -189,15 +188,16 @@ public class MainMenuState extends State {
 		Engine.INSTANCE.input.addListener(optionsBtnInput);
 		Engine.INSTANCE.input.addListener(exitBtnInput);
 		
-		fadeTimer.set(120);
+		fadeTimer.set(Timer.getTicks(120));
 		color.setColor(1, 1, 1, 1);
 	}
 
-	public void update(float dt) {
-		Engine.INSTANCE.update(dt);
+	@Override
+	public void update() {
+		Engine.INSTANCE.update();
 		
 		if(fadeTimer.isActive()) {
-			fadeTimer.update(dt);
+			fadeTimer.update();
 			float value = 1 - fadeTimer.getPercentage();
 			color.setColor(1, 1, 1, value);
 			if(fadeTimer.getPercentage() == 1) {
@@ -213,6 +213,7 @@ public class MainMenuState extends State {
 		}
 	}
 	
+	@Override
 	public void render() {
 		Engine.INSTANCE.display.clearDisplay();
 		Engine.INSTANCE.batch.begin();
@@ -227,12 +228,6 @@ public class MainMenuState extends State {
 		Engine.INSTANCE.display.updateDisplay();
 	}
 	
-	@Override
-	public void loop(float dt) {
-		update(dt);
-		render();
-	}
-
 	@Override
 	public void exit() {}
 }

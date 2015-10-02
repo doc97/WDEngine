@@ -21,16 +21,20 @@ public class GameLauncher {
 
 		Game.INSTANCE.states.enterState(States.MAINMENUSTATE);
 
-		
 		double lastTime = glfwGetTime();
-		float deltaTime = 0;
+		float updateTime = 0;
 		while(!Engine.INSTANCE.display.displayShouldClose()) {
 			// Update timers
 			double currentTime = glfwGetTime();
-			deltaTime = (float) (currentTime - lastTime) * 60;
+			updateTime += (float) (currentTime - lastTime);
 			lastTime = currentTime;
 			
-			launcher.getCurrentState().loop(deltaTime);
+			while(updateTime >= 1.0f / GameSettings.UPS) {
+				updateTime -= 1.0f / GameSettings.UPS;
+				launcher.getCurrentState().update();
+			}
+			
+			launcher.getCurrentState().render();
 		}
 		
 		AssetManager.cleanup();

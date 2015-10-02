@@ -7,16 +7,16 @@ public class AnimatedTexture {
 	
 	private LinkedList<TextureRegion> textures;
 	private TextureRegion current;
-	private float frameTime;
-	private float last;
+	private int frameTicks;
+	private int last;
 	private boolean looping;
 	private boolean finished;
 	
-	public AnimatedTexture(List<TextureRegion> texs, float frameTime, boolean looping) {
+	public AnimatedTexture(List<TextureRegion> texs, int frameTicks, boolean looping) {
 		textures = new LinkedList<>();
 		if(texs != null)
 			textures.addAll(texs);
-		this.frameTime = frameTime;
+		this.frameTicks = frameTicks;
 		
 		if(!textures.isEmpty())
 			this.current = textures.getFirst();
@@ -28,14 +28,14 @@ public class AnimatedTexture {
 		return current;
 	}
 	
-	public void update(float delta) {
-		last += delta;
+	public void update() {
+		last++;
 		if(textures.isEmpty() && !looping) {
 			finished = true;
 			return;
 		}
 		
-		if (last > frameTime) {
+		if (last > frameTicks) {
 			current = textures.removeFirst();
 			if(looping)
 				textures.add(current);
@@ -43,8 +43,8 @@ public class AnimatedTexture {
 		}
 	}
 	
-	public float getLength() {
-		return textures.size() * frameTime;
+	public int getLength() {
+		return textures.size() * frameTicks;
 	}
 	
 	public boolean isFinished() {

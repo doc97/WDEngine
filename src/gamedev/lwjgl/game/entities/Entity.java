@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.joml.Vector2f;
 
-import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.physics.Circle;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.textures.ModelTexture;
@@ -49,7 +48,7 @@ public class Entity {
 		textures.set(index, texture);
 	}
 	
-	public void update(float dt) {
+	public void update() {
 	}
 	
 	public void render(SpriteBatch batch) {
