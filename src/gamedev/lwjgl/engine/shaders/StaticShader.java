@@ -20,6 +20,7 @@ public class StaticShader extends Shader {
 		super.bindAttribute(0, "position");
 		super.bindAttribute(1, "texcoords");
 		super.bindAttribute(2, "color");
+		super.bindAttribute(3, "colAppMeth");
 	}
 
 	@Override

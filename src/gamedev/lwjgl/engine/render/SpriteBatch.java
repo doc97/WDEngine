@@ -33,35 +33,46 @@ import gamedev.lwjgl.engine.textures.ModelTexture;
 
 public class SpriteBatch {
 	
-	private Camera2d camera;
+	public static final int MULTIPLY = 0;
+	public static final int ADD = 1;
+	public static final int SETCOLOR = 2;
+	
+	private Camera2d camera = new Camera2d();
 	private ModelTexture lastTexture;
 	private int idx = 0;
 	private int[] indices;
 	private float[] vertices;
 	private float[] texCoords;
 	private float[] colors;
+	private int[] blendModes;
 	private Color currentColor;
+	private int currentBlendMode;
 	private boolean isDrawing;
 	private StaticShader shader;
 	private int vao;
 	private int ibo;
 	private ArrayList<Integer> vbos;
-	private IntBuffer intBuff;
-	private FloatBuffer floatBuff1, floatBuff2, floatBuff3;
+	private IntBuffer intBuff, intBuff2;
+	private FloatBuffer floatBuff1, floatBuff2, floatBuff3, floatBuff4;
 	
 	public void init() {
-		camera = Engine.INSTANCE.camera;
+		camera.init(Engine.INSTANCE.display);
 		shader = new StaticShader();
 		indices = new int[6000];
 		vertices = new float[12000];
 		texCoords = new float[8000];
 		colors = new float[16000];
+		blendModes = new int[4000];
 		vbos = new ArrayList<>();
 		intBuff = BufferUtils.createIntBuffer(6000);
 		floatBuff1 = BufferUtils.createFloatBuffer(12000);
 		floatBuff2 = BufferUtils.createFloatBuffer(8000);
 		floatBuff3 = BufferUtils.createFloatBuffer(16000);
+
+		intBuff2 = BufferUtils.createIntBuffer(4000);
 		currentColor = new Color(1, 1, 1, 1);
+		currentBlendMode = MULTIPLY;
+
 		for (int i = 0, j = 0; i < 6000; i += 6, j += 4){
 			indices[i] = j;
 			indices[i+1] = (j+1);
@@ -106,10 +117,12 @@ public class SpriteBatch {
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
+		glEnableVertexAttribArray(3);
 		glDrawElements(GL_TRIANGLES, sprites * 6, GL_UNSIGNED_INT, 0);
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(2);
+		glDisableVertexAttribArray(3);
 		unbindVAO();
 		glDeleteBuffers(ibo);
 		for (int vbo : vbos){
@@ -119,7 +132,7 @@ public class SpriteBatch {
 		idx = 0;
 	}
 	
-	public void changeTexture(ModelTexture texture) {
+	private void changeTexture(ModelTexture texture) {
 		flush();
 		if(texture != null) {
 			lastTexture = texture;
@@ -166,6 +179,7 @@ public class SpriteBatch {
 		int vertexCount = idx / 3;
 		int cdx = vertexCount << 2;
 		int tdx = vertexCount << 1;
+		int bdx = vertexCount;
 		
 		if (rotation != 0){
 			float p1d = (float) Math.hypot(anchorPX - vx1, anchorPY - vy1);
@@ -223,6 +237,8 @@ public class SpriteBatch {
 			colors[cdx++] = colours[i].g;
 			colors[cdx++] = colours[i].b;
 			colors[cdx++] = colours[i].a;
+
+			blendModes[bdx++] = currentBlendMode;
 		}
 		
 		this.idx = idx;
@@ -234,6 +250,7 @@ public class SpriteBatch {
 		storeDataInAttributeList(0, floatBuff1, 3, positions);
 		storeDataInAttributeList(1, floatBuff2, 2, texCoords);
 		storeDataInAttributeList(2, floatBuff3, 4, colors);
+		storeDataInAttributeList(3, intBuff2, 1, blendModes);
 	}
 	
 	private void bindVAO() {
@@ -268,6 +285,16 @@ public class SpriteBatch {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	
+	private void storeDataInAttributeList(int attribute, IntBuffer buffer, int size, int[] data) {
+		int vbo = glGenBuffers();
+		vbos.add(vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		storeDataInIntBuffer(buffer,data);
+		glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+		glVertexAttribPointer(attribute, size, GL_FLOAT, false, 0, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+	
 	private FloatBuffer storeDataInFloatBuffer(FloatBuffer buffer, float[] data) {
 		buffer.clear();
 		buffer.put(data);
@@ -276,7 +303,11 @@ public class SpriteBatch {
 	}
 	
 	public Color getColor(){
-		return currentColor;
+		return new Color(currentColor.r, currentColor.g, currentColor.b, currentColor.a);
+	}
+	
+	int getBlendMode(){
+		return currentBlendMode;
 	}
 	
 	public void setColor(Color color) {
@@ -291,5 +322,13 @@ public class SpriteBatch {
 		currentColor.g = g;
 		currentColor.b = b;
 		currentColor.a = a;
+	}
+	
+	public Camera2d getCamera(){
+		return camera;
+	}
+	
+	public void setBlendMode(int blendMode){
+		currentBlendMode = blendMode;
 	}
 }

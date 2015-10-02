@@ -38,6 +38,10 @@ public class Spring {
 		return height;
 	}
 	
+	public float getTargetHeight(){
+		return targetHeight;
+	}
+	
 	public float getX() {
 		return x;
 	}

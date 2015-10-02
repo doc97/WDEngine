@@ -6,12 +6,16 @@ import gamedev.lwjgl.engine.physics.Circle;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.textures.AnimatedTexture;
 import gamedev.lwjgl.engine.utils.AssetManager;
+import gamedev.lwjgl.game.ui.Inventory;
 
 public class Player extends Entity {
 
-	private Circle collisionShape;
 	private AnimatedTexture animation;
+
 	private int radius;
+
+	private Inventory inventory;
+
 	
 	public Player(float x, float y) {
 		super(x, y);
@@ -19,6 +23,7 @@ public class Player extends Entity {
 		collisionShape = new Circle(x, y, radius);
 		//animation = new AnimatedTexture(AssetManager.loadAnimation("Test.anim"), 60/30);
 		dynamic = true;
+		inventory = new Inventory();
 	}
 	
 	private void init() {
@@ -54,8 +59,9 @@ public class Player extends Entity {
 		super.setEntityPosition(x, y);
 		collisionShape.setPosition(x, y);
 	}
-
-	public Circle getCollisionShape() {
-		return collisionShape;
+	
+	public Inventory getInventory(){
+		return inventory;
 	}
+	
 }

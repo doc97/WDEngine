@@ -3,9 +3,11 @@
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec2 texcoords;
 layout(location = 2) in vec4 color;
+layout(location = 3) in int colAppMeth;
 
 out vec2 v_texcoords;
 out vec4 v_color;
+out vec2 v_colAppMeth;
 
 uniform mat4 MVP;
 
@@ -13,6 +15,7 @@ void main() {
 	gl_Position = vec4(position, 1.0);
 	v_texcoords = texcoords;
 	v_color = color;
+	v_colAppMeth = vec2(colAppMeth, 0);
 }
 
 //@ // Shader split
@@ -21,6 +24,8 @@ void main() {
 
 in vec2 v_texcoords;
 in vec4 v_color;
+in vec2 v_colAppMeth;
+
 
 out vec4 frag_colour;
 
@@ -31,7 +36,15 @@ void main() {
 	vec4 texCol = texture(tex, v_texcoords);
 	
 	if(textures == 1) {
-		frag_colour = texCol * v_color;
+		if (v_colAppMeth.x == 0){
+			frag_colour = texCol * v_color;
+		}
+		else if (v_colAppMeth.x == 1){
+			frag_colour = vec4(texCol.rgb + v_color.rgb, texCol.a);
+		}
+		else if (v_colAppMeth.x == 2){
+			frag_colour = vec4(v_color.rgb, texCol.a);
+		}
 	} else if(textures == 0) {
 		frag_colour = v_color;
 	}

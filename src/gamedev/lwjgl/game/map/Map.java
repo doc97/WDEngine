@@ -7,7 +7,10 @@ import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.physics.Line;
 import gamedev.lwjgl.engine.physics.Water;
 import gamedev.lwjgl.engine.render.SpriteBatch;
+import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.textures.ModelTexture;
+import gamedev.lwjgl.engine.textures.TextureRegion;
+import gamedev.lwjgl.game.entities.ItemType;
 
 public class Map {
 	private List<Line> collisionMap;

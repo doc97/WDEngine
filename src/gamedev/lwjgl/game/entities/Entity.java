@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.joml.Vector2f;
 
+import gamedev.lwjgl.engine.Engine;
+import gamedev.lwjgl.engine.physics.Circle;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.textures.ModelTexture;
 
@@ -19,6 +21,7 @@ public class Entity {
 	protected float x, y;
 	private float anchorX, anchorY;
 	private float rotation;
+	protected Circle collisionShape;
 	protected boolean dynamic;
 	private Vector2f waterLift = new Vector2f();
 	
@@ -146,7 +149,13 @@ public class Entity {
 		return dynamic;
 	}
 	
+
 	public Vector2f getWaterLift() {
 		return waterLift;
+	}
+	
+	public Circle getCollisionShape(){
+		return collisionShape;
+
 	}
 }

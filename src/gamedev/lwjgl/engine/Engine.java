@@ -22,7 +22,9 @@ public enum Engine {
 	public final DisplayManager display = new DisplayManager();
 	public final InputManager input = new InputManager();
 	public final SpriteBatch batch = new SpriteBatch();
-	public final Camera2d camera = new Camera2d();
+	public final SpriteBatch uiBatch = new SpriteBatch();
+	public final Camera2d camera = batch.getCamera();
+	
 	
 	public void init() {
 		if(!display.createDisplay(1280, 720)) {
@@ -30,10 +32,13 @@ public enum Engine {
 			return;
 		}
 		
+
 		display.setBackgroundColor(0, 0, 0, 1);
+
 		batch.init();
+		uiBatch.init();
 		input.init(display.getWindow());
-		camera.init(display);
+
 		
 		// We are not using depth, might speed up things a little
 		glDisable(GL_DEPTH_TEST);

@@ -168,9 +168,11 @@ public class IntroState extends State {
 		Engine.INSTANCE.batch.begin();
 		Engine.INSTANCE.batch.setColor(color);
 		
+
 		if(scene < 3) {
 			Engine.INSTANCE.batch.draw(texture1, 0, 0,
 					Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
+
 			
 			float textX = 100 + Engine.INSTANCE.camera.getX() - Engine.INSTANCE.camera.getWidth() / 2 + fontOffsetX;
 			float textY = 100 + Engine.INSTANCE.camera.getY() - Engine.INSTANCE.camera.getHeight() / 2;
@@ -182,7 +184,7 @@ public class IntroState extends State {
 			}
 			
 			font.setFadeEffect(fontFades == 0);
-			font.drawString("THE CASUALS", font.getOriginalSize(), textX, textY);
+			font.drawString(Engine.INSTANCE.batch, "THE CASUALS", font.getOriginalSize(), textX, textY);
 			
 			// Uncomment to use whole text fade in
 			/*Color color = Engine.INSTANCE.batch.getColor();
@@ -190,16 +192,18 @@ public class IntroState extends State {
 			
 			if(fontFades > 0) {
 				font.setFadeEffect(fontFades == 1);
-				font.drawString("present", font.getOriginalSize(), textX, textY - font.getOriginalSize());
+				font.drawString(Engine.INSTANCE.batch, "present", font.getOriginalSize(), textX, textY - font.getOriginalSize());
 			}
+
 		} else if(scene < 6) {
 			Engine.INSTANCE.batch.draw(texture2, -100, -100,
+
 					Engine.INSTANCE.camera.getWidth() + 200, Engine.INSTANCE.camera.getHeight() + 200);
 			
 			float textX = Engine.INSTANCE.camera.getX();
 			float textY = Engine.INSTANCE.camera.getY();
-			font.drawString("Wisp Of The Willow", font.getOriginalSize() * 4, textX, textY);
-			font.drawString("", font.getOriginalSize() * 4, textX, textY);
+			font.drawString(Engine.INSTANCE.batch, "Wisp Of The Willow", font.getOriginalSize() * 4, textX, textY);
+			font.drawString(Engine.INSTANCE.batch, "", font.getOriginalSize() * 4, textX, textY);
 		} else if(scene < 9) {
 			TextureRegion frame = introCutscene.getCurrent();
 			if(frame != null) {

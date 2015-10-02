@@ -21,6 +21,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.nio.ByteBuffer;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
@@ -49,7 +50,6 @@ public class DisplayManager {
 		glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-		
 		window = glfwCreateWindow(width, height, title, NULL, NULL);
 		if(window == NULL)
 			throw new RuntimeException("Failed to create GLFW window");
@@ -63,6 +63,10 @@ public class DisplayManager {
 		
 		GLContext.createFromCurrent();
 		
+		glFrustum(-1.0, 1.0, -1.0, 1.0, 1.5, 20.0);
+		glEnable(GL_DEPTH_TEST | GL_ALPHA_TEST);
+		glDepthFunc(GL_LESS);
+		
 		return true;
 	}
 	
@@ -71,7 +75,7 @@ public class DisplayManager {
 	}
 	
 	public void clearDisplay() {
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 	
 	public void updateDisplay() {

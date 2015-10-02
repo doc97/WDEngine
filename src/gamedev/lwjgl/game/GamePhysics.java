@@ -1,5 +1,7 @@
 package gamedev.lwjgl.game;
 
+import java.util.ArrayList;
+
 import org.joml.Vector2f;
 
 import gamedev.lwjgl.engine.physics.Circle;
@@ -9,8 +11,10 @@ import gamedev.lwjgl.engine.physics.Spring;
 import gamedev.lwjgl.engine.physics.Water;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.entities.Entity;
+import gamedev.lwjgl.game.entities.Item;
 import gamedev.lwjgl.game.entities.Player;
 import gamedev.lwjgl.game.map.Map;
+import gamedev.lwjgl.game.ui.Inventory;
 
 public class GamePhysics {
 	
@@ -18,6 +22,7 @@ public class GamePhysics {
 	private float airResistance;
 	private float waterResistance;
 	private Vector2f gravitation;
+
 	
 	public GamePhysics() {
 		java.util.Map<String, String> data = AssetManager.getData("physics");
@@ -28,7 +33,29 @@ public class GamePhysics {
 	}
 	
 	public void update() {
-		collisionDetection(Game.INSTANCE.container.getPlayer(), Game.INSTANCE.container.getMap());
+		for (Entity e : Game.INSTANCE.entities.getEntities()){
+			if (e.isDynamic()){
+				collisionDetection(e, Game.INSTANCE.container.getMap());
+			}
+		}
+		Player pl = Game.INSTANCE.container.getPlayer();
+		ArrayList<Item> toRemove = new ArrayList<Item>();
+		
+		for (Entity e : Game.INSTANCE.entities.getEntities()){
+			if (e instanceof Item){
+				if (isColliding(e, pl)){
+					toRemove.add((Item) e);
+				}
+			}
+		}
+		
+		Inventory inv = pl.getInventory();
+		for (Item i : toRemove){
+			Game.INSTANCE.entities.removeEntity(i);
+			inv.addItem(i);
+		}
+		
+		
 		updatePositions();
 		updateForces();
 	}
@@ -108,27 +135,27 @@ public class GamePhysics {
 		return null;
 	}
 	
-	public void calculateWaves(Player player, Water water) {
-		Circle circle = player.getCollisionShape();
+	public void calculateWaves(Entity entity, Water water) {
+		Circle circle = entity.getCollisionShape();
 		float radius = circle.getRadius();
 		
 		for(int j = 0; j < water.getSprings().length - 1; j++) {
 			Spring s = water.getSprings()[j];
 			Spring s2 = water.getSprings()[j + 1];
 			Line line = new Line(new Vector2f(s.getX(), s.getHeight()), new Vector2f(s2.getX(), s2.getHeight()));
-			Collision repulsion = calculateCollision(line, circle.getPosition(), player.getSpeed(), radius);
+			Collision repulsion = calculateCollision(line, circle.getPosition(), entity.getSpeed(), radius);
 			if(repulsion != null) {
 				Vector2f x = new Vector2f(1, 0);
 				Vector2f y = new Vector2f(0, 1);
-				float xDot = player.getSpeed().dot(x);
-				float yDot = player.getSpeed().dot(y);
+				float xDot = entity.getSpeed().dot(x);
+				float yDot = entity.getSpeed().dot(y);
 				
 				Spring frontSpring = null;
 				Spring backSpring = null;
 				
 				if(xDot != 0) {
-					frontSpring = water.getSpring(player.getX() + player.getCollisionShape().getRadius() * Math.signum(xDot));
-					backSpring = water.getSpring(player.getX() - player.getCollisionShape().getRadius() * Math.signum(xDot));
+					frontSpring = water.getSpring(entity.getX() + entity.getCollisionShape().getRadius() * Math.signum(xDot));
+					backSpring = water.getSpring(entity.getX() - entity.getCollisionShape().getRadius() * Math.signum(xDot));
 				}
 
 				float yFactor = 0;
@@ -155,43 +182,60 @@ public class GamePhysics {
 		}
 	}
 	
-	public void collisionDetection(Player player, Map map) {
-		Circle circle = player.getCollisionShape();
+	public void collisionDetection(Entity entity, Map map) {
+		Circle circle = entity.getCollisionShape();
+
 		float radius = circle.getRadius();
 
 		for(Line line : map.getCollisionMap()) {
-			Vector2f speed = player.getSpeed();
+			Vector2f speed = entity.getSpeed();
 			Vector2f newSpeed = calculateCollisionSpeed(line, circle.getPosition(), speed, radius);
 			if(newSpeed != null) {
 				if(newSpeed.lengthSquared() == 0) {
-					player.setSpeed(0, 0);
+					entity.setSpeed(0, 0);
 					continue;
 				}
 				// Applying friction
 				Vector2f frictionSpeed = new Vector2f();
 				newSpeed.normalize(frictionSpeed);
 				frictionSpeed.mul(-friction);
-				player.setSpeed(newSpeed.x, newSpeed.y);
+				entity.setSpeed(newSpeed.x, newSpeed.y);
 				
-				if(player.getSpeed().lengthSquared() < frictionSpeed.lengthSquared())
-					player.setSpeed(0, 0);
+				if(entity.getSpeed().lengthSquared() < frictionSpeed.lengthSquared())
+					entity.setSpeed(0, 0);
 				else
-					player.addSpeed(frictionSpeed.x, frictionSpeed.y);
+					entity.addSpeed(frictionSpeed.x, frictionSpeed.y);
 			}
 		}
-
+		
 		for(int i = 0; i < map.getWaters().size(); i++) {
 			Water w = map.getWaters().get(i);
-			Spring s = w.getSpring(player.getX());
+			Spring s = w.getSpring(entity.getX());
 			
-			calculateWaves(player, w);
+			calculateWaves(entity, w);
 
-			if(s != null && player.getY() >= s.getY() && player.getY() <= s.getHeight()) {
-				float limit = s.getHeight() - player.getCollisionShape().getRadius() / 2;
-				player.setWaterLift(0.999f + 2 * (limit - player.getY()) / limit);
+			if(s != null && entity.getY() >= s.getY() && entity.getY() <= s.getTargetHeight()) {
+				float limit = s.getTargetHeight() + entity.getCollisionShape().getRadius();
+				entity.setWaterLift(0.999f + 2 * (limit - entity.getY()) / limit);
 			} else {
-				player.setWaterLift(0);
+				entity.setWaterLift(0);
 			}
 		}
 	}
+	
+	public boolean isColliding(Entity ent1, Entity ent2){
+		Circle circ1 = ent1.getCollisionShape();
+		Circle circ2 = ent2.getCollisionShape();
+		
+		Vector2f pos1 = circ1.getPosition() , pos2 = circ2.getPosition();
+		
+		float distance = pos1.distance(pos2);
+		
+		if (distance * distance < circ1.getRadius() * circ1.getRadius() + circ2.getRadius() * circ2.getRadius()){
+			return true;
+		}
+		
+		return false;
+	}
+	
 }

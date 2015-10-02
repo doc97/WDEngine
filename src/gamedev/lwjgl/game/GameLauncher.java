@@ -15,9 +15,12 @@ public class GameLauncher {
 		
 		// Load assets
 		AssetManager.loadAssets("assets/WDEngine");
+
 		
 		Game.INSTANCE.init(launcher);
+
 		Game.INSTANCE.states.enterState(States.MAINMENUSTATE);
+
 		
 		double lastTime = glfwGetTime();
 		float deltaTime = 0;

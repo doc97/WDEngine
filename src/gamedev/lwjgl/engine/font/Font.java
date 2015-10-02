@@ -5,7 +5,11 @@ import java.util.Map;
 
 import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.Logger;
+
 import gamedev.lwjgl.engine.textures.Color;
+
+import gamedev.lwjgl.engine.render.SpriteBatch;
+
 import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.game.states.Timer;
 
@@ -35,7 +39,8 @@ public class Font {
 		}
 	}
 	
-	public void drawString(String text, int fontSize, float x, float y) {
+	public void drawString(SpriteBatch batch, String text, int fontSize, float x, float y) {
+
 		float currentOffset = 0;
 		float textWidth = 0;
 		float scale = (float) fontSize / (float) originalFontSize;
@@ -86,7 +91,8 @@ public class Font {
 				}
 			}
 			
-			Engine.INSTANCE.batch.draw(glyph.getTexture(), drawX, drawY,
+			batch.draw(glyph.getTexture(), drawX, drawY,
+
 					width, height, glyph.getTexture().getUVs(),
 					0, 0, 0);
 			currentOffset += glyph.getAdvanceX() * scale;
