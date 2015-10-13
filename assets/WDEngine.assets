@@ -6,4 +6,4 @@ sounds=testSound;splash;intro;background;nom
 animations=Cutscene
 fonts=basic;curly
 maps=level1
-datafiles=player;physics;intro;game;mainmenu
+datafiles=player;physics;intro;game;mainmenu;credits

@@ -1,8 +1,6 @@
 package gamedev.lwjgl.game.states;
 
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
-import static org.lwjgl.opengl.GL11.GL_TRUE;
 
 import java.util.Map;
 
@@ -29,6 +27,7 @@ public class MainMenuState extends State {
 	private InputListener exitBtnInput;
 	private Color color = new Color(1, 1, 1, 1);
 	private Timer fadeTimer = new Timer();
+	private States enterState;
 	private boolean removeListeners;
 	
 	public MainMenuState() {
@@ -83,6 +82,7 @@ public class MainMenuState extends State {
 					{
 						fadeTimer.setActive(true);
 						removeListeners = true;
+						enterState = States.INTROSTATE;
 					}
 				}
 				return false;
@@ -123,8 +123,18 @@ public class MainMenuState extends State {
 
 			@Override
 			public boolean mouseReleased(int button) {
-				if(button == GLFW_MOUSE_BUTTON_LEFT)
+				if(button == GLFW_MOUSE_BUTTON_LEFT) {
 					optionsBtn.release();
+					if(optionsBtn.isOver(
+							Engine.INSTANCE.input.getTranslatedMouseX(),
+							Engine.INSTANCE.input.getTranslatedMouseY()
+							))
+					{
+						fadeTimer.setActive(true);
+						enterState = States.CREDITSSTATE;
+						removeListeners = true;
+					}
+				}
 				return false;
 			}
 		};
@@ -170,10 +180,10 @@ public class MainMenuState extends State {
 							Engine.INSTANCE.input.getTranslatedMouseY()
 							))
 					{
-						glfwSetWindowShouldClose(Engine.INSTANCE.display.getWindow(), GL_TRUE);
+						Engine.INSTANCE.display.closeDisplay();
 					}
 				}
-				return false;
+				return false;	
 			}
 		};
 	}
@@ -203,7 +213,7 @@ public class MainMenuState extends State {
 			color.setColor(1, 1, 1, value);
 			if(fadeTimer.getPercentage() == 1) {
 				fadeTimer.setActive(false);
-				Game.INSTANCE.states.enterState(States.INTROSTATE);
+				Game.INSTANCE.states.enterState(enterState);
 			}
 			if(removeListeners) {
 				removeListeners = false;

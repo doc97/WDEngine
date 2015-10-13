@@ -6,7 +6,7 @@ import java.util.Map;
 import gamedev.lwjgl.game.GameLauncher;
 
 public class StateSystem {
-	public enum States { MAINMENUSTATE, INTROSTATE, GAMESTATE, OPTIONSTATE };
+	public enum States { MAINMENUSTATE, INTROSTATE, GAMESTATE, OPTIONSTATE, CREDITSSTATE };
 	
 	private Map<States, State> states = new EnumMap<States, State>(States.class);
 	private GameLauncher launcher;
@@ -16,6 +16,7 @@ public class StateSystem {
 		states.put(States.MAINMENUSTATE, new MainMenuState());
 		states.put(States.INTROSTATE, new IntroState());
 		states.put(States.GAMESTATE, new GameState());
+		states.put(States.CREDITSSTATE, new CreditsState());
 	}
 	
 	public void enterState(States s)

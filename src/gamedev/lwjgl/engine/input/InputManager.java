@@ -90,6 +90,10 @@ public class InputManager {
 		listeners.remove(listener);
 	}
 	
+	public void removeAllListeners() {
+		listeners.clear();
+	}
+	
 	public float getRawMouseX() {
 		return mouseX;
 	}

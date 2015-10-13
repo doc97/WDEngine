@@ -170,6 +170,7 @@ public class GameState extends State {
 	@Override
 	public void exit() {
 		Game.INSTANCE.entities.clear();
+		Engine.INSTANCE.input.removeListener(gameInput);
 		pauseMenu.hide();
 		Game.INSTANCE.sounds.stopSound(AssetManager.getSound("background"));
 	}
