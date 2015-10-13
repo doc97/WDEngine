@@ -9,9 +9,11 @@ import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.font.Font.Alignment;
 import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.utils.AssetManager;
+import gamedev.lwjgl.engine.utils.Timer;
 import gamedev.lwjgl.game.Game;
 import gamedev.lwjgl.game.entities.Entity;
 import gamedev.lwjgl.game.entities.Item;
+import gamedev.lwjgl.game.entities.ItemType;
 import gamedev.lwjgl.game.entities.Player;
 import gamedev.lwjgl.game.input.GameInput;
 import gamedev.lwjgl.game.ui.PauseMenu;
@@ -67,8 +69,11 @@ public class GameState extends State {
 	@Override
 	public void update() {
 		Engine.INSTANCE.update();
-
 		if(!paused) {
+			if (Math.random() < 0.02)
+//				addEntity(new Item(ItemType.COIN, (float) (Math.random() * 3800), 3000, 0.1f));
+//			else if (Math.random() < 0.1)
+				addEntity(new Item(ItemType.ENERGY, (float) (Math.random() * 3800), 3000, 2));
 			if(fadeTimer.isActive()) {
 				fadeTimer.update();
 				float value = fadeTimer.getPercentage();

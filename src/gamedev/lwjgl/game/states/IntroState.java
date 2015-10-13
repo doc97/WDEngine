@@ -2,7 +2,6 @@ package gamedev.lwjgl.game.states;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 
-import java.util.List;
 import java.util.Map;
 
 import gamedev.lwjgl.engine.Engine;
@@ -10,43 +9,86 @@ import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.font.Font.Alignment;
 import gamedev.lwjgl.engine.input.InputListener;
 import gamedev.lwjgl.engine.sound.Sound;
-import gamedev.lwjgl.engine.textures.AnimatedTexture;
 import gamedev.lwjgl.engine.textures.Color;
-import gamedev.lwjgl.engine.textures.ModelTexture;
-import gamedev.lwjgl.engine.textures.TextureRegion;
 import gamedev.lwjgl.engine.utils.AssetManager;
+import gamedev.lwjgl.engine.utils.Timer;
 import gamedev.lwjgl.game.Game;
+import gamedev.lwjgl.game.graphics.Cutscene;
+import gamedev.lwjgl.game.graphics.Scene;
+import gamedev.lwjgl.game.graphics.SceneText;
+import gamedev.lwjgl.game.graphics.SceneTexture;
 import gamedev.lwjgl.game.states.StateSystem.States;
 
 public class IntroState extends State {
 
-	private AnimatedTexture introCutscene;
-	private ModelTexture texture1, texture2;
+	private Cutscene introScene = new Cutscene();
 	private Font font;
 	private Color color = new Color(1, 1, 1, 1);
 	private InputListener introInput;
-	private Timer showTimer = new Timer();
-	private Timer fadeOutTimer = new Timer();
-	private Timer fadeInTimer = new Timer();
-	private Timer blackTimer = new Timer();
-	private int scene;
-	private int fontFades;
-	private float fontOffsetX;
 	
 	public IntroState() {
 		Map<String, String> data = AssetManager.getData("intro");
-		String cutscene = data.get("cutscene");
-		String texname1 = data.get("introtexture1");
-		String texname2 = data.get("introtexture2");
-		String fontname = data.get("font");
-
-		List<TextureRegion> frames = AssetManager.getAnimationFrames(cutscene);
-		introCutscene = new AnimatedTexture(frames, Timer.getTicks(60), false);
-		texture1 = AssetManager.getTexture(texname1);
-		texture2 = AssetManager.getTexture(texname2);
-		font = AssetManager.getFont(fontname);
-		font.setAlignment(Alignment.LEFT);
 		
+		String cutscene = data.get("cutscene");
+		String texname1 = data.get("frame1");
+		String texname2 = data.get("frame2");
+		String fontname = data.get("font");
+		
+		String mainmenutex = AssetManager.getData("mainmenu").get("title_screen");
+
+		font = AssetManager.getFont(fontname);
+		font.setAlignment(Alignment.CENTER);
+		
+		Scene scene1 = new Scene(0, 0, Timer.getTicks(2000));
+			SceneTexture s1Tex1 = new SceneTexture();
+			s1Tex1.setTexture(AssetManager.getTexture(mainmenutex));
+			s1Tex1.setPosition(0, 0);
+			s1Tex1.setDimension(Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
+			scene1.addObject(s1Tex1);
+		introScene.addScene(scene1);
+			
+		Scene scene2 = new Scene(Timer.getTicks(2000), Timer.getTicks(1000), Timer.getTicks(1000));
+			SceneText s2Text1 = new SceneText();
+			s2Text1.setFont(font);
+			s2Text1.setFontSize(font.getOriginalSize());
+			s2Text1.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() / 2);
+			s2Text1.setText("The Casuals");
+			scene2.addObject(s2Text1);
+		introScene.addScene(scene2);
+		
+		Scene scene3 = new Scene(Timer.getTicks(2000), Timer.getTicks(1000), Timer.getTicks(2000));
+			SceneText s3Text1 = new SceneText();
+			s3Text1.setFont(font);
+			s3Text1.setFontSize(font.getOriginalSize());
+			s3Text1.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() / 2 + 10);
+			s3Text1.setText("in association with");
+			scene3.addObject(s3Text1);
+			
+			SceneText s3Text2 = new SceneText();
+			s3Text2.setFont(font);
+			s3Text2.setFontSize(font.getOriginalSize());
+			s3Text2.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() / 2 - 10);
+			s3Text2.setText("GameDev klubi");
+			scene3.addObject(s3Text2);
+		introScene.addScene(scene3);
+		
+		Scene scene4 = new Scene(Timer.getTicks(2000), Timer.getTicks(1000), Timer.getTicks(2000));
+			SceneTexture s4Text1 = new SceneTexture();
+			s4Text1.setTexture(AssetManager.getTexture(texname1));
+			s4Text1.setPosition(0, 0);
+			s4Text1.setDimension(Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
+			scene4.addObject(s4Text1);
+		introScene.addScene(scene4);
+		
+		Scene scene5 = new Scene(Timer.getTicks(2000), Timer.getTicks(1000), Timer.getTicks(2000));
+			SceneTexture s5Tex1 = new SceneTexture();
+			s5Tex1.setTexture(AssetManager.getTexture(texname2));
+			s5Tex1.setPosition(0, 0);
+			s5Tex1.setDimension(Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
+			scene5.addObject(s5Tex1);
+		introScene.addScene(scene5);
+			
+			
 		introInput = new InputListener() {
 			@Override
 			public void update() {}
@@ -83,88 +125,22 @@ public class IntroState extends State {
 		Engine.INSTANCE.display.setBackgroundColor(0, 0, 0, 1);
 		Engine.INSTANCE.input.addListener(introInput);
 		
-		scene = 0;
-		fontFades = 0;
-		fadeInTimer.set(Timer.getTicks(60));
-		fadeInTimer.setActive(true);
 		font.setFadeTimer(Timer.getTicks(60));
 		font.setFadeEffect(true);
 		
+		introScene.start();
 		Game.INSTANCE.sounds.playSound(AssetManager.getSound("intro"));
 	}
 	
 	@Override
 	public void update() {
 		Engine.INSTANCE.update();
-		if(showTimer.isActive()) {
-			showTimer.update();
-			if(showTimer.getPercentage() == 1) {
-				showTimer.setActive(false);
-				fadeOutTimer.set(60);
-				fadeOutTimer.setActive(true);
-				scene++;
-			}
-		}
-		if(fadeOutTimer.isActive()) {
-			fadeOutTimer.update();
-			float value = 1 - fadeOutTimer.getPercentage();
-			color.setColor(value, value, value, 1);
-			if(fadeOutTimer.getPercentage() == 1) {
-				Engine.INSTANCE.camera.setPosition(
-						Engine.INSTANCE.camera.getWidth() / 2,
-						Engine.INSTANCE.camera.getHeight() / 2
-						);
-				
-				fadeOutTimer.setActive(false);
-				if(scene == 2) {
-					fadeInTimer.set(60);
-					fadeInTimer.setActive(true);
-					font.setAlignment(Alignment.CENTER);
-				} else if(scene == 5) {
-					fadeInTimer.set(60);
-					fadeInTimer.setActive(true);
-				} else if(scene == 8) {
-					blackTimer.set(60);
-					blackTimer.setActive(true);
-				}
-				scene++;
-			}
-		}
-		if(fadeInTimer.isActive()) {
-			fadeInTimer.update();
-			float value = fadeInTimer.getPercentage();
-			if(scene > 0)
-				color.setColor(value, value, value, 1);
-			
-			if(fadeInTimer.getPercentage() == 1) {
-				fadeInTimer.setActive(false);
-				
-				if(scene == 0) {
-					showTimer.set(Timer.getTicks(300));
-					font.getFadeTimer().setActive(true);
-				} else if(scene == 6) {
-					showTimer.set(introCutscene.getLength());
-				} else {
-					showTimer.set(Timer.getTicks(180));
-				}
-				
-				showTimer.setActive(true);
-				scene++;
-			}
-		}
-		if(blackTimer.isActive()) {
-			blackTimer.update();
-			if(blackTimer.getPercentage() == 1) {
-				blackTimer.setActive(false);
-				Game.INSTANCE.states.enterState(States.GAMESTATE);
-			}
-		}
-		
-		if(scene > 5 && scene < 9)
-			introCutscene.update();
 
+		introScene.update();
+		if(introScene.hasFinished())
+			Game.INSTANCE.states.enterState(States.GAMESTATE);
+		
 		font.update();
-		fontOffsetX += 0.1f;
 	}
 	
 	@Override
@@ -173,49 +149,8 @@ public class IntroState extends State {
 		Engine.INSTANCE.batch.begin();
 		Engine.INSTANCE.batch.setColor(color);
 		
-
-		if(scene < 3) {
-			Engine.INSTANCE.batch.draw(texture1, 0, 0,
-					Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
-
-			
-			float textX = 100 + Engine.INSTANCE.camera.getX() - Engine.INSTANCE.camera.getWidth() / 2 + fontOffsetX;
-			float textY = 100 + Engine.INSTANCE.camera.getY() - Engine.INSTANCE.camera.getHeight() / 2;
-
-			if(font.getFadeTimer().getPercentage() == 1) {
-				fontFades++;
-				font.getFadeTimer().set(Timer.getTicks(120));
-				font.getFadeTimer().setActive(true);
-			}
-			
-			font.setFadeEffect(fontFades == 0);
-			font.drawString(Engine.INSTANCE.batch, "THE CASUALS", font.getOriginalSize(), textX, textY);
-			
-			// Uncomment to use whole text fade in
-			/*Color color = Engine.INSTANCE.batch.getColor();
-			color.setColor(color.r, color.g, color.b, (showTimer.getCurrentTime() - 60) / 120);*/
-			
-			if(fontFades > 0) {
-				font.setFadeEffect(fontFades == 1);
-				font.drawString(Engine.INSTANCE.batch, "present", font.getOriginalSize(), textX, textY - font.getOriginalSize());
-			}
-
-		} else if(scene < 6) {
-			Engine.INSTANCE.batch.draw(texture2, -100, -100,
-					Engine.INSTANCE.camera.getWidth() + 200,
-					Engine.INSTANCE.camera.getHeight() + 200);
-			
-			float textX = Engine.INSTANCE.camera.getX();
-			float textY = Engine.INSTANCE.camera.getY();
-			font.drawString(Engine.INSTANCE.batch, "Wisp Of The Willow", font.getOriginalSize() * 4, textX, textY);
-			font.drawString(Engine.INSTANCE.batch, "", font.getOriginalSize() * 4, textX, textY);
-		} else if(scene < 9) {
-			TextureRegion frame = introCutscene.getCurrent();
-			if(frame != null) {
-				Engine.INSTANCE.batch.draw(introCutscene.getCurrent(), -100, -100,
-					Engine.INSTANCE.camera.getWidth() + 200, Engine.INSTANCE.camera.getHeight() + 200);
-			}
-		}
+		introScene.render(Engine.INSTANCE.batch);
+		
 		Engine.INSTANCE.batch.setColor(1, 1, 1, 1);
 		Engine.INSTANCE.batch.end();
 		Engine.INSTANCE.display.updateDisplay();

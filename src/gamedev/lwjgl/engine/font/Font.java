@@ -11,7 +11,7 @@ import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 
 import gamedev.lwjgl.engine.textures.ModelTexture;
-import gamedev.lwjgl.game.states.Timer;
+import gamedev.lwjgl.engine.utils.Timer;
 
 public class Font {
 	public enum Alignment {
@@ -40,7 +40,6 @@ public class Font {
 	}
 	
 	public void drawString(SpriteBatch batch, String text, int fontSize, float x, float y) {
-
 		float currentOffset = 0;
 		float textWidth = 0;
 		float scale = (float) fontSize / (float) originalFontSize;

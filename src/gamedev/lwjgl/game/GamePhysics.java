@@ -12,6 +12,7 @@ import gamedev.lwjgl.engine.physics.Water;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.entities.Entity;
 import gamedev.lwjgl.game.entities.Item;
+import gamedev.lwjgl.game.entities.ItemType;
 import gamedev.lwjgl.game.entities.Player;
 import gamedev.lwjgl.game.map.Map;
 import gamedev.lwjgl.game.ui.Inventory;
@@ -45,7 +46,6 @@ public class GamePhysics {
 			if (e instanceof Item){
 				if (isColliding(e, pl)){
 					toRemove.add((Item) e);
-					Game.INSTANCE.sounds.playSound(AssetManager.getSound("testSound"));
 				}
 			}
 		}
@@ -53,7 +53,10 @@ public class GamePhysics {
 		Inventory inv = pl.getInventory();
 		for (Item i : toRemove){
 			Game.INSTANCE.entities.removeEntity(i);
-			inv.addItem(i);
+			if (i.getType() == ItemType.ENERGY)
+				pl.addEnergy(30);
+			else 
+				inv.addItem(i);
 		}
 		
 		
@@ -187,11 +190,13 @@ public class GamePhysics {
 		Circle circle = entity.getCollisionShape();
 
 		float radius = circle.getRadius();
-
+		
+		entity.setOnGround(false);
 		for(Line line : map.getCollisionMap()) {
 			Vector2f speed = entity.getSpeed();
 			Vector2f newSpeed = calculateCollisionSpeed(line, circle.getPosition(), speed, radius);
 			if(newSpeed != null) {
+				entity.setOnGround(true);
 				if(newSpeed.lengthSquared() == 0) {
 					entity.setSpeed(0, 0);
 					continue;
@@ -221,9 +226,9 @@ public class GamePhysics {
 			} else {
 				if (s != null) {
 					if (entity.getY() - entity.getCollisionShape().getRadius() >= s.getHeight()) {
-						entity.isInWater(false);
+						entity.setInWater(false);
 					} else {
-						entity.isInWater(true);
+						entity.setInWater(true);
 					}
 				}
 				entity.setWaterLift(0);

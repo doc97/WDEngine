@@ -26,6 +26,7 @@ public class Entity {
 	protected boolean dynamic;
 	private Vector2f waterLift = new Vector2f();
 	private boolean isInWater;
+	private boolean isOnGround;
 	
 	public Entity(float x, float y) {
 		this.x = x;
@@ -130,6 +131,16 @@ public class Entity {
 	public void setWaterLift(float lift) {
 		waterLift.y = lift;
 	}
+	
+	public void setInWater(boolean b){
+		if (b && !isInWater)
+			Game.INSTANCE.sounds.playSound(AssetManager.getSound("splash"));
+		isInWater = b;
+	}
+	
+	public void setOnGround(boolean b) {
+		isOnGround = b;
+	}
 
 	public float getX() {
 		return x;
@@ -161,9 +172,11 @@ public class Entity {
 
 	}
 	
-	public void isInWater(boolean b){
-		if (b && !isInWater)
-			Game.INSTANCE.sounds.playSound(AssetManager.getSound("splash"));
-		isInWater = b;
+	public boolean isInWater() {
+		return isInWater;
+	}
+	
+	public boolean isOnGround() {
+		return isOnGround;
 	}
 }

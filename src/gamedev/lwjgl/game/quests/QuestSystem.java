@@ -18,9 +18,9 @@ public class QuestSystem {
 		quests.add(quest);
 	}
 	
-	public void update(float delta){
+	public void update(){
 		for (Quest q : quests){
-			q.update(delta);
+			q.update();
 		}
 	}
 	

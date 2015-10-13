@@ -1,4 +1,4 @@
 cutscene=Cutscene
-introtexture1=title_screen
-introtexture2=title_screen
+frame1=frame1
+frame2=frame2
 font=curly

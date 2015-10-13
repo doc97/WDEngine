@@ -1,4 +1,4 @@
-package gamedev.lwjgl.game.states;
+package gamedev.lwjgl.engine.utils;
 
 import gamedev.lwjgl.game.GameSettings;
 
@@ -9,7 +9,7 @@ public class Timer {
 	private int targetTick;
 	
 	public void update() {
-		if(currentTick < targetTick)
+		if(active && currentTick < targetTick)
 			currentTick++;
 	}
 	
@@ -41,6 +41,6 @@ public class Timer {
 	}
 	
 	public static int getTicks(float milliseconds) {
-		return (int) (GameSettings.UPS * milliseconds / 1000);
+		return (int) (GameSettings.UPS * milliseconds / 1000.0f);
 	}
 }

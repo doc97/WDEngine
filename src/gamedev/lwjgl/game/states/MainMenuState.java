@@ -13,6 +13,7 @@ import gamedev.lwjgl.engine.input.InputListener;
 import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.engine.utils.AssetManager;
+import gamedev.lwjgl.engine.utils.Timer;
 import gamedev.lwjgl.game.Game;
 import gamedev.lwjgl.game.states.StateSystem.States;
 import gamedev.lwjgl.game.ui.Button;
@@ -188,7 +189,7 @@ public class MainMenuState extends State {
 		Engine.INSTANCE.input.addListener(optionsBtnInput);
 		Engine.INSTANCE.input.addListener(exitBtnInput);
 		
-		fadeTimer.set(Timer.getTicks(120));
+		fadeTimer.set(Timer.getTicks(2000));
 		color.setColor(1, 1, 1, 1);
 	}
 

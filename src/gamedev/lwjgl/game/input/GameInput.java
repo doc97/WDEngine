@@ -1,8 +1,6 @@
 package gamedev.lwjgl.game.input;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
+import static org.lwjgl.glfw.GLFW.*;
 
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
@@ -14,8 +12,9 @@ import gamedev.lwjgl.game.states.GameState;
 
 public class GameInput implements InputListener {
 
-	private boolean right, left;
-	private int rightKey = GLFW_KEY_D, leftKey = GLFW_KEY_A, jumpKey = GLFW_KEY_SPACE;
+	private boolean right, left, jump, dash;
+	private int rightKey = GLFW_KEY_D, leftKey = GLFW_KEY_A;
+	private int jumpKey = GLFW_KEY_SPACE, dashKey = GLFW_KEY_RIGHT_SHIFT;
 	private Player player;
 	private GameState gs;
 	
@@ -31,11 +30,16 @@ public class GameInput implements InputListener {
 		
 		Vector2f speed = player.getSpeed();
 		float maxSpeed = player.getMaxSpeed();
-		if((speed.x + dx) * (speed.x + dx) > maxSpeed * maxSpeed) {
-			speed.x = Math.signum(speed.x) * maxSpeed;
-		} else {
-			speed.x += dx;
+		if(!player.isDashing()) {
+			if((speed.x + dx) * (speed.x + dx) > maxSpeed * maxSpeed) {
+				speed.x = Math.signum(speed.x) * maxSpeed;
+			} else {
+				speed.x += dx;
+			}
 		}
+		
+		if(jump && (player.isOnGround() || player.isInWater()))
+			speed.y = 20.0f;
 	}
 	
 	@Override
@@ -45,10 +49,11 @@ public class GameInput implements InputListener {
 		else if(key == leftKey)
 			left = true;
 		else if(key == jumpKey)
-			player.setSpeed(0, 20.0f);
+			jump = true;
+		else if(key == dashKey)
+			player.dash();
 		else if(key == GLFW.GLFW_KEY_ESCAPE)
 			gs.pause();
-			
 			
 		return true;
 	}
@@ -62,6 +67,8 @@ public class GameInput implements InputListener {
 	public boolean keyReleased(int key) {
 		if(key == rightKey) right 	= false;
 		if(key == leftKey)	left 	= false;
+		if(key == jumpKey) 	jump	= false;
+		if(key == dashKey)	dash	= false;
 		return false;
 	}
 	

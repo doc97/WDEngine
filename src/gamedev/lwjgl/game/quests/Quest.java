@@ -2,9 +2,8 @@ package gamedev.lwjgl.game.quests;
 
 import java.util.ArrayList;
 
-import gamedev.lwjgl.engine.Engine;
+import gamedev.lwjgl.engine.utils.Timer;
 import gamedev.lwjgl.game.entities.Item;
-import gamedev.lwjgl.game.ui.Timer;
 
 public class Quest {
 	
@@ -34,11 +33,10 @@ public class Quest {
 		return items;
 	}
 	
-	public void update(float delta){
-		if (timer != null){
-			if (!timer.update(delta)){
-				//time is up do something
-			}
+	public void update(){
+		timer.update();
+		if(timer.getPercentage() == 1) {
+			// Time's up, do something
 		}
 		if (items != null){
 			if (items.size() == 0){
@@ -48,10 +46,7 @@ public class Quest {
 		}
 	}
 	
-	public void render(){
-		if (timer != null)
-			timer.render(Engine.INSTANCE.uiBatch);
-	}
+	public void render() {}
 	
 	public float getProgress(){
 		return progress;
