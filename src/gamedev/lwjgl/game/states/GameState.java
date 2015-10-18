@@ -70,10 +70,10 @@ public class GameState extends State {
 	public void update() {
 		Engine.INSTANCE.update();
 		if(!paused) {
-			if (Math.random() < 0.02)
+			//if (Math.random() < 0.02)
 //				addEntity(new Item(ItemType.COIN, (float) (Math.random() * 3800), 3000, 0.1f));
 //			else if (Math.random() < 0.1)
-				addEntity(new Item(ItemType.ENERGY, (float) (Math.random() * 3800), 3000, 2));
+				//addEntity(new Item(ItemType.ENERGY, (float) (Math.random() * 3800), 3000, 2));
 			if(fadeTimer.isActive()) {
 				fadeTimer.update();
 				float value = fadeTimer.getPercentage();
@@ -86,6 +86,7 @@ public class GameState extends State {
 		
 			Game.INSTANCE.physics.update();
 			Game.INSTANCE.container.getMap().update();
+			Game.INSTANCE.particles.update();
 			
 			for (Entity e : Game.INSTANCE.entities.getEntities()){
 				e.update();
@@ -121,8 +122,9 @@ public class GameState extends State {
 		for (Item item : items){
 			item.render(Engine.INSTANCE.batch);
 		}
-
+		
 		Engine.INSTANCE.batch.setColor(Color.WHITE);
+		Game.INSTANCE.particles.render(Engine.INSTANCE.batch);
 
 		Engine.INSTANCE.camera.setPosition(
 				Engine.INSTANCE.camera.getWidth() / 2,

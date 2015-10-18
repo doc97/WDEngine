@@ -59,6 +59,14 @@ public class Player extends Entity {
 		if(dashTimer.isActive())
 			speed.set(Math.signum(speed.x) * 5 * maxSpeed, 0);
 		
+		// Add particles
+		int xoffset = 30;
+		int yoffset = 30;
+		Game.INSTANCE.particles.createPlayerParticle(
+				(float) (x + Math.random() * xoffset - xoffset / 2),
+				(float) (y + Math.random() * yoffset - yoffset / 6),
+				0, 0.5f, 8, 0.1f);
+		
 		super.update();
 	}
 	
