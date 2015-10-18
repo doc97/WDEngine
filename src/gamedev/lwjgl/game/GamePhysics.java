@@ -91,18 +91,6 @@ public class GamePhysics {
 		}
 	}
 
-	private Vector2f calculateCollisionSpeed(Line line, Vector2f pos, Vector2f speed, float radius) {
-		Collision collision = calculateCollision(line, pos, speed, radius);
-		
-		if(collision != null) {
-			Vector2f projUnit = collision.getProjectionUnit();
-			float speedDot = speed.dot(projUnit);
-			Vector2f speedProj = new Vector2f(projUnit.x * speedDot, projUnit.y * speedDot);
-			return speedProj;
-		}
-		return null;
-	}
-	
 	public Collision calculateCollision(Line line, Vector2f pos, Vector2f speed, float radius) {
 		Vector2f end = new Vector2f(pos.x + speed.x, pos.y + speed.y);
 		Vector2f pt = new Vector2f();
@@ -194,18 +182,32 @@ public class GamePhysics {
 		entity.setOnGround(false);
 		for(Line line : map.getCollisionMap()) {
 			Vector2f speed = entity.getSpeed();
-			Vector2f newSpeed = calculateCollisionSpeed(line, circle.getPosition(), speed, radius);
-			if(newSpeed != null) {
-				entity.setOnGround(true);
-				if(newSpeed.lengthSquared() == 0) {
+			Collision collision = calculateCollision(line, circle.getPosition(), speed, radius);
+			
+			if(collision != null) {
+				Vector2f projUnit = collision.getProjectionUnit();
+				float speedDot = speed.dot(projUnit);
+				Vector2f speedProj = new Vector2f(projUnit.x * speedDot, projUnit.y * speedDot);
+				
+				Vector2f normal = new Vector2f();
+				Vector2f.sub(collision.getContactPoint(), circle.getPosition(), normal);
+				float normalAngle = (float) Math.atan2(normal.y, normal.x);
+				float margin = (float) (Math.PI / 10);
+				if((normalAngle > -Math.PI + margin && normalAngle < -margin) ||
+						(normalAngle > Math.PI + margin && normalAngle < 2 * Math.PI - margin)) {
+					entity.setOnGround(true);
+				}
+				
+				if(speedProj.lengthSquared() == 0) {
 					entity.setSpeed(0, 0);
 					continue;
 				}
+				
 				// Applying friction
 				Vector2f frictionSpeed = new Vector2f();
-				newSpeed.normalize(frictionSpeed);
+				speedProj.normalize(frictionSpeed);
 				frictionSpeed.mul(-friction);
-				entity.setSpeed(newSpeed.x, newSpeed.y);
+				entity.setSpeed(speedProj.x, speedProj.y);
 				
 				if(entity.getSpeed().lengthSquared() < frictionSpeed.lengthSquared())
 					entity.setSpeed(0, 0);

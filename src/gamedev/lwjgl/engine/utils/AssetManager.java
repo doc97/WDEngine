@@ -374,20 +374,20 @@ public class AssetManager {
 		List<String> objs = new ArrayList<String>();
 		List<Line> lines = new ArrayList<Line>();
 		List<Water> waters = new ArrayList<Water>();
-		ModelTexture background = null;
-		ModelTexture parallax1 = null;
-		ModelTexture parallax2 = null;
+		ModelTexture ground = null;
+		ModelTexture background1 = null;
+		ModelTexture background2 = null;
 		try {
 			while((line = br.readLine()) != null) {
 				String[] data = line.split("=");
 				if(data[0].equals("obj"))
 					objs.add(data[1]);
-				else if(data[0].equals("background"))
-					background = getTexture(data[1]);
-				else if(data[0].equals("parallax1"))
-					parallax1 = getTexture(data[1]);
-				else if(data[0].equals("parallax2"))
-					parallax2 = getTexture(data[1]);
+				else if(data[0].equals("ground"))
+					ground = getTexture(data[1]);
+				else if(data[0].equals("background1"))
+					background1 = getTexture(data[1]);
+				else if(data[0].equals("background2"))
+					background2 = getTexture(data[1]);
 				else if(data[0].equals("water")) {
 					String[] waterData = data[1].split(",");
 					float x = Float.parseFloat(waterData[0]);
@@ -408,7 +408,7 @@ public class AssetManager {
 			lines.addAll(loadLineSegments(filename + "/" + name));
 		
 		gamedev.lwjgl.game.map.Map map = new gamedev.lwjgl.game.map.Map();
-		map.setTextures(background, parallax1, parallax2);
+		map.setTextures(ground, background1, background2);
 		map.setCollisionMap(lines);
 		map.setWaters(waters);
 		return map;
@@ -434,7 +434,7 @@ public class AssetManager {
 				if(data[0].equals("v")) {
 					Vector2f vertex = new Vector2f(Float.parseFloat(data[1]), Float.parseFloat(data[2]));
 					vertices.add(vertex);
-				} else if(data[0].equals("l")) {
+				} else if(data[0].equals("f")) {
 					Line edge = new Line(vertices.get(Integer.parseInt(data[1]) - 1),
 							vertices.get(Integer.parseInt(data[2]) - 1));
 					edges.add(edge);

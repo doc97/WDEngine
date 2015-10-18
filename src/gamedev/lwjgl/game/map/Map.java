@@ -11,9 +11,9 @@ import gamedev.lwjgl.engine.textures.ModelTexture;
 
 public class Map {
 	private List<Line> collisionMap;
-	private ModelTexture level;
-	private ModelTexture parallax1;
-	private ModelTexture parallax2;
+	private ModelTexture ground;
+	private ModelTexture background1;
+	private ModelTexture background2;
 	private List<Water> waters;
 	private float offsetFactor = 0.1f;
 	private float camX, camY;
@@ -31,8 +31,13 @@ public class Map {
 	}
 	
 	public void renderParallax(SpriteBatch batch) {
-		batch.draw(parallax2, 300 + camX * offsetFactor * 2, camY * offsetFactor * 2, parallax2.getWidth(), parallax2.getHeight());
-		batch.draw(parallax1, 600 + camX * offsetFactor, camY * offsetFactor, parallax1.getWidth(), parallax2.getHeight());
+		batch.draw(background2, 300 + camX * offsetFactor * 2, camY * offsetFactor * 2, background2.getWidth(), background2.getHeight());
+		batch.draw(background1, 600 + camX * offsetFactor, camY * offsetFactor, background1.getWidth(), background2.getHeight());
+	}
+	
+	public void renderBackground(SpriteBatch batch) {
+		batch.draw(background2, 0, 0, background2.getWidth(), background2.getHeight());
+		batch.draw(background1, 0, 0, background1.getWidth(), background1.getHeight());
 	}
 	
 	public void renderWater(SpriteBatch batch) {
@@ -40,18 +45,18 @@ public class Map {
 			w.render(batch);
 	}
 	
-	public void renderLevel(SpriteBatch batch) {
-		batch.draw(level, 0, 0, level.getWidth(), level.getHeight());
+	public void renderGround(SpriteBatch batch) {
+		batch.draw(ground, 0, 0, ground.getWidth(), ground.getHeight());
 	}
 	
 	public void setWaters(List<Water> waters) {
 		this.waters = waters;
 	}
 	
-	public void setTextures(ModelTexture background, ModelTexture parallax1, ModelTexture parallax2) {
-		this.level = background;
-		this.parallax1 = parallax1;
-		this.parallax2 = parallax2;
+	public void setTextures(ModelTexture ground, ModelTexture background1, ModelTexture background2) {
+		this.ground = ground;
+		this.background1 = background1;
+		this.background2 = background2;
 	}
 	
 	public void setCollisionMap(List<Line> lines) {

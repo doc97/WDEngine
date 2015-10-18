@@ -1,6 +1,5 @@
-background=map_background
-parallax1=map_parallax1
-parallax2=map_parallax2
-obj=curve
-obj=line
-water=600, 370, 1150, 125
+ground=level_01_ground
+background1=level_01_background_1
+background2=level_01_background_2
+obj=outline
+water=768, 0, 1035, 338

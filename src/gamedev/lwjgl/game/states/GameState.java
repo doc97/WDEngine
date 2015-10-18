@@ -107,13 +107,15 @@ public class GameState extends State {
 		Engine.INSTANCE.batch.begin();
 		
 		Engine.INSTANCE.batch.setColor(fadeColor);
-		Game.INSTANCE.container.getMap().renderParallax(Engine.INSTANCE.batch);
-
+		//Game.INSTANCE.container.getMap().renderParallax(Engine.INSTANCE.batch);
+		Game.INSTANCE.container.getMap().renderBackground(Engine.INSTANCE.batch);
+		
 		for(Entity entity : Game.INSTANCE.entities.getEntities()) {
 			entity.render(Engine.INSTANCE.batch);
 		}
+		
 		Game.INSTANCE.container.getMap().renderWater(Engine.INSTANCE.batch);
-		Game.INSTANCE.container.getMap().renderLevel(Engine.INSTANCE.batch);
+		Game.INSTANCE.container.getMap().renderGround(Engine.INSTANCE.batch);
 		
 		basicFont.drawString(Engine.INSTANCE.batch, "Wille, Dani ja Reetu!?_,", basicFont.getOriginalSize(), 0, 300);
 		
@@ -165,6 +167,15 @@ public class GameState extends State {
 		fadeTimer.setActive(true);
 		
 		paused = false;
+		
+		Engine.INSTANCE.camera.setUpperLimits(
+				1920 * 2 - Engine.INSTANCE.camera.getWidth() / 2,
+				1080 - Engine.INSTANCE.camera.getHeight() / 2
+				);
+		Engine.INSTANCE.camera.setLowerLimits(
+				Engine.INSTANCE.camera.getWidth() / 2,
+				Engine.INSTANCE.camera.getHeight() / 2
+				);
 		
 		Game.INSTANCE.sounds.loopSound(AssetManager.getSound("background"));
 	}

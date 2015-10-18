@@ -12,7 +12,7 @@ public class GameContainer {
 	
 	public void init() {
 		map = AssetManager.getMap("level1");
-		player = new Player(100, 600);
+		player = new Player(100, 1000);
 		
 		if(map == null) {
 			Logger.message("GameContainer", "Map is null, shutting down...");
