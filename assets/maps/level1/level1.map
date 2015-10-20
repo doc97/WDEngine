@@ -2,4 +2,5 @@ ground=level_01_ground
 background1=level_01_background_1
 background2=level_01_background_2
 obj=outline
+obj=branch
 water=768, 0, 1035, 338

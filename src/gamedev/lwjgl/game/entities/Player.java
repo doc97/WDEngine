@@ -2,13 +2,12 @@ package gamedev.lwjgl.game.entities;
 
 import java.util.Map;
 
-import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.physics.Circle;
 import gamedev.lwjgl.engine.render.SpriteBatch;
-import gamedev.lwjgl.engine.sound.SoundSystem;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.engine.utils.Timer;
 import gamedev.lwjgl.game.Game;
+import gamedev.lwjgl.game.ResourceSystem;
 import gamedev.lwjgl.game.ui.Inventory;
 
 public class Player extends Entity {
@@ -18,8 +17,7 @@ public class Player extends Entity {
 	private int radius;
 	private Timer dashTimer = new Timer();
 	private Inventory inventory;
-	private int energy;
-
+	private ResourceSystem resources;
 	
 	public Player(float x, float y) {
 		super(x, y);
@@ -28,6 +26,7 @@ public class Player extends Entity {
 		//animation = new AnimatedTexture(AssetManager.loadAnimation("Test.anim"), 60/30);
 		dynamic = true;
 		inventory = new Inventory();
+		resources = new ResourceSystem();
 	}
 	
 	private void init() {
@@ -42,11 +41,6 @@ public class Player extends Entity {
 	public void dash() {
 		dashTimer.set(10);
 		dashTimer.setActive(true);
-	}
-	
-	public void addEnergy(int energy) {
-		this.energy += energy;
-		Game.INSTANCE.sounds.playSound(AssetManager.getSound("nom"));
 	}
 	
 	@Override
@@ -92,12 +86,11 @@ public class Player extends Entity {
 		return dashTimer.isActive();
 	}
 	
-	public Inventory getInventory(){
+	public Inventory getInventory() {
 		return inventory;
 	}
 	
-	public int getEnergy() {
-		return energy;
+	public ResourceSystem getResources() {
+		return resources;
 	}
-	
 }

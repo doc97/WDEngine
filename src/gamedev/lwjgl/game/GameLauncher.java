@@ -28,6 +28,7 @@ public class GameLauncher {
 			double currentTime = glfwGetTime();
 			updateTime += (float) (currentTime - lastTime);
 			lastTime = currentTime;
+			System.out.println(updateTime);
 			
 			while(updateTime >= 1.0f / GameSettings.UPS) {
 				updateTime -= 1.0f / GameSettings.UPS;

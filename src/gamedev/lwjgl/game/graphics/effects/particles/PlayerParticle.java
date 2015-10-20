@@ -13,7 +13,7 @@ public class PlayerParticle {
 	private float speed;
 	
 	public PlayerParticle() {
-		texture = AssetManager.getTexture("player_particle");
+		texture = AssetManager.getTexture("player_particle_2");
 	}
 	
 	public void init(float x, float y, float dx, float dy, float size, float speed) {

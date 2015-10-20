@@ -91,9 +91,9 @@ public class Font {
 			}
 			
 			batch.draw(glyph.getTexture(), drawX, drawY,
-
 					width, height, glyph.getTexture().getUVs(),
 					0, 0, 0);
+					
 			currentOffset += glyph.getAdvanceX() * scale;
 		}
 	}

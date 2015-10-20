@@ -53,10 +53,14 @@ public class GamePhysics {
 		Inventory inv = pl.getInventory();
 		for (Item i : toRemove){
 			Game.INSTANCE.entities.removeEntity(i);
-			if (i.getType() == ItemType.ENERGY)
-				pl.addEnergy(30);
-			else 
+			switch(i.getType()) {
+			case ENERGY :
+				pl.getResources().addEnergy(30);
+				break;
+			case COIN :
 				inv.addItem(i);
+				break;
+			}
 		}
 		
 		

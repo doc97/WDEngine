@@ -1,7 +1,8 @@
 models=
 textures=lwjgl;Player;willowis2;map_background;map_parallax1;map_parallax2;intro_texture;frames;title_screen;button;coin;burg
 textures=pausemenu_resume;pausemenu_options;pausemenu_mainmenu;pausemenu_frame;pausemenu_pointer
-textures=frame1;frame2;player_particle
+textures=title_text;mainmenu_play;mainmenu_credits;mainmenu_exit
+textures=frame1;frame2;player_particle;player_particle_2
 textures=level_01_ground;level_01_background_1;level_01_background_2
 sounds=testSound;splash;intro;background;nom
 animations=Cutscene

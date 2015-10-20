@@ -19,6 +19,7 @@ import gamedev.lwjgl.game.ui.Button;
 public class MainMenuState extends State {
 
 	private ModelTexture titleScreen;
+	private ModelTexture titleText;
 	private Button startBtn;
 	private Button optionsBtn;
 	private Button exitBtn;
@@ -33,11 +34,13 @@ public class MainMenuState extends State {
 	public MainMenuState() {
 		Map<String, String> data = AssetManager.getData("mainmenu");
 		String titleScreenTex = data.get("title_screen");
+		String titleTextTex = data.get("title_text");
 		String startBtnTex = data.get("start_button");
 		String optionsBtnTex = data.get("options_button");
 		String exitBtnTex = data.get("exit_button");
 		
 		titleScreen = AssetManager.getTexture(titleScreenTex);
+		titleText = AssetManager.getTexture(titleTextTex);
 		
 		Vector4f startNormal = new Vector4f(0, 0, 128, 64);
 		Vector4f startPressed= new Vector4f(129, 0, 128, 64);
@@ -89,11 +92,11 @@ public class MainMenuState extends State {
 			}
 		};
 		
-		Vector4f optionsNormal = new Vector4f(0, 0, 128, 64);
-		Vector4f optionsPressed = new Vector4f(129, 0, 128, 64);
+		Vector4f optionsNormal = new Vector4f(0, 0, 203, 47);
+		Vector4f optionsPressed = new Vector4f(0, 0, 203, 47);
 		optionsBtn = new Button(optionsBtnTex, optionsNormal, optionsPressed);
 		optionsBtn.setPosition(100, 64 + 250);
-		optionsBtn.setSize(128, 64);
+		optionsBtn.setSize(203, 47);
 		optionsBtnInput = new InputListener() {
 			
 			@Override
@@ -231,6 +234,10 @@ public class MainMenuState extends State {
 		Engine.INSTANCE.batch.draw(titleScreen, 0, 0,
 				Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
 		Engine.INSTANCE.batch.setColor(color);
+		Engine.INSTANCE.batch.draw(titleText,
+				(Engine.INSTANCE.camera.getWidth() - titleText.getWidth()) / 2,
+				(Engine.INSTANCE.camera.getHeight() - titleText.getHeight()) / 2,
+				titleText.getWidth(), titleText.getHeight());
 		startBtn.render(Engine.INSTANCE.batch);
 		optionsBtn.render(Engine.INSTANCE.batch);
 		exitBtn.render(Engine.INSTANCE.batch);
