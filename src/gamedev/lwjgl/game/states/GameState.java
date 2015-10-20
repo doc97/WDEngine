@@ -47,19 +47,15 @@ public class GameState extends State {
 	}
 	
 	public void pause() {
-		if(!paused) {
-			paused = true;
-			pauseMenu.show();
-			Engine.INSTANCE.input.removeListener(gameInput);
-		}
+		paused = true;
+		pauseMenu.show();
+		Engine.INSTANCE.input.removeListener(gameInput);
 	}
 	
 	public void unpause() {
-		if(paused) {
-			paused = false;
-			pauseMenu.hide();
-			Engine.INSTANCE.input.addListener(gameInput);
-		}
+		paused = false;
+		pauseMenu.hide();
+		Engine.INSTANCE.input.addListener(gameInput);
 	}
 	
 	public boolean isPaused() {

@@ -14,7 +14,7 @@ import gamedev.lwjgl.game.states.GameState;
 
 public class GameInput implements InputListener {
 
-	private boolean right, left, jump, dash;
+	private boolean right, left, jump;
 	private int rightKey = GLFW_KEY_D, leftKey = GLFW_KEY_A;
 	private int jumpKey = GLFW_KEY_SPACE, dashKey = GLFW_KEY_RIGHT_SHIFT;
 	private Player player;
@@ -94,7 +94,6 @@ public class GameInput implements InputListener {
 			jump = false;
 			jumpedOnCurrent = false;
 		}
-		if(key == dashKey)	dash	= false;
 		return false;
 	}
 	

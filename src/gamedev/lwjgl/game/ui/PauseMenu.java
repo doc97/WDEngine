@@ -3,6 +3,7 @@ package gamedev.lwjgl.game.ui;
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 
 import org.joml.Vector4f;
+import org.lwjgl.glfw.GLFW;
 
 import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.input.InputListener;
@@ -22,6 +23,7 @@ public class PauseMenu {
 	private Button resumeBtn;
 	private Button optionsBtn;
 	private Button menuBtn;
+	private InputListener generalInput;
 	private InputListener resumeBtnInput;
 	private InputListener optionsBtnInput;
 	private InputListener menuBtnInput;
@@ -199,6 +201,43 @@ public class PauseMenu {
 			@Override
 			public boolean keyPressed(int key) { return false; }
 		};
+		
+		generalInput = new InputListener() {
+			@Override
+			public void update() {
+				
+			}
+			
+			@Override
+			public boolean mouseReleased(int button) {
+				return false;
+			}
+			
+			@Override
+			public boolean mousePressed(int button) {
+				return false;
+			}
+			
+			@Override
+			public boolean keyRepeat(int key) {
+				return false;
+			}
+			
+			@Override
+			public boolean keyReleased(int key) {
+				return false;
+			}
+			
+			@Override
+			public boolean keyPressed(int key) {
+				if(key == GLFW.GLFW_KEY_ESCAPE) {
+					gs.unpause();
+					return true;
+				}
+				
+				return false;
+			}
+		};
 	}
 	
 	public void update() {
@@ -243,12 +282,14 @@ public class PauseMenu {
 	
 	public void show() {
 		pointerColor.setColor(1, 1, 1, 1);
+		Engine.INSTANCE.input.addListener(generalInput);
 		Engine.INSTANCE.input.addListener(resumeBtnInput);
 		Engine.INSTANCE.input.addListener(optionsBtnInput);
 		Engine.INSTANCE.input.addListener(menuBtnInput);
 	}
 	
 	public void hide() {
+		Engine.INSTANCE.input.removeListener(generalInput);
 		Engine.INSTANCE.input.removeListener(resumeBtnInput);
 		Engine.INSTANCE.input.removeListener(optionsBtnInput);
 		Engine.INSTANCE.input.removeListener(menuBtnInput);
