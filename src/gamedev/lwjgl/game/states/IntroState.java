@@ -60,14 +60,14 @@ public class IntroState extends State {
 			SceneText s3Text1 = new SceneText();
 			s3Text1.setFont(font);
 			s3Text1.setFontSize(font.getOriginalSize());
-			s3Text1.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() / 2 + 10);
+			s3Text1.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() / 2 + font.getOriginalSize());
 			s3Text1.setText("in association with");
 			scene3.addObject(s3Text1);
 			
 			SceneText s3Text2 = new SceneText();
 			s3Text2.setFont(font);
 			s3Text2.setFontSize(font.getOriginalSize());
-			s3Text2.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() / 2 - 10);
+			s3Text2.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() / 2 - font.getOriginalSize());
 			s3Text2.setText("GameDev klubi");
 			scene3.addObject(s3Text2);
 		introScene.addScene(scene3);

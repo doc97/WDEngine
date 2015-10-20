@@ -1,2 +1,3 @@
 coretexture=Player
-radius=32
+outer=56
+inner=24

@@ -17,6 +17,7 @@ public class CreditsState extends State {
 	private float offsetY;
 	private boolean initialized;
 	private boolean exit;
+	private float scale;
 	
 	private static final String title = "CREDITS";
 	private static final String programmersTitle = "PROGRAMMERS";
@@ -38,6 +39,7 @@ public class CreditsState extends State {
 		
 		Map<String, String> data = AssetManager.getData("credits");
 		font = AssetManager.getFont(data.get("font"));
+		scale = font.getOriginalSize() / 16;
 		font.setAlignment(Alignment.CENTER);
 	}
 	
@@ -61,10 +63,10 @@ public class CreditsState extends State {
 	public void update() {
 		Engine.INSTANCE.update();
 		
-		if(offsetY > 900 || exit)
+		if(offsetY > 900 * scale || exit)
 			Game.INSTANCE.states.enterState(States.MAINMENUSTATE);
 		
-		offsetY += 0.7f;
+		offsetY += 0.7f * scale;
 	}
 
 	@Override
@@ -74,77 +76,77 @@ public class CreditsState extends State {
 		
 		font.drawString(Engine.INSTANCE.batch, title, font.getOriginalSize(),
 				Engine.INSTANCE.camera.getWidth() / 2,
-				Engine.INSTANCE.camera.getHeight() - 100 + offsetY
+				Engine.INSTANCE.camera.getHeight() - 100 * scale + offsetY
 				);
 		
 		// Programmers
 		font.drawString(Engine.INSTANCE.batch, programmersTitle, font.getOriginalSize(),
 				Engine.INSTANCE.camera.getWidth() / 2,
-				Engine.INSTANCE.camera.getHeight() - 200 + offsetY
+				Engine.INSTANCE.camera.getHeight() - 200 * scale + offsetY
 				);
 		
 		font.drawString(Engine.INSTANCE.batch, prog1, font.getOriginalSize(),
 				Engine.INSTANCE.camera.getWidth() / 2,
-				Engine.INSTANCE.camera.getHeight() - 225 + offsetY
+				Engine.INSTANCE.camera.getHeight() - 225 * scale + offsetY
 				);
 		
 		font.drawString(Engine.INSTANCE.batch, prog2, font.getOriginalSize(),
 				Engine.INSTANCE.camera.getWidth() / 2,
-				Engine.INSTANCE.camera.getHeight() - 250 + offsetY
+				Engine.INSTANCE.camera.getHeight() - 250 * scale + offsetY
 				);
 		
 		// Artists
 		font.drawString(Engine.INSTANCE.batch, artistsTitle, font.getOriginalSize(),
 				Engine.INSTANCE.camera.getWidth() / 2,
-				Engine.INSTANCE.camera.getHeight() - 350 + offsetY
+				Engine.INSTANCE.camera.getHeight() - 350 * scale + offsetY
 				);
 		
 		font.drawString(Engine.INSTANCE.batch, artist1, font.getOriginalSize(),
 				Engine.INSTANCE.camera.getWidth() / 2,
-				Engine.INSTANCE.camera.getHeight() - 375 + offsetY
+				Engine.INSTANCE.camera.getHeight() - 375 * scale + offsetY
 				);
 		
 		font.drawString(Engine.INSTANCE.batch, artist2, font.getOriginalSize(),
 				Engine.INSTANCE.camera.getWidth() / 2,
-				Engine.INSTANCE.camera.getHeight() - 400 + offsetY
+				Engine.INSTANCE.camera.getHeight() - 400 * scale+ offsetY
 				);
 		
 		// Game design
 		font.drawString(Engine.INSTANCE.batch, gameDesignTitle, font.getOriginalSize(),
 				Engine.INSTANCE.camera.getWidth() / 2,
-				Engine.INSTANCE.camera.getHeight() - 500 + offsetY
+				Engine.INSTANCE.camera.getHeight() - 500 * scale + offsetY
 				);
 		
 		font.drawString(Engine.INSTANCE.batch, prog1, font.getOriginalSize(),
 				Engine.INSTANCE.camera.getWidth() / 2,
-				Engine.INSTANCE.camera.getHeight() - 525 + offsetY
+				Engine.INSTANCE.camera.getHeight() - 525 * scale + offsetY
 				);
 		
 		font.drawString(Engine.INSTANCE.batch, artist1, font.getOriginalSize(),
 				Engine.INSTANCE.camera.getWidth() / 2,
-				Engine.INSTANCE.camera.getHeight() - 550 + offsetY
+				Engine.INSTANCE.camera.getHeight() - 550 * scale + offsetY
 				);
 		
 		// Story
 		font.drawString(Engine.INSTANCE.batch, storyTitle, font.getOriginalSize(),
 				Engine.INSTANCE.camera.getWidth() / 2,
-				Engine.INSTANCE.camera.getHeight() - 650 + offsetY
+				Engine.INSTANCE.camera.getHeight() - 650 * scale + offsetY
 				);
 		
 		font.drawString(Engine.INSTANCE.batch, writer, font.getOriginalSize(),
 				Engine.INSTANCE.camera.getWidth() / 2,
-				Engine.INSTANCE.camera.getHeight() - 675 + offsetY
+				Engine.INSTANCE.camera.getHeight() - 675 * scale + offsetY
 				);
 		
 		// Level design
 		font.drawString(Engine.INSTANCE.batch, levelTitle, font.getOriginalSize(),
 				Engine.INSTANCE.camera.getWidth() / 2,
-				Engine.INSTANCE.camera.getHeight() - 775 + offsetY
+				Engine.INSTANCE.camera.getHeight() - 775 * scale + offsetY
 				);
 		
 		font.drawString(Engine.INSTANCE.batch, artist1, font.getOriginalSize(),
 				Engine.INSTANCE.camera.getWidth() / 2,
-				Engine.INSTANCE.camera.getHeight() - 800 + offsetY
+				Engine.INSTANCE.camera.getHeight() - 800 * scale + offsetY
 				);
 		
 		Engine.INSTANCE.batch.end();

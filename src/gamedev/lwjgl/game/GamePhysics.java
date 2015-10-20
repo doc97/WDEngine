@@ -1,6 +1,7 @@
 package gamedev.lwjgl.game;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.joml.Vector2f;
 
@@ -14,6 +15,7 @@ import gamedev.lwjgl.game.entities.Entity;
 import gamedev.lwjgl.game.entities.Item;
 import gamedev.lwjgl.game.entities.ItemType;
 import gamedev.lwjgl.game.entities.Player;
+import gamedev.lwjgl.game.map.DynamicMapObject;
 import gamedev.lwjgl.game.map.Map;
 import gamedev.lwjgl.game.ui.Inventory;
 
@@ -34,17 +36,24 @@ public class GamePhysics {
 	}
 	
 	public void update() {
+		Map m = Game.INSTANCE.container.getMap();
+		for (DynamicMapObject dmo : m.getDynamicObjects()){
+			collisionDetection(dmo, m);
+		}
+		
 		for (Entity e : Game.INSTANCE.entities.getEntities()){
 			if (e.isDynamic()){
-				collisionDetection(e, Game.INSTANCE.container.getMap());
+				collisionDetection(e, m);
 			}
 		}
+		
 		Player pl = Game.INSTANCE.container.getPlayer();
 		ArrayList<Item> toRemove = new ArrayList<Item>();
 		
 		for (Entity e : Game.INSTANCE.entities.getEntities()){
 			if (e instanceof Item){
 				if (isColliding(e, pl)){
+					Game.INSTANCE.sounds.playSound(AssetManager.getSound("testSound"));
 					toRemove.add((Item) e);
 				}
 			}
@@ -131,8 +140,13 @@ public class GamePhysics {
 		return null;
 	}
 	
+	public Collision claculateCollison(Line l1, Line l2, Vector2f speed) {
+		
+		return null;
+	}
+	
 	public void calculateWaves(Entity entity, Water water) {
-		Circle circle = entity.getCollisionShape();
+		Circle circle = entity.getCollisionShape().getInner();
 		float radius = circle.getRadius();
 		
 		for(int j = 0; j < water.getSprings().length - 1; j++) {
@@ -150,8 +164,8 @@ public class GamePhysics {
 				Spring backSpring = null;
 				
 				if(xDot != 0) {
-					frontSpring = water.getSpring(entity.getX() + entity.getCollisionShape().getRadius() * Math.signum(xDot));
-					backSpring = water.getSpring(entity.getX() - entity.getCollisionShape().getRadius() * Math.signum(xDot));
+					frontSpring = water.getSpring(entity.getX() + entity.getCollisionShape().getInner().getRadius() * Math.signum(xDot));
+					backSpring = water.getSpring(entity.getX() - entity.getCollisionShape().getInner().getRadius() * Math.signum(xDot));
 				}
 
 				float yFactor = 0;
@@ -178,9 +192,20 @@ public class GamePhysics {
 		}
 	}
 	
+	public void collisionDetection(DynamicMapObject dmo, Map map){
+		ArrayList<Line> lines = dmo.getLines();
+		for (Line line : map.getCollisionMap()){
+			Vector2f speed = dmo.getSpeed();
+			for (Line l : lines){
+				Collision coll = claculateCollison(line, l, speed);
+				
+			}
+		}
+	}
+	
 	public void collisionDetection(Entity entity, Map map) {
-		Circle circle = entity.getCollisionShape();
-
+		Circle circle = entity.getCollisionShape().getOuter();
+		Circle circle2 = entity.getCollisionShape().getInner();
 		float radius = circle.getRadius();
 		
 		entity.setOnGround(false);
@@ -226,12 +251,12 @@ public class GamePhysics {
 			
 			calculateWaves(entity, w);
 
-			if(s != null && entity.getY() >= s.getY() && entity.getY() <= s.getTargetHeight()) {
-				float limit = s.getTargetHeight() + entity.getCollisionShape().getRadius() / 2;
-				entity.setWaterLift(0.999f + 2 * (limit - entity.getY()) / limit);
+			if(s != null && circle2.getPosition().y >= s.getY() && circle2.getPosition().y <= s.getTargetHeight()) {
+				float limit = s.getTargetHeight() + circle2.getRadius() / 2;
+				entity.setWaterLift(0.999f + 2 * (limit - circle2.getPosition().y) / limit);
 			} else {
 				if (s != null) {
-					if (entity.getY() - entity.getCollisionShape().getRadius() >= s.getHeight()) {
+					if (circle2.getPosition().y - circle2.getRadius() >= s.getHeight()) {
 						entity.setInWater(false);
 					} else {
 						entity.setInWater(true);
@@ -243,14 +268,16 @@ public class GamePhysics {
 	}
 	
 	public boolean isColliding(Entity ent1, Entity ent2){
-		Circle circ1 = ent1.getCollisionShape();
-		Circle circ2 = ent2.getCollisionShape();
+		Circle circ1 = ent1.getCollisionShape().getInner();
+		Circle circ2 = ent2.getCollisionShape().getInner();
 		
 		Vector2f pos1 = circ1.getPosition() , pos2 = circ2.getPosition();
 		
-		float distance = pos1.distance(pos2);
+		float distanceSqrd = (pos1.x - pos2.x) * (pos1.x - pos2.x) + (pos1.y - pos2.y) * (pos1.y - pos2.y);
 		
-		if (distance * distance < circ1.getRadius() * circ1.getRadius() + circ2.getRadius() * circ2.getRadius()){
+		float radSumSqrd = (circ1.getRadius() + circ2.getRadius()) * (circ1.getRadius() + circ2.getRadius());
+		
+		if (distanceSqrd < radSumSqrd){
 			return true;
 		}
 		

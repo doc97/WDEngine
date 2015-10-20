@@ -3,6 +3,7 @@ package gamedev.lwjgl.game.entities;
 import java.util.Map;
 
 import gamedev.lwjgl.engine.physics.Circle;
+import gamedev.lwjgl.engine.physics.CollisionBox;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.engine.utils.Timer;
@@ -14,15 +15,18 @@ public class Player extends Entity {
 
 //	private AnimatedTexture animation;
 
-	private int radius;
 	private Timer dashTimer = new Timer();
+
 	private Inventory inventory;
+
 	private ResourceSystem resources;
+	
+	private int sin;
+
 	
 	public Player(float x, float y) {
 		super(x, y);
 		init();
-		collisionShape = new Circle(x, y, radius);
 		//animation = new AnimatedTexture(AssetManager.loadAnimation("Test.anim"), 60/30);
 		dynamic = true;
 		inventory = new Inventory();
@@ -32,10 +36,12 @@ public class Player extends Entity {
 	private void init() {
 		Map<String, String> data = AssetManager.getData("player");
 		String coretex = data.get("coretexture");
-		String rad = data.get("radius");
-
-		radius = Integer.parseInt(rad);
-		addTexture(AssetManager.getTexture(coretex), -radius, -radius / 2, 2 * radius, 2 * radius, 0, 0, 0);
+		String rad = data.get("inner");
+		String rad2 = data.get("outer");
+		int r1 = Integer.parseInt(rad);
+		int r2 = Integer.parseInt(rad2);
+ 		addTexture(AssetManager.getTexture(coretex), -r1, -r1, 2 * r1, 2 * r1, 0, 0, 0);
+		collisionShape = new CollisionBox(x, y, r1, r2);
 	}
 	
 	public void dash() {
@@ -45,8 +51,7 @@ public class Player extends Entity {
 	
 	@Override
 	public void update() {
-//		animation.update(dt);
-		collisionShape.setPosition(x, y);
+		collisionShape.setInnerOffset(0, (float)(Math.sin(sin++ / 18.0f) * 10));
 		dashTimer.update();
 		if(dashTimer.getPercentage() == 1)
 			dashTimer.setActive(false);
@@ -56,10 +61,23 @@ public class Player extends Entity {
 		// Add particles
 		int xoffset = 30;
 		int yoffset = 30;
-		Game.INSTANCE.particles.createPlayerParticle(
-				(float) (x + Math.random() * xoffset - xoffset / 2),
-				(float) (y + Math.random() * yoffset - yoffset / 6),
-				0, 0.5f, 8, 0.1f);
+		Circle c = collisionShape.getInner();
+		if (speed.x == 0) {
+			Game.INSTANCE.particles.createPlayerParticle(
+					(float) (c.getPosition().x + Math.random() * xoffset - xoffset / 2),
+					(float) (c.getPosition().y + Math.random() * yoffset - yoffset / 4),
+					0, -0.1f, 8, 0.1f);
+		} else if (speed.x < 0) {
+			Game.INSTANCE.particles.createPlayerParticle(
+					(float) (c.getPosition().x + c.getRadius() / 3 + Math.random() * xoffset - xoffset / 2),
+					(float) (c.getPosition().y + Math.random() * yoffset - yoffset / 4),
+					0, -0.1f, 8, 0.1f);
+		} else if (speed.x > 0) {
+			Game.INSTANCE.particles.createPlayerParticle(
+					(float) (c.getPosition().x - c.getRadius() / 3 + Math.random() * xoffset - xoffset / 2),
+					(float) (c.getPosition().y + Math.random() * yoffset - yoffset / 4),
+					0, -0.1f, 6, 0.1f);
+		}
 		
 		super.update();
 	}
@@ -73,13 +91,11 @@ public class Player extends Entity {
 	@Override
 	public void addEntityPosition(float dx, float dy) {
 		super.addEntityPosition(dx, dy);
-		collisionShape.addPosition(dx, dy);
 	}
 
 	@Override
 	public void setEntityPosition(float x, float y) {
 		super.setEntityPosition(x, y);
-		collisionShape.setPosition(x, y);
 	}
 	
 	public boolean isDashing() {

@@ -70,8 +70,8 @@ public class GameState extends State {
 	public void update() {
 		Engine.INSTANCE.update();
 		if(!paused) {
-			//if (Math.random() < 0.02)
-//				addEntity(new Item(ItemType.COIN, (float) (Math.random() * 3800), 3000, 0.1f));
+//			if (Game.INSTANCE.entities.getEntities().size() < 100)
+//				addEntity(new Item(ItemType.COIN, (float) (Math.random() * 3800), 500, 0.2f));
 //			else if (Math.random() < 0.1)
 				//addEntity(new Item(ItemType.ENERGY, (float) (Math.random() * 3800), 3000, 2));
 			if(fadeTimer.isActive()) {

@@ -2,13 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="lib/lwjgl/jar/lwjgl.jar" sourcepath="lib/lwjgl/src.zip">
+	<classpathentry exported="true" kind="lib" path="lib/lwjgl/jar/lwjgl.jar" sourcepath="lib/lwjgl/src.zip">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/LWJGLGame/lib/lwjgl/doc/javadoc.zip!/"/>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="WDEngine/lib/lwjgl/native"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/JOML/JOML.jar"/>
-	<classpathentry kind="lib" path="lib/PNGDecoder/PNGDecoder.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/JOML/JOML.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/PNGDecoder/PNGDecoder.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -5,11 +5,8 @@ import java.util.Map;
 
 import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.Logger;
-
 import gamedev.lwjgl.engine.textures.Color;
-
 import gamedev.lwjgl.engine.render.SpriteBatch;
-
 import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.engine.utils.Timer;
 
@@ -24,11 +21,14 @@ public class Font {
 	private Alignment alignment = Alignment.CENTER;
 	private Timer fadeTimer = new Timer();
 	private boolean fadeEffect;
+	private int base;
 	
-	public Font(String name, int fontSize, ModelTexture texture, Map<Integer, Glyph> glyphs) {
+	public Font(String name, int fontSize, ModelTexture texture, Map<Integer, Glyph> glyphs, int base) {
 		this.name = name;
 		this.glyphs = glyphs;
 		originalFontSize = fontSize;
+		this.base = base;
+		
 	}
 	
 	public void update() {
@@ -68,16 +68,16 @@ public class Font {
 			float drawY = 0;
 			switch(alignment) {
 			case LEFT :
-				drawX = x + currentOffset + glyph.getOffsetX();
-				drawY = y;
+				drawX = x + currentOffset + glyph.getOffsetX() * scale;
+				drawY = y + fontSize - (glyph.getOffsetY() + glyph.getHeight()) * scale;
 				break;
 			case CENTER :
 				drawX = x + currentOffset + glyph.getOffsetX() - scale * textWidth / 2;
-				drawY = y;
+				drawY = y + fontSize - (glyph.getOffsetY() + glyph.getHeight()) * scale;
 				break;
 			case RIGHT :
 				drawX = x + currentOffset + glyph.getOffsetX() - scale * textWidth;
-				drawY = y;
+				drawY = y + fontSize - (glyph.getOffsetY() + glyph.getHeight()) * scale;
 				break;
 			}
 			
@@ -93,7 +93,7 @@ public class Font {
 			batch.draw(glyph.getTexture(), drawX, drawY,
 					width, height, glyph.getTexture().getUVs(),
 					0, 0, 0);
-					
+			
 			currentOffset += glyph.getAdvanceX() * scale;
 		}
 	}

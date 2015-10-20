@@ -15,12 +15,14 @@ public class Map {
 	private ModelTexture background1;
 	private ModelTexture background2;
 	private List<Water> waters;
+	private List<DynamicMapObject> dynamics;
 	private float offsetFactor = 0.1f;
 	private float camX, camY;
 	
 	public Map() {
 		collisionMap = new ArrayList<Line>();
 		waters = new ArrayList<Water>();
+		dynamics = new ArrayList<DynamicMapObject>();
 	}
 	
 	public void update() {
@@ -28,6 +30,8 @@ public class Map {
 		camY = Engine.INSTANCE.camera.getY();
 		for(Water w : waters)
 			w.update();
+		for (DynamicMapObject dmo : dynamics)
+			dmo.update();
 	}
 	
 	public void renderParallax(SpriteBatch batch) {
@@ -53,6 +57,10 @@ public class Map {
 		this.waters = waters;
 	}
 	
+	public void setDynamicObjects(List<DynamicMapObject> dynamics) {
+		this.dynamics = dynamics;
+	}
+	
 	public void setTextures(ModelTexture ground, ModelTexture background1, ModelTexture background2) {
 		this.ground = ground;
 		this.background1 = background1;
@@ -65,6 +73,10 @@ public class Map {
 	
 	public List<Line> getCollisionMap() {
 		return collisionMap;
+	}
+	
+	public List<DynamicMapObject> getDynamicObjects(){
+		return dynamics;
 	}
 	
 	public List<Water> getWaters() {

@@ -7,6 +7,7 @@ import java.util.Map;
 import org.joml.Vector4f;
 
 import gamedev.lwjgl.engine.Engine;
+import gamedev.lwjgl.engine.font.Font.Alignment;
 import gamedev.lwjgl.engine.input.InputListener;
 import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.textures.ModelTexture;

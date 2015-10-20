@@ -5,8 +5,13 @@ import java.util.List;
 
 import org.joml.Vector2f;
 
+import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.physics.Circle;
+import gamedev.lwjgl.engine.physics.CollisionBox;
 import gamedev.lwjgl.engine.render.SpriteBatch;
+import gamedev.lwjgl.engine.sound.Sound;
+import gamedev.lwjgl.engine.sound.SoundSystem;
+import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.Game;
@@ -22,7 +27,7 @@ public class Entity {
 	protected float x, y;
 	private float anchorX, anchorY;
 	private float rotation;
-	protected Circle collisionShape;
+	protected CollisionBox collisionShape;
 	protected boolean dynamic;
 	private Vector2f waterLift = new Vector2f();
 	private boolean isInWater;
@@ -54,15 +59,17 @@ public class Entity {
 	
 	public void render(SpriteBatch batch) {
 		for(int i = 0; i < textures.size(); i++) {
-			batch.draw(textures.get(i), x + positions.get(2 * i),  y + positions.get(2 * i + 1),
+			batch.draw(textures.get(i), collisionShape.getInner().getPosition().x + positions.get(2 * i),
+					collisionShape.getInner().getPosition().y + positions.get(2 * i + 1),
 					dimensions.get(2 * i), dimensions.get(2 * i + 1), textures.get(i).getUVs(),
 					rotation + rotations.get(i), anchorX + anchors.get(2 * i), anchorY + anchors.get(2 * i + 1));
 		}
 	}
 	
 	public void addEntityPosition(float dx, float dy) {
-		x += dx;
-		y += dy;
+		collisionShape.addPosistion(dx, dy);
+		this.x += dx;
+		this.y += dy;
 	}
 	
 	public void addEntityRotation(float rotation) {
@@ -75,6 +82,7 @@ public class Entity {
 	}
 
 	public void setEntityPosition(float x, float y) {
+		collisionShape.setPosition(x, y);
 		this.x = x;
 		this.y = y;
 	}
@@ -133,8 +141,17 @@ public class Entity {
 	}
 	
 	public void setInWater(boolean b){
-		if (b && !isInWater)
-			Game.INSTANCE.sounds.playSound(AssetManager.getSound("splash"));
+		if (b && !isInWater && x > Game.INSTANCE.container.getPlayer().x - Engine.INSTANCE.camera.getWidth() / 2
+				&& x < Game.INSTANCE.container.getPlayer().x + Engine.INSTANCE.camera.getWidth() / 2) {
+			Sound s = AssetManager.getSound("splash");
+			if (x > Game.INSTANCE.container.getPlayer().x)
+				Game.INSTANCE.sounds.setBalance(s, Sound.RIGHT);
+			else if (x < Game.INSTANCE.container.getPlayer().x)
+				Game.INSTANCE.sounds.setBalance(s, Sound.LEFT);
+			Game.INSTANCE.sounds.playSound(s);
+			Game.INSTANCE.sounds.setBalance(s, Sound.CENTER);
+			
+		}
 		isInWater = b;
 	}
 	
@@ -167,11 +184,11 @@ public class Entity {
 		return waterLift;
 	}
 	
-	public Circle getCollisionShape(){
+	public CollisionBox getCollisionShape(){
 		return collisionShape;
-
 	}
 	
+
 	public boolean isInWater() {
 		return isInWater;
 	}
@@ -179,4 +196,5 @@ public class Entity {
 	public boolean isOnGround() {
 		return isOnGround;
 	}
+
 }
