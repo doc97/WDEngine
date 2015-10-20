@@ -114,19 +114,19 @@ public class GameState extends State {
 			entity.render(Engine.INSTANCE.batch);
 		}
 		
+		Game.INSTANCE.particles.render(Engine.INSTANCE.batch);
 		Game.INSTANCE.container.getMap().renderWater(Engine.INSTANCE.batch);
 		Game.INSTANCE.container.getMap().renderGround(Engine.INSTANCE.batch);
 		
 		basicFont.drawString(Engine.INSTANCE.batch, "Wille, Dani ja Reetu!?_,", basicFont.getOriginalSize(), 0, 300);
 		
-		ArrayList<Item> items = Game.INSTANCE.quests.getAllItems();
+		ArrayList<Item> questItems = Game.INSTANCE.quests.getAllItems();
 		
-		for (Item item : items){
+		for (Item item : questItems) {
 			item.render(Engine.INSTANCE.batch);
 		}
 		
 		Engine.INSTANCE.batch.setColor(Color.WHITE);
-		Game.INSTANCE.particles.render(Engine.INSTANCE.batch);
 
 		Engine.INSTANCE.camera.setPosition(
 				Engine.INSTANCE.camera.getWidth() / 2,
@@ -178,6 +178,9 @@ public class GameState extends State {
 				);
 		
 		Game.INSTANCE.sounds.loopSound(AssetManager.getSound("background"));
+		
+		Item energyGem = new Item(ItemType.ENERGY, 2300, 800, 0.1f, false);
+		addEntity(energyGem);
 	}
 
 	@Override
