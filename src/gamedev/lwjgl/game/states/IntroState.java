@@ -29,7 +29,6 @@ public class IntroState extends State {
 	public IntroState() {
 		Map<String, String> data = AssetManager.getData("intro");
 		
-		String cutscene = data.get("cutscene");
 		String texname1 = data.get("frame1");
 		String texname2 = data.get("frame2");
 		String fontname = data.get("font");
@@ -68,7 +67,7 @@ public class IntroState extends State {
 			s3Text2.setFont(font);
 			s3Text2.setFontSize(font.getOriginalSize());
 			s3Text2.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() / 2 - font.getOriginalSize());
-			s3Text2.setText("GameDev klubi");
+			s3Text2.setText("GameDev-klubi");
 			scene3.addObject(s3Text2);
 		introScene.addScene(scene3);
 		
@@ -125,6 +124,7 @@ public class IntroState extends State {
 		Engine.INSTANCE.display.setBackgroundColor(0, 0, 0, 1);
 		Engine.INSTANCE.input.addListener(introInput);
 		
+		font.setAlignment(Alignment.CENTER);
 		font.setFadeTimer(Timer.getTicks(60));
 		font.setFadeEffect(true);
 		

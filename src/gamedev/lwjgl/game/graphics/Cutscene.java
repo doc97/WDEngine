@@ -13,7 +13,10 @@ public class Cutscene {
 	public void start() {
 		if(scenes.size() > 0) {
 			currentScene = 0;
+			for(Scene s : scenes)
+				s.reload();
 			scenes.get(currentScene).start();
+			finished = false;
 		}
 	}
 	

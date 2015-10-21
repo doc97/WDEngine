@@ -114,8 +114,6 @@ public class GameState extends State {
 		Game.INSTANCE.container.getMap().renderWater(Engine.INSTANCE.batch);
 		Game.INSTANCE.container.getMap().renderGround(Engine.INSTANCE.batch);
 		
-		basicFont.drawString(Engine.INSTANCE.batch, "Wille, Dani ja Reetu!?_,", basicFont.getOriginalSize(), 0, 300);
-		
 		ArrayList<Item> questItems = Game.INSTANCE.quests.getAllItems();
 		
 		for (Item item : questItems) {
@@ -151,7 +149,6 @@ public class GameState extends State {
 		if(!initialized)
 			init();
 		
-		// Player initialisation
 		player = Game.INSTANCE.container.getPlayer();
 		addEntity(player);
 		Engine.INSTANCE.input.addListener(gameInput);
@@ -172,6 +169,7 @@ public class GameState extends State {
 				Engine.INSTANCE.camera.getWidth() / 2,
 				Engine.INSTANCE.camera.getHeight() / 2
 				);
+		Engine.INSTANCE.camera.setPosition(player.getX(), player.getY());
 		
 		Game.INSTANCE.sounds.loopSound(AssetManager.getSound("background"));
 		

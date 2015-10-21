@@ -231,7 +231,6 @@ public class AssetManager {
 		BufferedReader br = new BufferedReader(fr);
 		String line;
 		int size = 0;
-		int base = 0;
 		String fontName = "";
 		Map<Integer, Glyph> glyphs = new HashMap<Integer, Glyph>();
 		try {
@@ -259,14 +258,6 @@ public class AssetManager {
 					String[] data = line.split(" ");
 					fontName = data[1].split("=")[1];
 					size = Integer.parseInt(data[2].split("=")[1]);
-				} else if (line.startsWith("common")) {
-					String[] data = line.split(" ");
-					for (int i = 0; i < data.length; i++){
-						if (data[i].startsWith("base")) {
-							String[] s = data[i].split("=");
-							base = Integer.parseInt(s[1]);
-						}
-					}
 				}
 			}
 		} catch (IOException e) {
@@ -274,7 +265,7 @@ public class AssetManager {
 			return;
 		}
 		
-		Font font = new Font(fontName, size, texture, glyphs, base);
+		Font font = new Font(fontName, size, texture, glyphs);
 		fonts.put(filename, font);
 	}
 	

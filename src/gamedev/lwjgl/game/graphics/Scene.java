@@ -32,11 +32,10 @@ public class Scene {
 		fadeIn.setActive(true);
 	}
 	
-	public void restart() {
+	public void reload() {
 		fadeIn.set(fadeInTick);
 		fadeOut.set(fadeOutTick);
 		show.set(showTick);
-		start();
 	}
 	
 	public void stop() {
@@ -71,8 +70,9 @@ public class Scene {
 	
 	public void render(SpriteBatch batch) {
 		batch.setColor(color);
-		for(SceneObject sObj : objects)
+		for(SceneObject sObj : objects) {
 			sObj.render(batch);
+		}
 	}
 	
 	public void addObject(SceneObject object) {

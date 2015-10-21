@@ -1,10 +1,8 @@
 package gamedev.lwjgl.game.states;
 
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 
 import gamedev.lwjgl.engine.input.InputListener;
-import gamedev.lwjgl.game.Game;
-import gamedev.lwjgl.game.states.StateSystem.States;
 
 public class CreditsInput implements InputListener {
 

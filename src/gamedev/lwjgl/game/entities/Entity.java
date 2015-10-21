@@ -6,12 +6,9 @@ import java.util.List;
 import org.joml.Vector2f;
 
 import gamedev.lwjgl.engine.Engine;
-import gamedev.lwjgl.engine.physics.Circle;
 import gamedev.lwjgl.engine.physics.CollisionBox;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.sound.Sound;
-import gamedev.lwjgl.engine.sound.SoundSystem;
-import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.Game;

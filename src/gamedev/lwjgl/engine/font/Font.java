@@ -21,13 +21,11 @@ public class Font {
 	private Alignment alignment = Alignment.CENTER;
 	private Timer fadeTimer = new Timer();
 	private boolean fadeEffect;
-	private int base;
 	
-	public Font(String name, int fontSize, ModelTexture texture, Map<Integer, Glyph> glyphs, int base) {
+	public Font(String name, int fontSize, ModelTexture texture, Map<Integer, Glyph> glyphs) {
 		this.name = name;
 		this.glyphs = glyphs;
 		originalFontSize = fontSize;
-		this.base = base;
 		
 	}
 	

@@ -53,7 +53,7 @@ public class SpriteBatch {
 	private int ibo;
 	private ArrayList<Integer> vbos;
 	private IntBuffer intBuff, intBuff2;
-	private FloatBuffer floatBuff1, floatBuff2, floatBuff3, floatBuff4;
+	private FloatBuffer floatBuff1, floatBuff2, floatBuff3;
 	
 	public void init() {
 		camera.init(Engine.INSTANCE.display);

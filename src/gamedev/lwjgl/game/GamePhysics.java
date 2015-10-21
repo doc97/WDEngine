@@ -1,7 +1,6 @@
 package gamedev.lwjgl.game;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.joml.Vector2f;
 
@@ -13,7 +12,6 @@ import gamedev.lwjgl.engine.physics.Water;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.entities.Entity;
 import gamedev.lwjgl.game.entities.Item;
-import gamedev.lwjgl.game.entities.ItemType;
 import gamedev.lwjgl.game.entities.Player;
 import gamedev.lwjgl.game.map.DynamicMapObject;
 import gamedev.lwjgl.game.map.Map;
