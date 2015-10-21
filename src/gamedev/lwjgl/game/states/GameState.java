@@ -150,6 +150,7 @@ public class GameState extends State {
 			init();
 		
 		player = Game.INSTANCE.container.getPlayer();
+		player.setEntityPosition(100, 1000);
 		addEntity(player);
 		Engine.INSTANCE.input.addListener(gameInput);
 		

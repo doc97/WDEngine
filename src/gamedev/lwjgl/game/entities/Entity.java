@@ -176,6 +176,9 @@ public class Entity {
 		return dynamic;
 	}
 	
+	public ModelTexture getTexture(int i) {
+		return textures.get(i);
+	}
 
 	public Vector2f getWaterLift() {
 		return waterLift;

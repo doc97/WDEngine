@@ -16,7 +16,7 @@ public class GameInput implements InputListener {
 
 	private boolean right, left, jump;
 	private int rightKey = GLFW_KEY_D, leftKey = GLFW_KEY_A;
-	private int jumpKey = GLFW_KEY_SPACE, dashKey = GLFW_KEY_RIGHT_SHIFT;
+	private int jumpKey = GLFW_KEY_SPACE, dashKey = GLFW_KEY_ENTER;
 	private Player player;
 	private GameState gs;
 	private boolean doubJump, jumpedOnCurrent;
