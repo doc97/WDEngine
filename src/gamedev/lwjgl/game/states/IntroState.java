@@ -17,7 +17,7 @@ import gamedev.lwjgl.game.graphics.Cutscene;
 import gamedev.lwjgl.game.graphics.Scene;
 import gamedev.lwjgl.game.graphics.SceneText;
 import gamedev.lwjgl.game.graphics.SceneTexture;
-import gamedev.lwjgl.game.states.StateSystem.States;
+import gamedev.lwjgl.game.systems.StateSystem.States;
 
 public class IntroState extends State {
 

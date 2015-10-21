@@ -1,9 +1,14 @@
-package gamedev.lwjgl.game.states;
+package gamedev.lwjgl.game.systems;
 
 import java.util.EnumMap;
 import java.util.Map;
 
 import gamedev.lwjgl.game.GameLauncher;
+import gamedev.lwjgl.game.states.CreditsState;
+import gamedev.lwjgl.game.states.GameState;
+import gamedev.lwjgl.game.states.IntroState;
+import gamedev.lwjgl.game.states.MainMenuState;
+import gamedev.lwjgl.game.states.State;
 
 public class StateSystem {
 	public enum States { MAINMENUSTATE, INTROSTATE, GAMESTATE, OPTIONSTATE, CREDITSSTATE };

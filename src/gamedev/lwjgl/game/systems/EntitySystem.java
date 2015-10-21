@@ -1,4 +1,4 @@
-package gamedev.lwjgl.game.entities;
+package gamedev.lwjgl.game.systems;
 
 import java.util.ArrayList;
 
@@ -7,6 +7,7 @@ import gamedev.lwjgl.engine.models.RawModel;
 import gamedev.lwjgl.engine.models.TexturedModel;
 import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.engine.utils.AssetManager;
+import gamedev.lwjgl.game.entities.Entity;
 
 public class EntitySystem {
 

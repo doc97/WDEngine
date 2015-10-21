@@ -1,10 +1,12 @@
 package gamedev.lwjgl.game;
 
 import gamedev.lwjgl.engine.sound.SoundSystem;
-import gamedev.lwjgl.game.entities.EntitySystem;
-import gamedev.lwjgl.game.graphics.effects.particles.ParticleSystem;
-import gamedev.lwjgl.game.quests.QuestSystem;
-import gamedev.lwjgl.game.states.StateSystem;
+import gamedev.lwjgl.game.systems.EntitySystem;
+import gamedev.lwjgl.game.systems.InteractionSystem;
+import gamedev.lwjgl.game.systems.LevelSystem;
+import gamedev.lwjgl.game.systems.ParticleSystem;
+import gamedev.lwjgl.game.systems.QuestSystem;
+import gamedev.lwjgl.game.systems.StateSystem;
 
 public enum Game {
 	INSTANCE;
@@ -16,9 +18,12 @@ public enum Game {
 	public final GameContainer container = new GameContainer();
 	public final GamePhysics physics = new GamePhysics();
 	public final QuestSystem quests = new QuestSystem();
+	public final InteractionSystem interactions = new InteractionSystem();
+	public final LevelSystem levels = new LevelSystem();
 	
 	public void init(GameLauncher launcher) {
 		container.init();
+		levels.init();
 		states.create(launcher);
 	}
 }

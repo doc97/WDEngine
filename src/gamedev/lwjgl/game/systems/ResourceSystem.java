@@ -1,4 +1,4 @@
-package gamedev.lwjgl.game;
+package gamedev.lwjgl.game.systems;
 
 public class ResourceSystem {
 

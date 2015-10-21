@@ -17,6 +17,7 @@ public class GameInput implements InputListener {
 	private boolean right, left, jump;
 	private int rightKey = GLFW_KEY_D, leftKey = GLFW_KEY_A;
 	private int jumpKey = GLFW_KEY_SPACE, dashKey = GLFW_KEY_ENTER;
+	private int interactKey = GLFW_KEY_E;
 	private Player player;
 	private GameState gs;
 	private boolean doubJump, jumpedOnCurrent;
@@ -66,6 +67,8 @@ public class GameInput implements InputListener {
 			jump = true;
 		else if(key == dashKey)
 			player.dash();
+		else if(key == interactKey)
+			Game.INSTANCE.interactions.interact();
 		else if(key == GLFW.GLFW_KEY_ESCAPE)
 			gs.pause();
 		else if(key == GLFW.GLFW_KEY_UP)

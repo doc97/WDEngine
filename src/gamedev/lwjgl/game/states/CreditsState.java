@@ -7,7 +7,7 @@ import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.font.Font.Alignment;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.Game;
-import gamedev.lwjgl.game.states.StateSystem.States;
+import gamedev.lwjgl.game.systems.StateSystem.States;
 
 public class CreditsState extends State {
 

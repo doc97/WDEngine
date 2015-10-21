@@ -1,6 +1,7 @@
-package gamedev.lwjgl.game.quests;
+package gamedev.lwjgl.game.systems;
 
 import gamedev.lwjgl.game.entities.Item;
+import gamedev.lwjgl.game.quests.Quest;
 
 import java.util.ArrayList;
 

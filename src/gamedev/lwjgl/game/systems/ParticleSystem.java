@@ -1,4 +1,4 @@
-package gamedev.lwjgl.game.graphics.effects.particles;
+package gamedev.lwjgl.game.systems;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -6,6 +6,7 @@ import java.util.List;
 
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.game.graphics.effects.Pool;
+import gamedev.lwjgl.game.graphics.effects.particles.PlayerParticle;
 
 public class ParticleSystem {
 	
@@ -28,6 +29,14 @@ public class ParticleSystem {
 		
 		newParticle.init(x, y, dx, dy, size, speed);
 		playerParticles.add(newParticle);
+	}
+	
+	public void clear() {
+		for(Iterator<PlayerParticle> it = playerParticles.iterator(); it.hasNext();) {
+			PlayerParticle p = it.next();
+			playerParticlePool.free(p);
+			it.remove();
+		}
 	}
 	
 	public void update() {

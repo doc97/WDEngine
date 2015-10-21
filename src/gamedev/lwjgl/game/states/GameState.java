@@ -1,7 +1,6 @@
 package gamedev.lwjgl.game.states;
 
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import gamedev.lwjgl.engine.Engine;
@@ -14,13 +13,11 @@ import gamedev.lwjgl.game.Game;
 import gamedev.lwjgl.game.entities.Entity;
 import gamedev.lwjgl.game.entities.Item;
 import gamedev.lwjgl.game.entities.ItemType;
-import gamedev.lwjgl.game.entities.Player;
 import gamedev.lwjgl.game.input.GameInput;
 import gamedev.lwjgl.game.ui.PauseMenu;
 
 public class GameState extends State {
 	
-	private Player player;
 	private Font basicFont;
 	private Color fadeColor = new Color(0, 0, 0, 1);
 	private Timer fadeTimer = new Timer();
@@ -34,12 +31,11 @@ public class GameState extends State {
 		String fontname = data.get("font");
 		
 		gameInput = new GameInput(this);
+		pauseMenu = new PauseMenu(this);
 		
 		basicFont = AssetManager.getFont(fontname);
 		basicFont.setAlignment(Alignment.LEFT);
 		initialized = true;
-		
-		pauseMenu = new PauseMenu(this);
 	}
 	
 	public void addEntity(Entity entity) {
@@ -66,10 +62,6 @@ public class GameState extends State {
 	public void update() {
 		Engine.INSTANCE.update();
 		if(!paused) {
-//			if (Game.INSTANCE.entities.getEntities().size() < 100)
-//				addEntity(new Item(ItemType.COIN, (float) (Math.random() * 3800), 500, 0.2f));
-//			else if (Math.random() < 0.1)
-				//addEntity(new Item(ItemType.ENERGY, (float) (Math.random() * 3800), 3000, 2));
 			if(fadeTimer.isActive()) {
 				fadeTimer.update();
 				float value = fadeTimer.getPercentage();
@@ -81,14 +73,17 @@ public class GameState extends State {
 			}
 		
 			Game.INSTANCE.physics.update();
-			Game.INSTANCE.container.getMap().update();
+			Game.INSTANCE.container.getCurrentLevel().update();
 			Game.INSTANCE.particles.update();
+			Game.INSTANCE.interactions.update();
 			
 			for (Entity e : Game.INSTANCE.entities.getEntities()){
 				e.update();
 			}
 			
-			Engine.INSTANCE.camera.setPosition(player.getX(), player.getY());
+			Engine.INSTANCE.camera.setPosition(
+					Game.INSTANCE.container.getPlayer().getX(),
+					Game.INSTANCE.container.getPlayer().getY());
 		} else {
 			pauseMenu.update();
 		}
@@ -97,41 +92,39 @@ public class GameState extends State {
 	
 	@Override
 	public void render() {
-		
 		Engine.INSTANCE.display.clearDisplay();
 
 		Engine.INSTANCE.batch.begin();
 		
 		Engine.INSTANCE.batch.setColor(fadeColor);
-		//Game.INSTANCE.container.getMap().renderParallax(Engine.INSTANCE.batch);
-		Game.INSTANCE.container.getMap().renderBackground(Engine.INSTANCE.batch);
+		Game.INSTANCE.container.getCurrentLevel().getMap().renderBackground(Engine.INSTANCE.batch);
 		
 		for(Entity entity : Game.INSTANCE.entities.getEntities()) {
 			entity.render(Engine.INSTANCE.batch);
 		}
 		
 		Game.INSTANCE.particles.render(Engine.INSTANCE.batch);
-		Game.INSTANCE.container.getMap().renderWater(Engine.INSTANCE.batch);
-		Game.INSTANCE.container.getMap().renderGround(Engine.INSTANCE.batch);
+		Game.INSTANCE.container.getCurrentLevel().getMap().renderWater(Engine.INSTANCE.batch);
+		Game.INSTANCE.container.getCurrentLevel().getMap().renderGround(Engine.INSTANCE.batch);
 		
-		ArrayList<Item> questItems = Game.INSTANCE.quests.getAllItems();
-		
-		for (Item item : questItems) {
+		for (Item item : Game.INSTANCE.quests.getAllItems())
 			item.render(Engine.INSTANCE.batch);
-		}
+		
+		Game.INSTANCE.interactions.render(Engine.INSTANCE.batch);
 		
 		Engine.INSTANCE.batch.setColor(Color.WHITE);
 
-		Engine.INSTANCE.camera.setPosition(
-				Engine.INSTANCE.camera.getWidth() / 2,
-				Engine.INSTANCE.camera.getHeight() / 2
-				);
-		
 		if(paused) {
+			Engine.INSTANCE.camera.setPosition(
+					Engine.INSTANCE.camera.getWidth() / 2,
+					Engine.INSTANCE.camera.getHeight() / 2
+					);
 			pauseMenu.render(Engine.INSTANCE.batch);
 		}
 		
-		Engine.INSTANCE.camera.setPosition(player.getX(), player.getY());
+		Engine.INSTANCE.camera.setPosition(
+				Game.INSTANCE.container.getPlayer().getX(),
+				Game.INSTANCE.container.getPlayer().getY());
 		Engine.INSTANCE.batch.end();		
 		
 		Engine.INSTANCE.uiBatch.begin();
@@ -149,18 +142,12 @@ public class GameState extends State {
 		if(!initialized)
 			init();
 		
-		player = Game.INSTANCE.container.getPlayer();
-		player.setEntityPosition(100, 1000);
-		addEntity(player);
+		Game.INSTANCE.container.getPlayer().setEntityPosition(100, 1000);
+		addEntity(Game.INSTANCE.container.getPlayer());
 		Engine.INSTANCE.input.addListener(gameInput);
 		
 		Engine.INSTANCE.batch.setColor(fadeColor);
 		Engine.INSTANCE.display.setBackgroundColor(0, 0, 0, 1);
-		
-		fadeTimer.set(60);
-		fadeTimer.setActive(true);
-		
-		paused = false;
 		
 		Engine.INSTANCE.camera.setUpperLimits(
 				1920 * 2 - Engine.INSTANCE.camera.getWidth() / 2,
@@ -170,9 +157,17 @@ public class GameState extends State {
 				Engine.INSTANCE.camera.getWidth() / 2,
 				Engine.INSTANCE.camera.getHeight() / 2
 				);
-		Engine.INSTANCE.camera.setPosition(player.getX(), player.getY());
+		Engine.INSTANCE.camera.setPosition(
+						Game.INSTANCE.container.getPlayer().getX(),
+						Game.INSTANCE.container.getPlayer().getY());
 		
 		Game.INSTANCE.sounds.loopSound(AssetManager.getSound("background"));
+		
+		Game.INSTANCE.levels.changeLevel("level1");
+		
+		fadeTimer.set(60);
+		fadeTimer.setActive(true);
+		paused = false;
 		
 		Item energyGem = new Item(ItemType.ENERGY, 2300, 800, 0.1f, false);
 		addEntity(energyGem);
@@ -181,8 +176,9 @@ public class GameState extends State {
 	@Override
 	public void exit() {
 		Game.INSTANCE.entities.clear();
+		Game.INSTANCE.particles.clear();
+		Game.INSTANCE.sounds.stopSound(AssetManager.getSound("background"));
 		Engine.INSTANCE.input.removeListener(gameInput);
 		pauseMenu.hide();
-		Game.INSTANCE.sounds.stopSound(AssetManager.getSound("background"));
 	}
 }

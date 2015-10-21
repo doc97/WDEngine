@@ -7,7 +7,7 @@ import gamedev.lwjgl.engine.physics.CollisionBox;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.Game;
-import gamedev.lwjgl.game.ResourceSystem;
+import gamedev.lwjgl.game.systems.ResourceSystem;
 import gamedev.lwjgl.game.ui.Inventory;
 
 public class Player extends Entity {

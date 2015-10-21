@@ -5,7 +5,7 @@ import static org.lwjgl.glfw.GLFW.glfwGetTime;
 import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.states.State;
-import gamedev.lwjgl.game.states.StateSystem.States;
+import gamedev.lwjgl.game.systems.StateSystem.States;
 
 public class GameLauncher {
 	public static void main(String[] args) {

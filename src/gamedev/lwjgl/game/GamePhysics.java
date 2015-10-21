@@ -34,7 +34,7 @@ public class GamePhysics {
 	}
 	
 	public void update() {
-		Map m = Game.INSTANCE.container.getMap();
+		Map m = Game.INSTANCE.container.getCurrentLevel().getMap();
 		for (DynamicMapObject dmo : m.getDynamicObjects()){
 			collisionDetection(dmo, m);
 		}

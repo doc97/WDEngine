@@ -13,7 +13,7 @@ import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.Game;
 import gamedev.lwjgl.game.states.GameState;
-import gamedev.lwjgl.game.states.StateSystem.States;
+import gamedev.lwjgl.game.systems.StateSystem.States;
 
 public class PauseMenu {
 
