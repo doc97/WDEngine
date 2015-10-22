@@ -14,6 +14,7 @@ import gamedev.lwjgl.game.entities.Entity;
 import gamedev.lwjgl.game.entities.Item;
 import gamedev.lwjgl.game.entities.ItemType;
 import gamedev.lwjgl.game.input.GameInput;
+import gamedev.lwjgl.game.ui.GameUI;
 import gamedev.lwjgl.game.ui.PauseMenu;
 
 public class GameState extends State {
@@ -23,6 +24,7 @@ public class GameState extends State {
 	private Timer fadeTimer = new Timer();
 	private PauseMenu pauseMenu;
 	private GameInput gameInput;
+	private GameUI gameUI;
 	private boolean initialized;
 	private boolean paused;
 	
@@ -32,6 +34,7 @@ public class GameState extends State {
 		
 		gameInput = new GameInput(this);
 		pauseMenu = new PauseMenu(this);
+		gameUI = new GameUI(this);
 		
 		basicFont = AssetManager.getFont(fontname);
 		basicFont.setAlignment(Alignment.LEFT);
@@ -76,6 +79,7 @@ public class GameState extends State {
 			Game.INSTANCE.container.getCurrentLevel().update();
 			Game.INSTANCE.particles.update();
 			Game.INSTANCE.interactions.update();
+			gameUI.update();
 			
 			for (Entity e : Game.INSTANCE.entities.getEntities()){
 				e.update();
@@ -125,12 +129,18 @@ public class GameState extends State {
 		Engine.INSTANCE.camera.setPosition(
 				Game.INSTANCE.container.getPlayer().getX(),
 				Game.INSTANCE.container.getPlayer().getY());
-		Engine.INSTANCE.batch.end();		
+		Engine.INSTANCE.batch.end();
 		
 		Engine.INSTANCE.uiBatch.begin();
 		
+		Engine.INSTANCE.uiBatch.getCamera().setPosition(
+				Engine.INSTANCE.uiBatch.getCamera().getWidth() / 2,
+				Engine.INSTANCE.uiBatch.getCamera().getHeight() / 2
+				);
+		//Engine.INSTANCE.uiBatch.draw(ItemType.COIN.getTexture(), 0, 0, 100, 100);
 		Game.INSTANCE.quests.render();
 		Game.INSTANCE.container.getPlayer().getInventory().render(Engine.INSTANCE.uiBatch);
+		gameUI.render(Engine.INSTANCE.uiBatch);
 		
 		Engine.INSTANCE.uiBatch.end();
 		

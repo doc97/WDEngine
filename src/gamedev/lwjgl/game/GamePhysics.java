@@ -62,7 +62,7 @@ public class GamePhysics {
 			Game.INSTANCE.entities.removeEntity(i);
 			switch(i.getType()) {
 			case ENERGY :
-				pl.getResources().addEnergy(30);
+				Game.INSTANCE.resources.addEnergy(1);
 				break;
 			case COIN :
 				inv.addItem(i);

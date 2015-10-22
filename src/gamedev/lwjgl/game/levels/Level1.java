@@ -27,12 +27,14 @@ public class Level1 extends Level {
 			public void init() {
 				x = 2300;
 				y = 800;
-				radius = 100;
+				radius = 200;
+				inRangeTexture = AssetManager.getTexture("interact_ball");
 			}
 			
 			@Override
 			public void interact() {
 				finished = true;
+				Game.INSTANCE.resources.addEnergy(-1);
 			}
 			
 			@Override
@@ -45,7 +47,11 @@ public class Level1 extends Level {
 			@Override
 			public void render(SpriteBatch batch) {
 				if(inRange) {
-					// Show something to player
+					batch.draw(inRangeTexture,
+							x - inRangeTexture.getWidth() / 4,
+							y - inRangeTexture.getHeight() / 4,
+							inRangeTexture.getWidth() / 2,
+							inRangeTexture.getHeight() / 2);
 				}
 			}
 		});

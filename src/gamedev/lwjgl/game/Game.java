@@ -6,6 +6,7 @@ import gamedev.lwjgl.game.systems.InteractionSystem;
 import gamedev.lwjgl.game.systems.LevelSystem;
 import gamedev.lwjgl.game.systems.ParticleSystem;
 import gamedev.lwjgl.game.systems.QuestSystem;
+import gamedev.lwjgl.game.systems.ResourceSystem;
 import gamedev.lwjgl.game.systems.StateSystem;
 
 public enum Game {
@@ -20,6 +21,7 @@ public enum Game {
 	public final QuestSystem quests = new QuestSystem();
 	public final InteractionSystem interactions = new InteractionSystem();
 	public final LevelSystem levels = new LevelSystem();
+	public final ResourceSystem resources = new ResourceSystem();
 	
 	public void init(GameLauncher launcher) {
 		container.init();

@@ -7,13 +7,11 @@ import gamedev.lwjgl.engine.physics.CollisionBox;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.Game;
-import gamedev.lwjgl.game.systems.ResourceSystem;
 import gamedev.lwjgl.game.ui.Inventory;
 
 public class Player extends Entity {
 
 	private Inventory inventory;
-	private ResourceSystem resources;
 	private Dash dash;
 	private float sin;
 	
@@ -22,7 +20,6 @@ public class Player extends Entity {
 		init();
 		dynamic = true;
 		inventory = new Inventory();
-		resources = new ResourceSystem();
 		dash = new Dash(this);
 	}
 	
@@ -101,9 +98,5 @@ public class Player extends Entity {
 	
 	public Inventory getInventory() {
 		return inventory;
-	}
-	
-	public ResourceSystem getResources() {
-		return resources;
 	}
 }
