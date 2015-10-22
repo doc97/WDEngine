@@ -45,7 +45,7 @@ public class MainMenuState extends State {
 		Vector4f startNormal = new Vector4f(0, 0, 128, 64);
 		Vector4f startPressed= new Vector4f(129, 0, 128, 64);
 		startBtn = new Button(startBtnTex, startNormal, startPressed);
-		startBtn.setPosition(100, 64 + 400);
+		startBtn.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() * 11 / 20);
 		startBtn.setSize(128, 64);
 		startBtnInput = new InputListener() {
 			
@@ -93,9 +93,9 @@ public class MainMenuState extends State {
 		};
 		
 		Vector4f optionsNormal = new Vector4f(0, 0, 203, 47);
-		Vector4f optionsPressed = new Vector4f(0, 0, 203, 47);
+		Vector4f optionsPressed = new Vector4f(204, 0, 203, 47);
 		optionsBtn = new Button(optionsBtnTex, optionsNormal, optionsPressed);
-		optionsBtn.setPosition(100, 64 + 250);
+		optionsBtn.setPosition(Engine.INSTANCE.camera.getWidth() / 2.0f, Engine.INSTANCE.camera.getHeight() * 2 / 5);
 		optionsBtn.setSize(203, 47);
 		optionsBtnInput = new InputListener() {
 			
@@ -145,7 +145,7 @@ public class MainMenuState extends State {
 		Vector4f exitNormal = new Vector4f(0, 0, 128, 64);
 		Vector4f exitPressed = new Vector4f(129, 0, 128, 64);
 		exitBtn = new Button(exitBtnTex, exitNormal, exitPressed);
-		exitBtn.setPosition(100, 64 + 100);
+		exitBtn.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() / 4);
 		exitBtn.setSize(128, 64);
 		exitBtnInput = new InputListener() {
 			
@@ -201,8 +201,8 @@ public class MainMenuState extends State {
 		Engine.INSTANCE.input.addListener(startBtnInput);
 		Engine.INSTANCE.input.addListener(optionsBtnInput);
 		Engine.INSTANCE.input.addListener(exitBtnInput);
-		
-		fadeTimer.set(Timer.getTicks(2000));
+		Game.INSTANCE.sounds.loopSound(AssetManager.getSound("atmospheric_water"));
+		fadeTimer.set(Timer.getTicks(1200));
 		color.setColor(1, 1, 1, 1);
 	}
 
@@ -236,7 +236,7 @@ public class MainMenuState extends State {
 		Engine.INSTANCE.batch.setColor(color);
 		Engine.INSTANCE.batch.draw(titleText,
 				(Engine.INSTANCE.camera.getWidth() - titleText.getWidth()) / 2,
-				(Engine.INSTANCE.camera.getHeight() - titleText.getHeight()) / 2,
+				Engine.INSTANCE.camera.getHeight() - titleText.getHeight() * 3 / 2,
 				titleText.getWidth(), titleText.getHeight());
 		startBtn.render(Engine.INSTANCE.batch);
 		optionsBtn.render(Engine.INSTANCE.batch);
@@ -247,5 +247,7 @@ public class MainMenuState extends State {
 	}
 	
 	@Override
-	public void exit() {}
+	public void exit() {
+		Game.INSTANCE.sounds.stopSound(AssetManager.getSound("atmospheric_water"));
+	}
 }

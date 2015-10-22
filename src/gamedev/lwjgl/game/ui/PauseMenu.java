@@ -45,7 +45,7 @@ public class PauseMenu {
 		resumeBtn = new Button("pausemenu_resume", resumeNormal, resumePressed);
 		resumeBtn.setSize(304, 79);
 		resumeBtn.setPosition(
-				Engine.INSTANCE.camera.getWidth() / 2,
+				Engine.INSTANCE.camera.getWidth() / 2 + 50,
 				Engine.INSTANCE.camera.getHeight() / 2 + 128
 				);
 		
@@ -54,7 +54,7 @@ public class PauseMenu {
 		optionsBtn = new Button("pausemenu_options", optionsNormal, optionsPressed);
 		optionsBtn.setSize(313, 104);
 		optionsBtn.setPosition(
-				Engine.INSTANCE.camera.getWidth() / 2,
+				Engine.INSTANCE.camera.getWidth() / 2 + 50,
 				Engine.INSTANCE.camera.getHeight() / 2
 				);
 		
@@ -63,7 +63,7 @@ public class PauseMenu {
 		menuBtn = new Button("pausemenu_mainmenu", menuNormal, menuPressed);
 		menuBtn.setSize(379, 74);
 		menuBtn.setPosition(
-				Engine.INSTANCE.camera.getWidth() / 2,
+				Engine.INSTANCE.camera.getWidth() / 2 + 50,
 				Engine.INSTANCE.camera.getHeight() / 2 - 128
 				);
 		
@@ -243,9 +243,9 @@ public class PauseMenu {
 	public void update() {
 		float diff = Engine.INSTANCE.input.getTranslatedMouseY() - Engine.INSTANCE.display.getWindowHeight() / 2;
 		if(diff >= 70 ) {
-			pointerY = Engine.INSTANCE.camera.getHeight() / 2 + 120;
+			pointerY = Engine.INSTANCE.camera.getHeight() / 2 + 128;
 		} else if(diff <= -70) {
-			pointerY = Engine.INSTANCE.camera.getHeight() / 2 - 140;
+			pointerY = Engine.INSTANCE.camera.getHeight() / 2 - 128;
 		} else {
 			pointerY = Engine.INSTANCE.camera.getHeight() / 2;
 		}

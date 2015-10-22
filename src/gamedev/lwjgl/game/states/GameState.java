@@ -13,6 +13,7 @@ import gamedev.lwjgl.game.Game;
 import gamedev.lwjgl.game.entities.Entity;
 import gamedev.lwjgl.game.entities.Item;
 import gamedev.lwjgl.game.entities.ItemType;
+import gamedev.lwjgl.game.entities.Player;
 import gamedev.lwjgl.game.input.GameInput;
 import gamedev.lwjgl.game.ui.GameUI;
 import gamedev.lwjgl.game.ui.PauseMenu;
@@ -39,6 +40,7 @@ public class GameState extends State {
 		basicFont = AssetManager.getFont(fontname);
 		basicFont.setAlignment(Alignment.LEFT);
 		initialized = true;
+		
 	}
 	
 	public void addEntity(Entity entity) {
@@ -179,10 +181,16 @@ public class GameState extends State {
 		fadeTimer.setActive(true);
 		paused = false;
 		
+		addEnergyGem();
+	}
+	
+	public void addEnergyGem(){
+		if (Game.INSTANCE.entities.getEntities().size() != 1)
+			return;
 		Item energyGem = new Item(ItemType.ENERGY, 2300, 800, 0.1f, false);
 		addEntity(energyGem);
 	}
-
+	
 	@Override
 	public void exit() {
 		Game.INSTANCE.entities.clear();

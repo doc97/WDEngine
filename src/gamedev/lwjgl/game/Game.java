@@ -26,6 +26,7 @@ public enum Game {
 	public void init(GameLauncher launcher) {
 		container.init();
 		levels.init();
+		resources.init();
 		states.create(launcher);
 	}
 }

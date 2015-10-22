@@ -14,6 +14,7 @@ public class Map {
 	private ModelTexture ground;
 	private ModelTexture background1;
 	private ModelTexture background2;
+	private ModelTexture foreground;
 	private List<Water> waters;
 	private List<DynamicMapObject> dynamics;
 	private float offsetFactor = 0.1f;
@@ -51,6 +52,7 @@ public class Map {
 	
 	public void renderGround(SpriteBatch batch) {
 		batch.draw(ground, 0, 0, ground.getWidth(), ground.getHeight());
+		batch.draw(foreground, 0, 0, foreground.getWidth(), foreground.getHeight());
 	}
 	
 	public void setWaters(List<Water> waters) {
@@ -61,8 +63,10 @@ public class Map {
 		this.dynamics = dynamics;
 	}
 	
-	public void setTextures(ModelTexture ground, ModelTexture background1, ModelTexture background2) {
+	public void setTextures(ModelTexture ground, ModelTexture foreground,
+			ModelTexture background1, ModelTexture background2) {
 		this.ground = ground;
+		this.foreground = foreground;
 		this.background1 = background1;
 		this.background2 = background2;
 	}

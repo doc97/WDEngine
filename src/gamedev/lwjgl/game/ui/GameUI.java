@@ -2,6 +2,7 @@ package gamedev.lwjgl.game.ui;
 
 import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.render.SpriteBatch;
+import gamedev.lwjgl.game.Game;
 import gamedev.lwjgl.game.states.GameState;
 
 public class GameUI {
@@ -11,7 +12,9 @@ public class GameUI {
 	
 	public GameUI(GameState gs) {
 		this.gs = gs;
-		energyBar = new EnergyBar(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() - 50);
+		energyBar = new EnergyBar(Game.INSTANCE.resources.getMaxEnergy(),
+				Engine.INSTANCE.camera.getWidth() / 2,
+				Engine.INSTANCE.camera.getHeight() - 50);
 	}
 	
 	public void update() {

@@ -35,9 +35,13 @@ public class Player extends Entity {
 	}
 	
 	public void dash() {
+		if (Game.INSTANCE.resources.getEnergy() <= 0)
+			return;
 		if(speed.x * speed.x >= 2) {
 			dash.activate();
+			Game.INSTANCE.resources.addEnergy(-1);
 		}
+		System.out.println("");
 	}
 	
 	@Override
@@ -50,7 +54,6 @@ public class Player extends Entity {
 			collisionShape.setInnerOffset(0, (float)(Math.sin(sin) * 10));
 			sin += 1 / 18.0f;
 		}
-		
 		// Add particles
 		int xoffset = 30;
 		int yoffset = 30;

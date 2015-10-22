@@ -11,13 +11,14 @@ public class EnergyBar {
 	private ModelTexture texture;
 	private ModelTexture glow;
 	private float x, y;
-	private int maxEnergy = 5;
+	private int maxEnergy;
 	
-	public EnergyBar(int x, int y) {
+	public EnergyBar(int maxEnergy, int x, int y) {
 		texture = AssetManager.getTexture("UI_energy");
 		glow = AssetManager.getTexture("UI_energy_glow");
 		this.x = x;
 		this.y = y;
+		this.maxEnergy = maxEnergy;
 	}
 	
 	public void update() {
@@ -28,7 +29,7 @@ public class EnergyBar {
 		int energy = Game.INSTANCE.resources.getEnergy();
 		for(int i = 0; i < maxEnergy; i++) {
 			if(i + 1 <= energy) {
-				batch.setColor(0.125f, 0.96f, 0.73f, 1);
+				batch.setColor(10f / 255f, 240f / 255f, 200f / 255f, 1);
 				batch.draw(glow, (float) (x + (i - Math.floor(maxEnergy / 2.0f)) * (texture.getWidth() + 10) - texture.getWidth() / 2),
 						y - texture.getHeight() / 2, texture.getWidth(), texture.getHeight());
 			} else {
@@ -38,10 +39,6 @@ public class EnergyBar {
 			batch.draw(texture,
 					(float) (x + (i - Math.floor(maxEnergy / 2.0f)) * (texture.getWidth() + 10) - texture.getWidth() / 2),
 					y - texture.getHeight() / 2, texture.getWidth(), texture.getHeight());
-				System.out.println("Render energy @: " +
-						(x + (i - Math.floor(maxEnergy / 2.0f)) * (texture.getWidth() + 10) - texture.getWidth() / 2) + ", " +
-						(y - texture.getHeight() / 2));
-				System.out.println(texture.getWidth() + ", " + texture.getHeight());
 		}
 	}
 }

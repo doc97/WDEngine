@@ -59,15 +59,17 @@ public class GamePhysics {
 		
 		Inventory inv = pl.getInventory();
 		for (Item i : toRemove){
-			Game.INSTANCE.entities.removeEntity(i);
 			switch(i.getType()) {
 			case ENERGY :
+				if (Game.INSTANCE.resources.getEnergy() >= Game.INSTANCE.resources.getMaxEnergy())
+					continue;
 				Game.INSTANCE.resources.addEnergy(1);
 				break;
 			case COIN :
 				inv.addItem(i);
 				break;
 			}
+			Game.INSTANCE.entities.removeEntity(i);
 		}
 		
 		

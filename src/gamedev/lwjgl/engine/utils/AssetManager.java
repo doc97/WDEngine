@@ -375,6 +375,7 @@ public class AssetManager {
 		List<Line> lines = new ArrayList<Line>();
 		List<Water> waters = new ArrayList<Water>();
 		ModelTexture ground = null;
+		ModelTexture foreground = null;
 		ModelTexture background1 = null;
 		ModelTexture background2 = null;
 		try {
@@ -384,6 +385,8 @@ public class AssetManager {
 					objs.add(data[1]);
 				else if(data[0].equals("ground"))
 					ground = getTexture(data[1]);
+				else if(data[0].equals("foreground"))
+					foreground = getTexture(data[1]);
 				else if(data[0].equals("background1"))
 					background1 = getTexture(data[1]);
 				else if(data[0].equals("background2"))
@@ -408,7 +411,7 @@ public class AssetManager {
 			lines.addAll(loadLineSegments(filename + "/" + name));
 		
 		gamedev.lwjgl.game.map.Map map = new gamedev.lwjgl.game.map.Map();
-		map.setTextures(ground, background1, background2);
+		map.setTextures(ground, foreground, background1, background2);
 		map.setCollisionMap(lines);
 		map.setWaters(waters);
 		return map;

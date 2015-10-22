@@ -1,4 +1,5 @@
 ground=level_01_ground
+foreground=level_01_foreground
 background1=level_01_background_1
 background2=level_01_background_2
 obj=outline

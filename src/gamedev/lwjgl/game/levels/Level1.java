@@ -5,6 +5,8 @@ import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.Game;
 import gamedev.lwjgl.game.Interaction;
+import gamedev.lwjgl.game.entities.Item;
+import gamedev.lwjgl.game.entities.ItemType;
 
 public class Level1 extends Level {
 
@@ -25,16 +27,16 @@ public class Level1 extends Level {
 		Game.INSTANCE.interactions.addInteraction(new Interaction() {
 			@Override
 			public void init() {
-				x = 2300;
-				y = 800;
-				radius = 200;
+				x = 3610;
+				y = 110;
+				radius = 120;
 				inRangeTexture = AssetManager.getTexture("interact_ball");
 			}
 			
 			@Override
 			public void interact() {
-				finished = true;
-				Game.INSTANCE.resources.addEnergy(-1);
+				if (Game.INSTANCE.entities.getEntities().size() == 1)
+					Game.INSTANCE.entities.addEntity(new Item(ItemType.ENERGY, 2300, 800, 0.1f, false));
 			}
 			
 			@Override
@@ -61,4 +63,5 @@ public class Level1 extends Level {
 	public void unload() {
 		Game.INSTANCE.interactions.clear();
 	}
+	
 }

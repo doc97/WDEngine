@@ -146,8 +146,6 @@ public class Entity {
 			else if (x < Game.INSTANCE.container.getPlayer().x)
 				Game.INSTANCE.sounds.setBalance(s, Sound.LEFT);
 			Game.INSTANCE.sounds.playSound(s);
-			Game.INSTANCE.sounds.setBalance(s, Sound.CENTER);
-			
 		}
 		isInWater = b;
 	}

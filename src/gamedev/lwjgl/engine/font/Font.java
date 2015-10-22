@@ -53,6 +53,10 @@ public class Font {
 			}
 			
 			textWidth += glyph.getAdvanceX();
+			if (y > batch.getCamera().getHeight() + originalFontSize)
+				return;
+			else if (y < -originalFontSize)
+				return;
 			characters[i] = glyph;
 		}
 

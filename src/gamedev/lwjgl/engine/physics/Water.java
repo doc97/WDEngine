@@ -61,10 +61,10 @@ public class Water {
 			Spring s = springs[i];
 			Spring s2 = springs[i + 1];
 			
-			Color dark = new Color(0, 0, 0, 0.5f);
-			Color light = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-			Color[] colors = { light, light, dark, dark };
-			
+			Color dark = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+			Color light = new Color(1, 0, 1, 0.5f);
+			Color[] colors = { dark, dark, light, light};
+
 			batch.draw(null,
 					s.getX(), s.getHeight(),
 					s2.getX(), s2.getHeight(),

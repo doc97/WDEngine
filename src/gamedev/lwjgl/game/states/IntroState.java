@@ -129,7 +129,6 @@ public class IntroState extends State {
 		font.setFadeEffect(true);
 		
 		introScene.start();
-		Game.INSTANCE.sounds.playSound(AssetManager.getSound("intro"));
 	}
 	
 	@Override
@@ -159,8 +158,5 @@ public class IntroState extends State {
 	@Override
 	public void exit() {
 		Engine.INSTANCE.input.removeListener(introInput);
-		Sound s = AssetManager.getSound("intro");
-		if (Game.INSTANCE.sounds.isSoundPlaying(s))
-			Game.INSTANCE.sounds.stopSound(s);
 	}
 }

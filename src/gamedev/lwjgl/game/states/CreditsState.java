@@ -29,7 +29,7 @@ public class CreditsState extends State {
 	private static final String prog1 = "Daniel Riissanen";
 	private static final String prog2 = "Wilhelm von Bergmann";
 	private static final String artist1 = "Reetu Laine";
-	private static final String artist2 = "Charlotta ";
+	private static final String artist2 = "Charlotta Laine";
 	private static final String writer = "Jolanda Riissanen";
 	
 	private void init() {
@@ -40,7 +40,6 @@ public class CreditsState extends State {
 		Map<String, String> data = AssetManager.getData("credits");
 		font = AssetManager.getFont(data.get("font"));
 		scale = font.getOriginalSize() / 16;
-		font.setAlignment(Alignment.CENTER);
 	}
 	
 	public void setExit(boolean b) {
@@ -53,10 +52,10 @@ public class CreditsState extends State {
 			init();
 		
 		Engine.INSTANCE.input.addListener(input);
-		
-		Engine.INSTANCE.display.setBackgroundColor(0, 0, 0, 1);
-		offsetY = -Engine.INSTANCE.display.getWindowHeight() + 50;
+		offsetY = -Engine.INSTANCE.display.getWindowHeight() + 150;
 		exit = false;
+		Engine.INSTANCE.display.setBackgroundColor(0, 0, 0, 1);
+		font.setAlignment(Alignment.CENTER);
 	}
 
 	@Override
@@ -66,7 +65,7 @@ public class CreditsState extends State {
 		if(offsetY > 900 * scale || exit)
 			Game.INSTANCE.states.enterState(States.MAINMENUSTATE);
 		
-		offsetY += 0.7f * scale;
+		offsetY += 0.7f * scale / 2;
 	}
 
 	@Override
@@ -85,12 +84,12 @@ public class CreditsState extends State {
 				Engine.INSTANCE.camera.getHeight() - 200 * scale + offsetY
 				);
 		
-		font.drawString(Engine.INSTANCE.batch, prog1, font.getOriginalSize(),
+		font.drawString(Engine.INSTANCE.batch, prog2, font.getOriginalSize() / 2,
 				Engine.INSTANCE.camera.getWidth() / 2,
 				Engine.INSTANCE.camera.getHeight() - 225 * scale + offsetY
 				);
 		
-		font.drawString(Engine.INSTANCE.batch, prog2, font.getOriginalSize(),
+		font.drawString(Engine.INSTANCE.batch, prog1, font.getOriginalSize() / 2,
 				Engine.INSTANCE.camera.getWidth() / 2,
 				Engine.INSTANCE.camera.getHeight() - 250 * scale + offsetY
 				);
@@ -101,12 +100,12 @@ public class CreditsState extends State {
 				Engine.INSTANCE.camera.getHeight() - 350 * scale + offsetY
 				);
 		
-		font.drawString(Engine.INSTANCE.batch, artist1, font.getOriginalSize(),
+		font.drawString(Engine.INSTANCE.batch, artist1, font.getOriginalSize() / 2,
 				Engine.INSTANCE.camera.getWidth() / 2,
 				Engine.INSTANCE.camera.getHeight() - 375 * scale + offsetY
 				);
 		
-		font.drawString(Engine.INSTANCE.batch, artist2, font.getOriginalSize(),
+		font.drawString(Engine.INSTANCE.batch, artist2, font.getOriginalSize() / 2,
 				Engine.INSTANCE.camera.getWidth() / 2,
 				Engine.INSTANCE.camera.getHeight() - 400 * scale+ offsetY
 				);
@@ -117,12 +116,12 @@ public class CreditsState extends State {
 				Engine.INSTANCE.camera.getHeight() - 500 * scale + offsetY
 				);
 		
-		font.drawString(Engine.INSTANCE.batch, prog1, font.getOriginalSize(),
+		font.drawString(Engine.INSTANCE.batch, prog1, font.getOriginalSize() / 2,
 				Engine.INSTANCE.camera.getWidth() / 2,
 				Engine.INSTANCE.camera.getHeight() - 525 * scale + offsetY
 				);
 		
-		font.drawString(Engine.INSTANCE.batch, artist1, font.getOriginalSize(),
+		font.drawString(Engine.INSTANCE.batch, artist1, font.getOriginalSize() / 2,
 				Engine.INSTANCE.camera.getWidth() / 2,
 				Engine.INSTANCE.camera.getHeight() - 550 * scale + offsetY
 				);
@@ -133,7 +132,7 @@ public class CreditsState extends State {
 				Engine.INSTANCE.camera.getHeight() - 650 * scale + offsetY
 				);
 		
-		font.drawString(Engine.INSTANCE.batch, writer, font.getOriginalSize(),
+		font.drawString(Engine.INSTANCE.batch, writer, font.getOriginalSize() / 2,
 				Engine.INSTANCE.camera.getWidth() / 2,
 				Engine.INSTANCE.camera.getHeight() - 675 * scale + offsetY
 				);
@@ -144,7 +143,7 @@ public class CreditsState extends State {
 				Engine.INSTANCE.camera.getHeight() - 775 * scale + offsetY
 				);
 		
-		font.drawString(Engine.INSTANCE.batch, artist1, font.getOriginalSize(),
+		font.drawString(Engine.INSTANCE.batch, artist1, font.getOriginalSize() / 2,
 				Engine.INSTANCE.camera.getWidth() / 2,
 				Engine.INSTANCE.camera.getHeight() - 800 * scale + offsetY
 				);
@@ -155,6 +154,8 @@ public class CreditsState extends State {
 
 	@Override
 	public void exit() {
+		offsetY = -Engine.INSTANCE.display.getWindowHeight() + 150;
+		exit = false;
 		Engine.INSTANCE.input.removeListener(input);
 	}
 
