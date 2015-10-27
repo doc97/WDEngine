@@ -1,1 +1,1 @@
-LWJGL ${build.version} build 9
+LWJGL 3.0.0b SNAPSHOT build 35

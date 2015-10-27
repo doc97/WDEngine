@@ -33,8 +33,8 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 import java.nio.ByteBuffer;
 
 import org.lwjgl.glfw.GLFWvidmode;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GLContext;
 
 import gamedev.lwjgl.engine.Logger;
 
@@ -71,7 +71,7 @@ public class DisplayManager {
 		glfwSwapInterval(1);
 		glfwShowWindow(window);
 		
-		GLContext.createFromCurrent();
+		GL.createCapabilities();
 		
 		glFrustum(-1.0, 1.0, -1.0, 1.0, 1.5, 20.0);
 		glEnable(GL_DEPTH_TEST | GL_ALPHA_TEST);
