@@ -1,6 +1,5 @@
 package gamedev.lwjgl.game.states;
 
-
 import java.util.Map;
 
 import gamedev.lwjgl.engine.Engine;
@@ -13,7 +12,7 @@ import gamedev.lwjgl.game.Game;
 import gamedev.lwjgl.game.entities.Entity;
 import gamedev.lwjgl.game.entities.Item;
 import gamedev.lwjgl.game.entities.ItemType;
-import gamedev.lwjgl.game.entities.Player;
+import gamedev.lwjgl.game.input.DeveloperInput;
 import gamedev.lwjgl.game.input.GameInput;
 import gamedev.lwjgl.game.ui.GameUI;
 import gamedev.lwjgl.game.ui.PauseMenu;
@@ -26,6 +25,7 @@ public class GameState extends State {
 	private PauseMenu pauseMenu;
 	private GameInput gameInput;
 	private GameUI gameUI;
+	private DeveloperInput devInput;
 	private boolean initialized;
 	private boolean paused;
 	
@@ -35,11 +35,13 @@ public class GameState extends State {
 		
 		gameInput = new GameInput(this);
 		pauseMenu = new PauseMenu(this);
-		gameUI = new GameUI(this);
+		gameUI = new GameUI();
 		
 		basicFont = AssetManager.getFont(fontname);
 		basicFont.setAlignment(Alignment.LEFT);
 		initialized = true;
+		
+		devInput = new DeveloperInput();
 		
 	}
 	
@@ -157,6 +159,7 @@ public class GameState extends State {
 		Game.INSTANCE.container.getPlayer().setEntityPosition(100, 1000);
 		addEntity(Game.INSTANCE.container.getPlayer());
 		Engine.INSTANCE.input.addListener(gameInput);
+		Engine.INSTANCE.input.addListener(devInput);
 		
 		Engine.INSTANCE.batch.setColor(fadeColor);
 		Engine.INSTANCE.display.setBackgroundColor(0, 0, 0, 1);
@@ -184,7 +187,7 @@ public class GameState extends State {
 		addEnergyGem();
 	}
 	
-	public void addEnergyGem(){
+	public void addEnergyGem() {
 		if (Game.INSTANCE.entities.getEntities().size() != 1)
 			return;
 		Item energyGem = new Item(ItemType.ENERGY, 2300, 800, 0.1f, false);
@@ -197,6 +200,7 @@ public class GameState extends State {
 		Game.INSTANCE.particles.clear();
 		Game.INSTANCE.sounds.stopSound(AssetManager.getSound("background"));
 		Engine.INSTANCE.input.removeListener(gameInput);
+		Engine.INSTANCE.input.removeListener(devInput);
 		pauseMenu.hide();
 	}
 }

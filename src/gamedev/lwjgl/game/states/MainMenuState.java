@@ -29,7 +29,6 @@ public class MainMenuState extends State {
 	private Color color = new Color(1, 1, 1, 1);
 	private Timer fadeTimer = new Timer();
 	private States enterState;
-	private boolean removeListeners;
 	
 	public MainMenuState() {
 		Map<String, String> data = AssetManager.getData("mainmenu");
@@ -70,6 +69,7 @@ public class MainMenuState extends State {
 						))
 				{
 					startBtn.press();
+					return true;
 				}
 				return false;
 			}
@@ -84,8 +84,8 @@ public class MainMenuState extends State {
 							))
 					{
 						fadeTimer.setActive(true);
-						removeListeners = true;
 						enterState = States.INTROSTATE;
+						return true;
 					}
 				}
 				return false;
@@ -120,6 +120,7 @@ public class MainMenuState extends State {
 						))
 				{
 					optionsBtn.press();
+					return true;
 				}
 				return false;
 			}
@@ -135,7 +136,7 @@ public class MainMenuState extends State {
 					{
 						fadeTimer.setActive(true);
 						enterState = States.CREDITSSTATE;
-						removeListeners = true;
+						return true;
 					}
 				}
 				return false;
@@ -170,6 +171,7 @@ public class MainMenuState extends State {
 						))
 				{
 					exitBtn.press();
+					return true;
 				}
 				return false;
 			}
@@ -184,6 +186,7 @@ public class MainMenuState extends State {
 							))
 					{
 						Engine.INSTANCE.display.closeDisplay();
+						return true;
 					}
 				}
 				return false;	
@@ -218,12 +221,6 @@ public class MainMenuState extends State {
 				fadeTimer.setActive(false);
 				Game.INSTANCE.states.enterState(enterState);
 			}
-			if(removeListeners) {
-				removeListeners = false;
-				Engine.INSTANCE.input.removeListener(startBtnInput);
-				Engine.INSTANCE.input.removeListener(optionsBtnInput);
-				Engine.INSTANCE.input.removeListener(exitBtnInput);
-			}
 		}
 	}
 	
@@ -249,5 +246,8 @@ public class MainMenuState extends State {
 	@Override
 	public void exit() {
 		Game.INSTANCE.sounds.stopSound(AssetManager.getSound("atmospheric_water"));
+		Engine.INSTANCE.input.removeListener(startBtnInput);
+		Engine.INSTANCE.input.removeListener(optionsBtnInput);
+		Engine.INSTANCE.input.removeListener(exitBtnInput);
 	}
 }

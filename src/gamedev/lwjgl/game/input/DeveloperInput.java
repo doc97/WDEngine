@@ -1,28 +1,28 @@
-package gamedev.lwjgl.game.states;
+package gamedev.lwjgl.game.input;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
+import org.lwjgl.glfw.GLFW;
 
 import gamedev.lwjgl.engine.input.InputListener;
+import gamedev.lwjgl.game.Game;
 
-public class CreditsInput implements InputListener {
+public class DeveloperInput implements InputListener {
 
-	private CreditsState cs;
-	
-	public CreditsInput(CreditsState cs) {
-		this.cs = cs;
-	}
-	
 	@Override
 	public void update() {
-
+		
 	}
 
 	@Override
 	public boolean keyPressed(int key) {
-		if(key == GLFW_KEY_ESCAPE) {
-			cs.setExit(true);
+		if(key == GLFW.GLFW_KEY_F1) {
+			Game.INSTANCE.devTools.fillUpEnergy();
 			return true;
 		}
+		if(key == GLFW.GLFW_KEY_F2) {
+			Game.INSTANCE.devTools.resetPlayer();
+			return true;
+		}
+		
 		return false;
 	}
 

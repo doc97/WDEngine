@@ -59,29 +59,51 @@ public class GameInput implements InputListener {
 	
 	@Override
 	public boolean keyPressed(int key) {
-		if(key == rightKey)
+		if(key == rightKey) {
 			right = true;
-		else if(key == leftKey)
+			return true;
+		}
+		if(key == leftKey) {
 			left = true;
-		else if(key == jumpKey)
+			return true;
+		}
+		if(key == jumpKey) {
 			jump = true;
-		else if(key == dashKey)
+			return true;
+		}
+		if(key == dashKey) {
 			player.dash();
-		else if(key == interactKey)
+			return true;
+		}
+		if(key == interactKey) {
 			Game.INSTANCE.interactions.interact();
-		else if(key == GLFW.GLFW_KEY_ESCAPE)
+			return true;
+		}
+		if(key == GLFW.GLFW_KEY_ESCAPE) {
 			gs.pause();
-		else if(key == GLFW.GLFW_KEY_UP)
+			return true;
+		}
+		if(key == GLFW.GLFW_KEY_UP) {
 			Game.INSTANCE.sounds.setVolume(AssetManager.getSound("background"), v = Math.min(v += 10, 100));
-		else if(key == GLFW.GLFW_KEY_DOWN)
+			return true;
+		}
+		else if(key == GLFW.GLFW_KEY_DOWN) {
 			Game.INSTANCE.sounds.setVolume(AssetManager.getSound("background"), v = Math.max(v -= 10, 0));
-		else if(key == GLFW.GLFW_KEY_RIGHT)
+			return true;
+		}
+		if(key == GLFW.GLFW_KEY_RIGHT) {
 			Game.INSTANCE.sounds.setBalance(AssetManager.getSound("background"), Sound.RIGHT);
-		else if (key == GLFW.GLFW_KEY_LEFT)
+			return true;
+		}
+		if (key == GLFW.GLFW_KEY_LEFT) {
 			Game.INSTANCE.sounds.setBalance(AssetManager.getSound("background"), Sound.LEFT);
-		else if (key == GLFW.GLFW_KEY_ENTER)
+			return true;
+		}
+		if (key == GLFW.GLFW_KEY_ENTER) {
 			Game.INSTANCE.sounds.setBalance(AssetManager.getSound("background"), Sound.CENTER);
-		return true;
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -91,11 +113,18 @@ public class GameInput implements InputListener {
 
 	@Override
 	public boolean keyReleased(int key) {
-		if(key == rightKey) right 	= false;
-		if(key == leftKey)	left 	= false;
+		if(key == rightKey) {
+			right = false;
+			return true;
+		}
+		if(key == leftKey) {
+			left = false;
+			return true;
+		}
 		if(key == jumpKey) {
 			jump = false;
 			jumpedOnCurrent = false;
+			return true;
 		}
 		return false;
 	}

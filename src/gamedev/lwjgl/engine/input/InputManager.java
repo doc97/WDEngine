@@ -29,10 +29,13 @@ public class InputManager {
 	private static GLFWMouseButtonCallback mouseCallback;
 	
 	private List<InputListener> listeners = new ArrayList<InputListener>();
+	private List<InputListener> addListeners = new ArrayList<InputListener>();
+	private List<InputListener> remListeners = new ArrayList<InputListener>();
 	private ByteBuffer xpos = BufferUtils.createByteBuffer(8);
 	private ByteBuffer ypos = BufferUtils.createByteBuffer(8);
 	private float mouseX, mouseY;
 	private long window;
+	private boolean invoking;
 	
 	public void init(long window) {
 		this.window = window;
@@ -41,6 +44,7 @@ public class InputManager {
 		glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
 			@Override
 			public void invoke(long window, int key, int scancode, int action, int mods) {
+				invoking = true;
 				for(InputListener il : listeners) {
 					if(action == GLFW_REPEAT) {
 						if(il.keyRepeat(key))
@@ -53,11 +57,13 @@ public class InputManager {
 							break;
 					}
 				}
+				invoking = false;
 			}
 		});
 		glfwSetMouseButtonCallback(window, mouseCallback = new GLFWMouseButtonCallback() {
 			@Override
 			public void invoke(long window, int button, int action, int mods) {
+				invoking = true;
 				for(InputListener il : listeners) {
 					if(action == GLFW_PRESS) {
 						if(il.mousePressed(button))
@@ -67,6 +73,7 @@ public class InputManager {
 							break;
 					}
 				}
+				invoking = false;
 			}
 		});
 	}
@@ -75,19 +82,30 @@ public class InputManager {
 		for(InputListener listener : listeners)
 			listener.update();
 		
+		if(!invoking) {
+			for(InputListener add : addListeners)
+				listeners.add(add);
+			
+			for(InputListener rem : remListeners)
+				listeners.remove(rem);
+			
+			addListeners.clear();
+			remListeners.clear();
+		}
+		
 		glfwGetCursorPos(window, xpos, ypos);
 		mouseX = (float) xpos.getDouble();
 		mouseY = (float) ypos.getDouble();
 		xpos.clear();
 		ypos.clear();
 	}
-	
+
 	public void addListener(InputListener listener) {
-		listeners.add(listener);
+		addListeners.add(listener);
 	}
 	
 	public void removeListener(InputListener listener) {
-		listeners.remove(listener);
+		remListeners.add(listener);
 	}
 	
 	public void removeAllListeners() {

@@ -8,7 +8,6 @@ import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.font.Font.Alignment;
 import gamedev.lwjgl.engine.input.InputListener;
-import gamedev.lwjgl.engine.sound.Sound;
 import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.engine.utils.Timer;
@@ -108,6 +107,7 @@ public class IntroState extends State {
 			public boolean keyPressed(int key) {
 				if(key == GLFW_KEY_ESCAPE) {
 					Game.INSTANCE.states.enterState(States.GAMESTATE);
+					return true;
 				}
 				return false;
 			}
