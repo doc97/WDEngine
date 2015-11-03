@@ -34,7 +34,7 @@ public class CreditsState extends State {
 	
 	private void init() {
 		initialized = true;
-		
+		loadData();
 		input = new CreditsInput(this);
 	}
 	

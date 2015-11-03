@@ -127,6 +127,9 @@ public class GameState extends State {
 		
 		Engine.INSTANCE.batch.setColor(Color.WHITE);
 
+		Engine.INSTANCE.batch.setColor(Color.WHITE);
+		Game.INSTANCE.dialogs.render(Engine.INSTANCE.batch);
+		
 		if(paused) {
 			Engine.INSTANCE.camera.setPosition(
 					Engine.INSTANCE.camera.getWidth() / 2,
@@ -135,9 +138,12 @@ public class GameState extends State {
 			pauseMenu.render(Engine.INSTANCE.batch);
 		}
 		
+		Engine.INSTANCE.batch.setColor(Color.WHITE);
+
 		Engine.INSTANCE.camera.setPosition(
 				Game.INSTANCE.container.getPlayer().getX(),
 				Game.INSTANCE.container.getPlayer().getY());
+				
 		Engine.INSTANCE.batch.end();
 		
 		Engine.INSTANCE.uiBatch.begin();
@@ -146,7 +152,6 @@ public class GameState extends State {
 				Engine.INSTANCE.uiBatch.getCamera().getWidth() / 2,
 				Engine.INSTANCE.uiBatch.getCamera().getHeight() / 2
 				);
-		//Engine.INSTANCE.uiBatch.draw(ItemType.COIN.getTexture(), 0, 0, 100, 100);
 		Game.INSTANCE.quests.render();
 		Game.INSTANCE.container.getPlayer().getInventory().render(Engine.INSTANCE.uiBatch);
 		gameUI.render(Engine.INSTANCE.uiBatch);

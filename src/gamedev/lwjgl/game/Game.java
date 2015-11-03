@@ -2,6 +2,7 @@ package gamedev.lwjgl.game;
 
 import gamedev.lwjgl.engine.sound.SoundSystem;
 import gamedev.lwjgl.game.dev.DeveloperTools;
+import gamedev.lwjgl.game.systems.DialogSystem;
 import gamedev.lwjgl.game.systems.EntitySystem;
 import gamedev.lwjgl.game.systems.InteractionSystem;
 import gamedev.lwjgl.game.systems.LevelSystem;
@@ -21,6 +22,7 @@ public enum Game {
 	public final GamePhysics physics = new GamePhysics();
 	public final QuestSystem quests = new QuestSystem();
 	public final InteractionSystem interactions = new InteractionSystem();
+	public final DialogSystem dialogs = new DialogSystem();
 	public final LevelSystem levels = new LevelSystem();
 	public final ResourceSystem resources = new ResourceSystem();
 	public final DeveloperTools devTools = new DeveloperTools();
