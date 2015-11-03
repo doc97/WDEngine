@@ -36,16 +36,19 @@ public class CreditsState extends State {
 		initialized = true;
 		
 		input = new CreditsInput(this);
-		
-		Map<String, String> data = AssetManager.getData("credits");
-		font = AssetManager.getFont(data.get("font"));
-		scale = font.getOriginalSize() / 16;
 	}
 	
 	public void setExit(boolean b) {
 		exit = b;
 	}
 	
+	@Override
+	public void loadData() {
+		Map<String, String> data = AssetManager.getData("credits");
+		font = AssetManager.getFont(data.get("font"));
+		scale = font.getOriginalSize() / 16;
+	}
+
 	@Override
 	public void enter() {
 		if(!initialized)

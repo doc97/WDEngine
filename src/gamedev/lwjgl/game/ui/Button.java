@@ -18,14 +18,7 @@ public class Button {
 	private float height;
 	
 	public Button(String file, Vector4f normalData, Vector4f pressedData) {
-		normalTexture = new TextureRegion(AssetManager.getTexture(file),
-				normalData.x, normalData.y, normalData.z, normalData.w);
-		
-		if(pressedData != null) {
-			pressedTexture = new TextureRegion(AssetManager.getTexture(file),
-					pressedData.x, pressedData.y, pressedData.z, pressedData.w);
-			hasPressed = true;
-		}
+		setTextureData(file, normalData, pressedData);
 	}
 	
 	public void setPosition(float x, float y) {
@@ -36,6 +29,17 @@ public class Button {
 	public void setSize(float width, float height) {
 		this.width = width;
 		this.height = height;
+	}
+	
+	public void setTextureData(String file, Vector4f normalData, Vector4f pressedData) {
+		normalTexture = new TextureRegion(AssetManager.getTexture(file),
+				normalData.x, normalData.y, normalData.z, normalData.w);
+		
+		if(pressedData != null) {
+			pressedTexture = new TextureRegion(AssetManager.getTexture(file),
+					pressedData.x, pressedData.y, pressedData.z, pressedData.w);
+			hasPressed = true;
+		}
 	}
 	
 	public boolean isOver(float x, float y) {

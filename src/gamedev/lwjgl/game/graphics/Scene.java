@@ -1,6 +1,7 @@
 package gamedev.lwjgl.game.graphics;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.textures.Color;
@@ -12,7 +13,7 @@ public class Scene {
 	private Timer fadeIn = new Timer();
 	private Timer fadeOut = new Timer();
 	private Timer show = new Timer();
-	private ArrayList<SceneObject> objects = new ArrayList<SceneObject>();
+	private Map<String, SceneObject> objects = new HashMap<String, SceneObject>();
 	private int fadeInTick;
 	private int fadeOutTick;
 	private int showTick;
@@ -33,6 +34,7 @@ public class Scene {
 	}
 	
 	public void reload() {
+		finished = false;
 		fadeIn.set(fadeInTick);
 		fadeOut.set(fadeOutTick);
 		show.set(showTick);
@@ -48,8 +50,8 @@ public class Scene {
 			fadeOut.update();
 			show.update();
 			
-			for(SceneObject sObj : objects)
-				sObj.update();
+			for(String sKey : objects.keySet())
+				objects.get(sKey).update();
 			
 			if(fadeIn.getPercentage() == 1) {
 				fadeIn.setActive(false);
@@ -70,17 +72,24 @@ public class Scene {
 	
 	public void render(SpriteBatch batch) {
 		batch.setColor(color);
-		for(SceneObject sObj : objects) {
-			sObj.render(batch);
+		for(String sKey : objects.keySet()) {
+			objects.get(sKey).render(batch);
 		}
 	}
 	
-	public void addObject(SceneObject object) {
-		objects.add(object);
+	public void addObject(String name, SceneObject object) {
+		objects.put(name, object);
 	}
 	
 	public void setColor(float r, float g, float b, float a) {
 		color.setColor(r, g, b, a);
+	}
+	
+	public SceneObject getObject(String name) {
+		return objects.get(name);
+	}
+	public Map<String, SceneObject> getObjects() {
+		return objects;
 	}
 	
 	public Color getColor() {

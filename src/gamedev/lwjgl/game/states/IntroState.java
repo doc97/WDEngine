@@ -26,67 +26,8 @@ public class IntroState extends State {
 	private InputListener introInput;
 	
 	public IntroState() {
-		Map<String, String> data = AssetManager.getData("intro");
+		loadData();
 		
-		String texname1 = data.get("frame1");
-		String texname2 = data.get("frame2");
-		String fontname = data.get("font");
-		
-		String mainmenutex = AssetManager.getData("mainmenu").get("title_screen");
-
-		font = AssetManager.getFont(fontname);
-		font.setAlignment(Alignment.CENTER);
-		
-		Scene scene1 = new Scene(0, 0, Timer.getTicks(2000));
-			SceneTexture s1Tex1 = new SceneTexture();
-			s1Tex1.setTexture(AssetManager.getTexture(mainmenutex));
-			s1Tex1.setPosition(0, 0);
-			s1Tex1.setDimension(Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
-			scene1.addObject(s1Tex1);
-		introScene.addScene(scene1);
-			
-		Scene scene2 = new Scene(Timer.getTicks(2000), Timer.getTicks(1000), Timer.getTicks(1000));
-			SceneText s2Text1 = new SceneText();
-			s2Text1.setFont(font);
-			s2Text1.setFontSize(font.getOriginalSize());
-			s2Text1.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() / 2);
-			s2Text1.setText("The Casuals");
-			scene2.addObject(s2Text1);
-		introScene.addScene(scene2);
-		
-		Scene scene3 = new Scene(Timer.getTicks(2000), Timer.getTicks(1000), Timer.getTicks(2000));
-			SceneText s3Text1 = new SceneText();
-			s3Text1.setFont(font);
-			s3Text1.setFontSize(font.getOriginalSize());
-			s3Text1.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() / 2 + font.getOriginalSize());
-			s3Text1.setText("in association with");
-			scene3.addObject(s3Text1);
-			
-			SceneText s3Text2 = new SceneText();
-			s3Text2.setFont(font);
-			s3Text2.setFontSize(font.getOriginalSize());
-			s3Text2.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() / 2 - font.getOriginalSize());
-			s3Text2.setText("GameDev-klubi");
-			scene3.addObject(s3Text2);
-		introScene.addScene(scene3);
-		
-		Scene scene4 = new Scene(Timer.getTicks(2000), Timer.getTicks(1000), Timer.getTicks(2000));
-			SceneTexture s4Text1 = new SceneTexture();
-			s4Text1.setTexture(AssetManager.getTexture(texname1));
-			s4Text1.setPosition(0, 0);
-			s4Text1.setDimension(Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
-			scene4.addObject(s4Text1);
-		introScene.addScene(scene4);
-		
-		Scene scene5 = new Scene(Timer.getTicks(2000), Timer.getTicks(1000), Timer.getTicks(2000));
-			SceneTexture s5Tex1 = new SceneTexture();
-			s5Tex1.setTexture(AssetManager.getTexture(texname2));
-			s5Tex1.setPosition(0, 0);
-			s5Tex1.setDimension(Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
-			scene5.addObject(s5Tex1);
-		introScene.addScene(scene5);
-			
-			
 		introInput = new InputListener() {
 			@Override
 			public void update() {}
@@ -114,6 +55,68 @@ public class IntroState extends State {
 		};
 	}
 	
+	@Override
+	public void loadData() {
+		Map<String, String> data = AssetManager.getData("intro");
+		
+		String frame1 = data.get("frame1");
+		String frame2 = data.get("frame2");
+		String fontname = data.get("font");
+		String mainmenutex = AssetManager.getData("mainmenu").get("title_screen");
+		
+		font = AssetManager.getFont(fontname);
+		font.setAlignment(Alignment.CENTER);
+
+		Scene scene1 = new Scene(0, 0, Timer.getTicks(2000));
+			SceneTexture s1Tex1 = new SceneTexture();
+			s1Tex1.setTexture(AssetManager.getTexture(mainmenutex));
+			s1Tex1.setPosition(0, 0);
+			s1Tex1.setDimension(Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
+			scene1.addObject("Fade_texture", s1Tex1);
+		introScene.addScene("Fade_scene", scene1);
+			
+		Scene scene2 = new Scene(Timer.getTicks(2000), Timer.getTicks(1000), Timer.getTicks(1000));
+			SceneText s2Text1 = new SceneText();
+			s2Text1.setFont(font);
+			s2Text1.setFontSize(font.getOriginalSize());
+			s2Text1.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() / 2);
+			s2Text1.setText("The Casuals");
+			scene2.addObject("Team_name", s2Text1);
+		introScene.addScene("Team_scene", scene2);
+		
+		Scene scene3 = new Scene(Timer.getTicks(2000), Timer.getTicks(1000), Timer.getTicks(2000));
+			SceneText s3Text1 = new SceneText();
+			s3Text1.setFont(font);
+			s3Text1.setFontSize(font.getOriginalSize());
+			s3Text1.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() / 2 + font.getOriginalSize());
+			s3Text1.setText("in association with");
+			scene3.addObject("Association_text", s3Text1);
+			
+			SceneText s3Text2 = new SceneText();
+			s3Text2.setFont(font);
+			s3Text2.setFontSize(font.getOriginalSize());
+			s3Text2.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() / 2 - font.getOriginalSize());
+			s3Text2.setText("GameDev-klubi");
+			scene3.addObject("Club_text", s3Text2);
+		introScene.addScene("Association_scene", scene3);
+		
+		Scene scene4 = new Scene(Timer.getTicks(2000), Timer.getTicks(1000), Timer.getTicks(2000));
+			SceneTexture s4Text1 = new SceneTexture();
+			s4Text1.setTexture(AssetManager.getTexture(frame1));
+			s4Text1.setPosition(0, 0);
+			s4Text1.setDimension(Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
+			scene4.addObject("Intro_1", s4Text1);
+		introScene.addScene("Intro_scene_1", scene4);
+		
+		Scene scene5 = new Scene(Timer.getTicks(2000), Timer.getTicks(1000), Timer.getTicks(2000));
+			SceneTexture s5Tex1 = new SceneTexture();
+			s5Tex1.setTexture(AssetManager.getTexture(frame2));
+			s5Tex1.setPosition(0, 0);
+			s5Tex1.setDimension(Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
+			scene5.addObject("Intro_2", s5Tex1);
+		introScene.addScene("Intro_scene_2", scene5);
+	}
+
 	@Override
 	public void enter() {
 		Engine.INSTANCE.camera.setPosition(

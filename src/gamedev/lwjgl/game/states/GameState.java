@@ -30,21 +30,26 @@ public class GameState extends State {
 	private boolean paused;
 	
 	public void init() {
-		Map<String, String> data = AssetManager.getData("game");
-		String fontname = data.get("font");
-		
+		loadData();
 		gameInput = new GameInput(this);
 		pauseMenu = new PauseMenu(this);
 		gameUI = new GameUI();
 		
-		basicFont = AssetManager.getFont(fontname);
 		basicFont.setAlignment(Alignment.LEFT);
 		initialized = true;
 		
 		devInput = new DeveloperInput();
-		
 	}
 	
+	@Override
+	public void loadData() {
+		Map<String, String> data = AssetManager.getData("game");
+		String fontname = data.get("font");
+		basicFont = AssetManager.getFont(fontname);
+	}
+
+
+
 	public void addEntity(Entity entity) {
 		Game.INSTANCE.entities.addEntity(entity);
 	}

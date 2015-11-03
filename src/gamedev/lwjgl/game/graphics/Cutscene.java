@@ -1,43 +1,52 @@
 package gamedev.lwjgl.game.graphics;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import gamedev.lwjgl.engine.render.SpriteBatch;
 
 public class Cutscene {
 	
-	private ArrayList<Scene> scenes = new ArrayList<Scene>();
-	private int currentScene = -1;
+	private Map<String, Scene> scenes = new HashMap<String, Scene>();
+	private List<String> sceneNames = new ArrayList<String>();
+	private int currentSceneIndex = -1;
+	private String currentSceneName = "";
 	private boolean finished;
 	
 	public void start() {
 		if(scenes.size() > 0) {
-			currentScene = 0;
-			for(Scene s : scenes)
-				s.reload();
-			scenes.get(currentScene).start();
+			currentSceneIndex = 0;
+			for(String s : scenes.keySet())
+				scenes.get(s).reload();
+			
+			currentSceneName = sceneNames.get(currentSceneIndex);
+			scenes.get(currentSceneName).start();
 			finished = false;
 		}
 	}
 	
 	public void update() {
-		if(!finished && currentScene >= 0) {
-			scenes.get(currentScene).update();
+		if(!finished && currentSceneIndex >= 0) {
+			scenes.get(currentSceneName).update();
 			
-			if(scenes.get(currentScene).hasFinished()) {
-				currentScene++;
-				if(currentScene < scenes.size())
-					scenes.get(currentScene).start();
+			if(scenes.get(currentSceneName).hasFinished()) {
+				currentSceneIndex++;
+				if(currentSceneIndex < scenes.size()) {
+					currentSceneName = sceneNames.get(currentSceneIndex);
+					scenes.get(currentSceneName).start();
+				}
 			}
 			
-			if(currentScene >= scenes.size())
+			if(currentSceneIndex >= scenes.size())
 				finished = true;
 		}
 	}
 	
 	public void render(SpriteBatch batch) {
 		if(!finished) {
-			Scene scene = scenes.get(currentScene);
+			Scene scene = scenes.get(currentSceneName);
 			float value = 1;
 			if(scene.getFadeInTimer().isActive())
 				value = scene.getFadeInTimer().getPercentage();
@@ -49,12 +58,25 @@ public class Cutscene {
 		}
 	}
 	
-	public void addScene(Scene scene) {
-		scenes.add(scene);
+	public void addScene(String name, Scene scene) {
+		scenes.put(name, scene);
+		sceneNames.add(name);
 	}
 	
-	public int getCurrentScene() {
-		return currentScene;
+	public int getCurrentSceneIndex() {
+		return currentSceneIndex;
+	}
+	
+	public String getCurrentSceneName() {
+		return currentSceneName;
+	}
+	
+	public Scene getScene(String name) {
+		return scenes.get(name);
+	}
+	
+	public Map<String, Scene> getScenes() {
+		return scenes;
 	}
 	
 	public boolean hasFinished() {
