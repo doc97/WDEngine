@@ -45,6 +45,8 @@ import com.google.gson.reflect.TypeToken;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
 import gamedev.lwjgl.engine.Logger;
+import gamedev.lwjgl.engine.data.MapData;
+import gamedev.lwjgl.engine.data.WaterData;
 import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.font.Glyph;
 import gamedev.lwjgl.engine.models.RawModel;
@@ -402,60 +404,34 @@ public class AssetManager {
 	
 	private static gamedev.lwjgl.game.map.Map loadMap(String filename) {
 		Logger.debug("AssetManager", "Loading map: " + filename);
-		FileReader fr = null;
-		try {
-			fr = new FileReader(new File(MAP_PATH + filename + "/" + filename + ".map"));
-		} catch(FileNotFoundException e) {
-			Logger.error("AssetManager", "No map file found with name: " + filename + ".map");
-			return null;
-		}
-		
-		BufferedReader br = new BufferedReader(fr);
-		String line;
-		List<String> objs = new ArrayList<String>();
-		List<Line> lines = new ArrayList<Line>();
-		List<Water> waters = new ArrayList<Water>();
-		ModelTexture ground = null;
-		ModelTexture foreground = null;
-		ModelTexture background1 = null;
-		ModelTexture background2 = null;
-		try {
-			while((line = br.readLine()) != null) {
-				String[] data = line.split("=");
-				if(data[0].equals("obj"))
-					objs.add(data[1]);
-				else if(data[0].equals("ground"))
-					ground = getTexture(data[1]);
-				else if(data[0].equals("foreground"))
-					foreground = getTexture(data[1]);
-				else if(data[0].equals("background1"))
-					background1 = getTexture(data[1]);
-				else if(data[0].equals("background2"))
-					background2 = getTexture(data[1]);
-				else if(data[0].equals("water")) {
-					String[] waterData = data[1].split(",");
-					float x = Float.parseFloat(waterData[0]);
-					float y = Float.parseFloat(waterData[1]);
-					float width = Float.parseFloat(waterData[2]);
-					float height = Float.parseFloat(waterData[3]);
-					waters.add(new Water(x, y, width, height));
-				}
-			}
-			br.close();
-		} catch(IOException e) {
+		try(Reader reader = new FileReader(MAP_PATH + filename + "/" + filename + ".map")) {
+			Gson gson = new Gson();
+            MapData m = gson.fromJson(reader, MapData.class);
+            
+            List<Line> lines = new ArrayList<Line>();
+            List<Water> waters = new ArrayList<Water>();
+            ModelTexture ground = getTexture(m.ground);
+    		ModelTexture foreground = getTexture(m.foreground);
+    		ModelTexture background1 = getTexture(m.background1);
+    		ModelTexture background2 = getTexture(m.background2);
+            
+    		// Load collision map
+    		for(String name : m.objs)
+    			lines.addAll(loadLineSegments(filename + "/" + name));
+    		
+    		// Load waters
+    		for(WaterData wd : m.waters)
+    			waters.add(new Water(wd.x, wd.y, wd.width, wd.height));
+    		
+            gamedev.lwjgl.game.map.Map map = new gamedev.lwjgl.game.map.Map();
+            map.setTextures(ground, foreground, background1, background2);
+    		map.setCollisionMap(lines);
+    		map.setWaters(waters);
+    		return map;
+		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
 		}
-
-		// Load collision map
-		for(String name : objs)
-			lines.addAll(loadLineSegments(filename + "/" + name));
-		
-		gamedev.lwjgl.game.map.Map map = new gamedev.lwjgl.game.map.Map();
-		map.setTextures(ground, foreground, background1, background2);
-		map.setCollisionMap(lines);
-		map.setWaters(waters);
-		return map;
+		return null;
 	}
 	
 	private static List<Line> loadLineSegments(String filename) {

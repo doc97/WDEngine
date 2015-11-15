@@ -1,7 +1,18 @@
-ground=level_01_ground
-foreground=level_01_foreground
-background1=level_01_background_1
-background2=level_01_background_2
-obj=outline
-obj=branch
-water=768, 0, 1035, 338
+{
+	"ground": "level_01_ground",
+	"foreground": "level_01_foreground",
+	"background1": "level_01_background_1",
+	"background2": "level_01_background_2",
+	"objs": [
+		"outline",
+		"branch"
+	],
+	"waters": [
+		{
+			"x": 768,
+			"y": 0,
+			"width": 1035,
+			"height": 338
+		}
+	]
+}
