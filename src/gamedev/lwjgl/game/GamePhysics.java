@@ -140,7 +140,7 @@ public class GamePhysics {
 		return null;
 	}
 	
-	public Collision claculateCollison(Line l1, Line l2, Vector2f speed) {
+	public Collision calculateCollison(Line l1, Line l2, Vector2f speed) {
 		
 		return null;
 	}
@@ -197,7 +197,7 @@ public class GamePhysics {
 		for (Line line : map.getCollisionMap()){
 			Vector2f speed = dmo.getSpeed();
 			for (Line l : lines){
-				Collision coll = claculateCollison(line, l, speed);
+				Collision coll = calculateCollison(line, l, speed);
 				
 			}
 		}

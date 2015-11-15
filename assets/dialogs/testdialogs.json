@@ -1,0 +1,26 @@
+{
+  "Initial dialog": {
+    "texts": [
+      "Hello!",
+      "What's up?",
+      "Goodbye."
+    ],
+    "fontName": "curly",
+    "fontSize": 16,
+    "x": 550.0,
+    "y": 550.0,
+    "showing": false
+  },
+  "Pirate dialog": {
+    "texts": [
+      "Howdy mate!",
+      "Are you up for one?",
+      "I'll meet you there."
+    ],
+    "fontName": "curly",
+    "fontSize": 16,
+    "x": 3630.0,
+    "y": 130.0,
+    "showing": false
+  }
+}

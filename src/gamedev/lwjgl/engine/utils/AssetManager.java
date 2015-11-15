@@ -28,6 +28,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +38,9 @@ import java.util.Map;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
@@ -49,6 +54,7 @@ import gamedev.lwjgl.engine.physics.Water;
 import gamedev.lwjgl.engine.sound.Sound;
 import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.engine.textures.TextureRegion;
+import gamedev.lwjgl.game.text.Dialog;
 
 public class AssetManager {
 	
@@ -60,6 +66,7 @@ public class AssetManager {
 	private static final String ANIMATION_PATH = ASSET_PATH + "animations/";
 	private static final String DATA_FILE_PATH = ASSET_PATH + "data/";
 	private static final String SOUND_FILE_PATH = ASSET_PATH + "sounds/";
+	private static final String DIALOG_PATH = ASSET_PATH + "dialogs/";
 	private static Map<String, RawModel> models = new HashMap<String, RawModel>();
 	private static Map<String, ModelTexture> textures = new HashMap<String, ModelTexture>();
 	private static Map<String, Font> fonts = new HashMap<String, Font>();
@@ -67,6 +74,7 @@ public class AssetManager {
 	private static Map<String, gamedev.lwjgl.game.map.Map> maps = new HashMap<String, gamedev.lwjgl.game.map.Map>();
 	private static Map<String, Map<String, String>> data = new HashMap<String, Map<String, String>>();
 	private static Map<String, Sound> sounds = new HashMap<String, Sound>();
+	private static Map<String, Dialog> dialogs = new HashMap<String, Dialog>();
 	
 	public static void loadAssets(String assetFile) {
 		FileReader fr = null;
@@ -83,6 +91,7 @@ public class AssetManager {
 		List<String> mapNames = new ArrayList<String>();
 		List<String> dataFileNames = new ArrayList<String>();
 		List<String> soundFileNames = new ArrayList<String>();
+		List<String> dialogNames = new ArrayList<String>();
 		BufferedReader br = new BufferedReader(fr);
 		String line;
 		try {
@@ -114,9 +123,11 @@ public class AssetManager {
 					for(String value : values)
 						dataFileNames.add(value);
 				} else if (line.startsWith("sounds")) {
-					for (String value : values) {
+					for (String value : values)
 						soundFileNames.add(value);
-					}
+				} else if (line.startsWith("dialogs")) {
+					for (String value : values)
+						dialogNames.add(value);
 				}
 			}
 			br.close();
@@ -131,6 +142,7 @@ public class AssetManager {
 		loadMaps(mapNames);
 		loadDataFiles(dataFileNames);
 		loadSoundFiles(soundFileNames);
+		loadDialogFiles(dialogNames);
 		Logger.message("AssetManager", "Assets loaded");
 	}
 	
@@ -145,6 +157,20 @@ public class AssetManager {
 				sounds.put(name, s);
 		}
 	}
+	
+	private static void loadDialogFiles(List<String> dialogNames) {
+		for(String name : dialogNames) {
+			if(dialogs.containsKey(name)) {
+				Logger.message("AssetManager", "Dialog with name: " + name + "already loaded");
+				continue;
+			}
+			Map<String, Dialog> d = loadDialogFile(name);
+			if(d != null)
+				dialogs = d;
+			else
+				Logger.message("AssetManager", "Failed to load dialog file with name: " + name);
+		}
+	}
 
 	private static void loadModels(List<String> modelNames) {
 		for(String name : modelNames) {
@@ -155,6 +181,8 @@ public class AssetManager {
 			RawModel model = loadOBJModel(name);
 			if(model != null)
 				models.put(name, model);
+			else
+				Logger.message("AssetManager", "Failed to load model with name: " + name);
 		}
 		
 		RawModel quad = loadQuad();
@@ -171,6 +199,8 @@ public class AssetManager {
 			ModelTexture tex = loadTexture(TEXTURE_PATH + name, Format.RGBA);
 			if(tex != null)
 				textures.put(name, tex);
+			else
+				Logger.message("AssetManager", "Failed to load texture with name: " + name);
 		}
 	}
 	
@@ -183,6 +213,8 @@ public class AssetManager {
 			List<TextureRegion> frames = loadAnimation(name);
 			if(frames != null)
 				animationTextures.put(name, frames);
+			else
+				Logger.message("AssetManager", "Failed to load animation with name: " + name);
 		}
 	}
 	
@@ -202,6 +234,8 @@ public class AssetManager {
 			
 			if(map != null)
 				maps.put(name, map);
+			else
+				Logger.message("AssetManager", "Failed to load map with name: " + name);
 		}
 	}
 	
@@ -298,6 +332,18 @@ public class AssetManager {
 		return data;
 	}
 	
+	private static Map<String, Dialog> loadDialogFile(String name) {
+		try(Reader reader = new FileReader(DIALOG_PATH + name + ".json")) {
+			Gson gson = new Gson();
+			Type stringDialogMap = new TypeToken<Map<String, Dialog>>(){}.getType();
+            Map<String, Dialog> map = gson.fromJson(reader, stringDialogMap);
+            return map;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public static RawModel getModel(String filename) {
 		return models.get(filename);
 	}
@@ -320,6 +366,10 @@ public class AssetManager {
 	
 	public static Sound getSound(String name) {
 		return sounds.get(name);
+	}
+	
+	public static Dialog getDialog(String name) {
+		return dialogs.get(name);
 	}
 	
 	public static gamedev.lwjgl.game.map.Map getMap(String name) {

@@ -11,3 +11,4 @@ animations=Cutscene
 fonts=basic;curly
 maps=level1
 datafiles=player;physics;intro;game;mainmenu;credits
+dialogs=testdialog

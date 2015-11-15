@@ -7,8 +7,6 @@ import gamedev.lwjgl.game.Game;
 import gamedev.lwjgl.game.Interaction;
 import gamedev.lwjgl.game.entities.Item;
 import gamedev.lwjgl.game.entities.ItemType;
-import gamedev.lwjgl.game.text.Dialog;
-import gamedev.lwjgl.game.text.Text;
 
 public class Level1 extends Level {
 
@@ -37,8 +35,15 @@ public class Level1 extends Level {
 			
 			@Override
 			public void interact() {
-				if (Game.INSTANCE.entities.getEntities().size() == 1)
-					Game.INSTANCE.entities.addEntity(new Item(ItemType.ENERGY, 2300, 800, 0.1f, false));
+				if(!Game.INSTANCE.dialogs.getCurrentDialogKey().equals("Pirate dialog"))
+					Game.INSTANCE.dialogs.setCurrentDialog("Pirate dialog");
+				Game.INSTANCE.dialogs.getCurrentDialog().nextText();
+				Game.INSTANCE.dialogs.getCurrentDialog().show();
+				
+				if (Game.INSTANCE.dialogs.getCurrentDialog().getCurrentTextIndex() == -1) {
+					if(Game.INSTANCE.entities.getEntities().size() == 1)
+						Game.INSTANCE.entities.addEntity(new Item(ItemType.ENERGY, 2300, 800, 0.1f, false));
+				}
 			}
 			
 			@Override
@@ -68,35 +73,13 @@ public class Level1 extends Level {
 				y = 530;
 				radius = 120;
 				inRangeTexture = AssetManager.getTexture("interact_ball");
-				
-				Dialog dialog = new Dialog();
-				Text text = new Text("Hello Team!");
-				text.setPosition(550, 550);
-				text.setFont(AssetManager.getFont("curly"));
-				text.setFontSize(AssetManager.getFont("curly").getOriginalSize());
-				text.getFont().setFadeEffect(false);
-				dialog.addText(text);
-				Text text2 = new Text("Hello Reetu!");
-				text2.setPosition(550, 550);
-				text2.setFont(AssetManager.getFont("curly"));
-				text2.setFontSize(AssetManager.getFont("curly").getOriginalSize());
-				text2.getFont().setFadeEffect(false);
-				dialog.addText(text2);
-				Game.INSTANCE.dialogs.addDialog(dialog);
 			}
 
 			@Override
 			public void interact() {
-				if(Game.INSTANCE.dialogs.getCurrentDialog() == null)
-					Game.INSTANCE.dialogs.setCurrentDialog(0);
-				else
-					Game.INSTANCE.dialogs.nextDialog();
-				
-				if(Game.INSTANCE.dialogs.getCurrentDialog().getCurrentTextIndex() == -1)
-					Game.INSTANCE.dialogs.getCurrentDialog().setCurrentText(0);
-				else
-					Game.INSTANCE.dialogs.getCurrentDialog().nextText();
-				
+				if(!Game.INSTANCE.dialogs.getCurrentDialogKey().equals("Initial dialog"))
+					Game.INSTANCE.dialogs.setCurrentDialog("Initial dialog");
+				Game.INSTANCE.dialogs.getCurrentDialog().nextText();
 				Game.INSTANCE.dialogs.getCurrentDialog().show();
 			}
 

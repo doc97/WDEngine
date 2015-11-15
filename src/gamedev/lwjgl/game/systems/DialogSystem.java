@@ -1,29 +1,22 @@
 package gamedev.lwjgl.game.systems;
 
-import java.util.ArrayList;
-
 import gamedev.lwjgl.engine.render.SpriteBatch;
+import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.text.Dialog;
 
 public class DialogSystem {
-	private ArrayList<Dialog> dialogs = new ArrayList<Dialog>();
-	private Dialog currentDialog;
+	private Dialog currentDialog = new Dialog();
+	private String currentKey = "";
 	
-	public void addDialog(Dialog dialog) {
-		dialogs.add(dialog);
+	public void setCurrentDialog(String name) {
+		if(currentDialog != null)
+			currentDialog.reset();
+		currentKey = name;
+		currentDialog = AssetManager.getDialog(name);
 	}
 	
-	public void nextDialog() {
-		if(getCurrentDialogIndex() < dialogs.size() - 1)
-			dialogs.get(dialogs.indexOf(currentDialog) + 1);
-	}
-	
-	public void setCurrentDialog(int index) {
-		currentDialog = dialogs.get(index);
-	}
-	
-	public int getCurrentDialogIndex() {
-		return dialogs.indexOf(currentDialog);
+	public String getCurrentDialogKey() {
+		return currentKey;
 	}
 	
 	public Dialog getCurrentDialog() {
@@ -35,5 +28,4 @@ public class DialogSystem {
 			currentDialog.render(batch);
 		}
 	}
-	
 }
