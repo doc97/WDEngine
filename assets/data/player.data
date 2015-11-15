@@ -1,3 +1,5 @@
-coretexture=Player
-outer=56
-inner=24
+{
+	"coretexture": "Player",
+	"outer": "56",
+	"inner": "24"
+}

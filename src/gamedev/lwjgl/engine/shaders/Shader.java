@@ -68,8 +68,7 @@ public abstract class Shader {
 		glCompileShader(vertShader);
 		
 		if(glGetShaderi(vertShader, GL_COMPILE_STATUS) == GL_FALSE) {
-			if(Logger.isDebug())
-				Logger.message("Shader", glGetShaderInfoLog(vertShader, 500));
+			Logger.debug("Shader", glGetShaderInfoLog(vertShader, 500));
 			Logger.error("Shader", "Couldn't compile vertex shader");
 			System.exit(1);
 		}

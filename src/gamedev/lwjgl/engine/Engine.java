@@ -39,6 +39,7 @@ public enum Engine {
 		uiBatch.init();
 		input.init(display.getWindow());
 
+		Logger.setDebug(true);
 		
 		// We are not using depth, might speed up things a little
 		glDisable(GL_DEPTH_TEST);

@@ -7,6 +7,11 @@ public class Logger {
 		System.out.println("[" + system + "]: " + message);
 	}
 	
+	public static void debug(String system, String message) {
+		if(debug)
+			System.out.println("[" + system + "]: " + message);
+	}
+	
 	public static void error(String system, String message) {
 		System.err.println("[" + system + "]: " + message);
 	}

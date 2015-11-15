@@ -77,6 +77,8 @@ public class AssetManager {
 	private static Map<String, Dialog> dialogs = new HashMap<String, Dialog>();
 	
 	public static void loadAssets(String assetFile) {
+		Logger.debug("AssetManager", "------------------");
+		Logger.debug("AssetManager", "Loading assets");
 		FileReader fr = null;
 		try {
 			fr = new FileReader(new File(assetFile + ".assets"));
@@ -143,7 +145,8 @@ public class AssetManager {
 		loadDataFiles(dataFileNames);
 		loadSoundFiles(soundFileNames);
 		loadDialogFiles(dialogNames);
-		Logger.message("AssetManager", "Assets loaded");
+		Logger.debug("AssetManager", "Assets loaded");
+		Logger.debug("AssetManager", "------------------");
 	}
 	
 	private static void loadSoundFiles(List<String> soundFileNames) {
@@ -252,6 +255,7 @@ public class AssetManager {
 	}
 	
 	private static void loadFont(String filename) {
+		Logger.debug("AssetManager", "Loading font: " + filename);
 		FileReader fr = null;
 		try {
 			fr = new FileReader(new File(FONT_PATH + filename + "/" + filename + ".fnt"));
@@ -304,35 +308,21 @@ public class AssetManager {
 	}
 	
 	private static Map<String, String> loadDataFile(String filename) {
-		FileReader fr = null;
-		try {
-			fr = new FileReader(new File(DATA_FILE_PATH + filename + ".data"));
-		} catch(FileNotFoundException e) {
-			Logger.error("AssetManager", "No data file found with name: " + filename);
-		}
-		
-		Map<String, String> data = new HashMap<String, String>();
-		BufferedReader br = new BufferedReader(fr);
-		String line;
-		try {
-			while((line = br.readLine()) != null) {
-				String[] values = line.split("=");
-
-				if(values.length == 0)
-					continue;
-				if(data.containsKey(values[0]))
-					Logger.message("AssetManager", "Asset data with name: " + values[0] + " already loaded");
-				else
-					data.put(values[0], values[1]);
-			}
-			br.close();
+		Logger.debug("AssetManager", "Loading data file: " + filename + ".data");
+		try(Reader reader = new FileReader(DATA_FILE_PATH + filename + ".data")) {
+			Gson gson = new Gson();
+			Type stringStringMap = new TypeToken<Map<String, String>>(){}.getType();
+			Map<String, String> data = gson.fromJson(reader, stringStringMap);
+			reader.close();
+			return data;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return data;
+		return null;
 	}
 	
 	private static Map<String, Dialog> loadDialogFile(String name) {
+		Logger.debug("AssetManager", "Loading dialog file: " + name + ".json");
 		try(Reader reader = new FileReader(DIALOG_PATH + name + ".json")) {
 			Gson gson = new Gson();
 			Type stringDialogMap = new TypeToken<Map<String, Dialog>>(){}.getType();
@@ -411,6 +401,7 @@ public class AssetManager {
 	}
 	
 	private static gamedev.lwjgl.game.map.Map loadMap(String filename) {
+		Logger.debug("AssetManager", "Loading map: " + filename);
 		FileReader fr = null;
 		try {
 			fr = new FileReader(new File(MAP_PATH + filename + "/" + filename + ".map"));
@@ -502,6 +493,7 @@ public class AssetManager {
 	}
 	
 	private static RawModel loadOBJModel(String filename) {
+		Logger.debug("AssetManager", "Loading model: " + filename + ".obj");
 		FileReader fr = null;
 		try {
 			fr = new FileReader(new File(MODEL_PATH + filename + ".obj"));
