@@ -1,4 +1,6 @@
-TEXTURE=dude
-FRAMEWIDTH=192
-FRAMEHEIGHT=192
-FRAMECOUNT=24
+{
+	"texture": "dude",
+	"framewidth": 192,
+	"frameheight": 192,
+	"framecount": 24
+}

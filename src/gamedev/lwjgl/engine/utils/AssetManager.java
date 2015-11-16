@@ -45,6 +45,7 @@ import com.google.gson.reflect.TypeToken;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
 import gamedev.lwjgl.engine.Logger;
+import gamedev.lwjgl.engine.data.AnimationData;
 import gamedev.lwjgl.engine.data.CreditsData;
 import gamedev.lwjgl.engine.data.GameData;
 import gamedev.lwjgl.engine.data.IntroData;
@@ -155,31 +156,37 @@ public class AssetManager {
 		
 		// --------- Load data files ---------- //
 		// Load credits state data
+		Logger.debug("AssetManager", "Loading data file: credits.data");
 		Reader reader = new FileReader(DATA_FILE_PATH + "credits.data");
 		creditsData = gson.fromJson(reader, CreditsData.class);
 		reader.close();
 		
 		// Load game data
+		Logger.debug("AssetManager", "Loading data file: game.data");
 		reader = new FileReader(DATA_FILE_PATH + "game.data");
 		gameData = gson.fromJson(reader, GameData.class);
 		reader.close();
 		
 		// Load intro state data
+		Logger.debug("AssetManager", "Loading data file: intro.data");
 		reader = new FileReader(DATA_FILE_PATH + "intro.data");
 		introData = gson.fromJson(reader, IntroData.class);
 		reader.close();
 		
 		// Load main menu data
+		Logger.debug("AssetManager", "Loading data file: mainmenu.data");
 		reader = new FileReader(DATA_FILE_PATH + "mainmenu.data");
 		mainmenuData = gson.fromJson(reader, MainMenuData.class);
 		reader.close();
 		
 		// Load physics data
+		Logger.debug("AssetManager", "Loading data file: physics.data");
 		reader = new FileReader(DATA_FILE_PATH + "physics.data");
 		physicsData = gson.fromJson(reader, PhysicsData.class);
 		reader.close();
 		
 		// Load player data
+		Logger.debug("AssetManager", "Loading data file: player.data");
 		reader = new FileReader(DATA_FILE_PATH + "player.data");
 		playerData = gson.fromJson(reader, PlayerData.class);
 		reader.close();
@@ -255,7 +262,7 @@ public class AssetManager {
 		}
 	}
 	
-	private static void loadAnimations(List<String> animationNames) {
+	private static void loadAnimations(List<String> animationNames) throws IOException {
 		for(String name : animationNames) {
 			if(animationTextures.containsKey(name)) {
 				Logger.message("AssetManager", "Animation with name: " + name + " already loaded");
@@ -570,36 +577,22 @@ public class AssetManager {
 		return new ModelTexture(textureID, tWidth, tHeight);
 	}
 	
-	private static List<TextureRegion> loadAnimation(String filename) {
-		filename = ANIMATION_PATH + filename + ".anim";
+	private static List<TextureRegion> loadAnimation(String filename) throws IOException {
+		Gson gson = new Gson();
+		Reader reader = new FileReader(ANIMATION_PATH + filename + ".anim");
 		ArrayList<TextureRegion> ts = new ArrayList<>();
-		int width, height, frameCount;
-		String texFileName;
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(filename));
-			String[] lines = new String[4];
-			for (int i = 0; i < 4; i++){
-				lines[i] = br.readLine();
+		AnimationData aData = gson.fromJson(reader, AnimationData.class);
+		ModelTexture texture = loadTexture(TEXTURE_PATH + aData.texture, Format.RGBA);
+		int k = 0;
+		bigloop:
+		for (int i = 0; i*aData.frameheight < texture.getHeight(); i++){
+			for (int j = 0; j*aData.framewidth < texture.getWidth(); j++){
+				if (k++ > aData.framecount)
+					break bigloop;
+				ts.add(new TextureRegion(texture, j * aData.framewidth, i * aData.frameheight, aData.framewidth, aData.frameheight));
 			}
-			texFileName = TEXTURE_PATH + lines[0].split("=")[1];
-			width = Integer.parseInt(lines[1].split("=")[1]);
-			height = Integer.parseInt(lines[2].split("=")[1]);
-			frameCount = Integer.parseInt(lines[3].split("=")[1]);
-			ModelTexture tex = loadTexture(texFileName, Format.RGBA);
-		
-			int k = 0;
-			bigloop:
-			for (int i = 0; i*height < tex.getHeight(); i++){
-				for (int j = 0; j*width < tex.getWidth(); j++){
-					if (k++ > frameCount)
-						break bigloop;
-					ts.add(new TextureRegion(tex, j * width, i * height, width, height));
-				}
-			}
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
+		reader.close();
 		
 		return ts;
 	}

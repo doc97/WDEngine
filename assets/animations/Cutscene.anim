@@ -1,4 +1,6 @@
-TEXTURE=frames
-FRAMEWIDTH=480
-FRAMEHEIGHT=270
-FRAMECOUNT=16
+{
+	"texture": "frames",
+	"framewidth": 480,
+	"frameheight": 270,
+	"framecount": 16
+}

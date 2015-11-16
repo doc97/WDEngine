@@ -1,4 +1,6 @@
-TEXTURE=AnimTest
-FRAMEWIDTH=64
-FRAMEHEIGHT=64
-FRAMECOUNT=16
+{
+	"texture": "AnimTest",
+	"framewidth": 64,
+	"frameheight": 64,
+	"framecount": 16
+}
