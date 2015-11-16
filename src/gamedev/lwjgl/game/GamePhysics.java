@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.joml.Vector2f;
 
+import gamedev.lwjgl.engine.data.PhysicsData;
 import gamedev.lwjgl.engine.physics.Circle;
 import gamedev.lwjgl.engine.physics.Collision;
 import gamedev.lwjgl.engine.physics.Line;
@@ -26,11 +27,11 @@ public class GamePhysics {
 
 	
 	public GamePhysics() {
-		java.util.Map<String, String> data = AssetManager.getData("physics");
-		friction = Float.parseFloat(data.get("friction"));
-		airResistance = Float.parseFloat(data.get("airResistance"));
-		waterResistance = Float.parseFloat(data.get("waterResistance"));
-		gravitation = new Vector2f(0, -Float.parseFloat(data.get("gravitation")));
+		PhysicsData data = AssetManager.getPhysicsData();
+		friction = data.friction;
+		airResistance = data.airResistance;
+		waterResistance = data.waterResistance;
+		gravitation = new Vector2f(data.gravitation.x, data.gravitation.y);
 	}
 	
 	public void update() {

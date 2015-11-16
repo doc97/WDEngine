@@ -1,8 +1,7 @@
 package gamedev.lwjgl.game.states;
 
-import java.util.Map;
-
 import gamedev.lwjgl.engine.Engine;
+import gamedev.lwjgl.engine.data.CreditsData;
 import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.font.Font.Alignment;
 import gamedev.lwjgl.engine.utils.AssetManager;
@@ -44,8 +43,8 @@ public class CreditsState extends State {
 	
 	@Override
 	public void loadData() {
-		Map<String, String> data = AssetManager.getData("credits");
-		font = AssetManager.getFont(data.get("font"));
+		CreditsData data = AssetManager.getCreditsData();
+		font = AssetManager.getFont(data.font);
 		scale = font.getOriginalSize() / 16;
 	}
 

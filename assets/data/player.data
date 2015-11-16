@@ -1,5 +1,5 @@
 {
-	"coretexture": "Player",
-	"outer": "56",
-	"inner": "24"
+	"texture": "Player",
+	"outerRadius": 56.0,
+	"innerRadius": 24.0
 }

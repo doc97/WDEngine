@@ -1,7 +1,6 @@
 package gamedev.lwjgl.game.entities;
 
-import java.util.Map;
-
+import gamedev.lwjgl.engine.data.PlayerData;
 import gamedev.lwjgl.engine.physics.Circle;
 import gamedev.lwjgl.engine.physics.CollisionBox;
 import gamedev.lwjgl.engine.render.SpriteBatch;
@@ -24,13 +23,10 @@ public class Player extends Entity {
 	}
 	
 	private void init() {
-		Map<String, String> data = AssetManager.getData("player");
-		String coretex = data.get("coretexture");
-		String rad = data.get("inner");
-		String rad2 = data.get("outer");
-		int inner = Integer.parseInt(rad);
-		int outer = Integer.parseInt(rad2);
- 		addTexture(AssetManager.getTexture(coretex), -inner, -inner, 2 * inner, 2 * inner, 0, 0, 0);
+		PlayerData data = AssetManager.getPlayerData();
+		float inner = data.innerRadius;
+		float outer = data.outerRadius;
+ 		addTexture(AssetManager.getTexture(data.texture), -inner, -inner, 2 * inner, 2 * inner, 0, 0, 0);
 		collisionShape = new CollisionBox(x, y, inner, outer);
 	}
 	

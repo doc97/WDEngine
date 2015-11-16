@@ -1,8 +1,7 @@
 package gamedev.lwjgl.game.states;
 
-import java.util.Map;
-
 import gamedev.lwjgl.engine.Engine;
+import gamedev.lwjgl.engine.data.GameData;
 import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.font.Font.Alignment;
 import gamedev.lwjgl.engine.textures.Color;
@@ -43,12 +42,9 @@ public class GameState extends State {
 	
 	@Override
 	public void loadData() {
-		Map<String, String> data = AssetManager.getData("game");
-		String fontname = data.get("font");
-		basicFont = AssetManager.getFont(fontname);
+		GameData data = AssetManager.getGameData();
+		basicFont = AssetManager.getFont(data.font);
 	}
-
-
 
 	public void addEntity(Entity entity) {
 		Game.INSTANCE.entities.addEntity(entity);

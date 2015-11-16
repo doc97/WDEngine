@@ -2,7 +2,10 @@ package gamedev.lwjgl.game;
 
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
+import java.io.IOException;
+
 import gamedev.lwjgl.engine.Engine;
+import gamedev.lwjgl.engine.Logger;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.states.State;
 import gamedev.lwjgl.game.systems.StateSystem.States;
@@ -14,8 +17,12 @@ public class GameLauncher {
 		Engine.INSTANCE.init();
 		
 		// Load assets
-		AssetManager.loadAssets("assets/WDEngine");
-
+		try {
+			AssetManager.loadAssets("assets/WDEngine");
+		} catch (IOException e) {
+			Logger.error("GameLauncher", "Failed to load assets");
+			e.printStackTrace();
+		}
 		
 		Game.INSTANCE.init(launcher);
 

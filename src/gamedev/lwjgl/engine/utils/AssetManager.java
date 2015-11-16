@@ -45,7 +45,13 @@ import com.google.gson.reflect.TypeToken;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
 import gamedev.lwjgl.engine.Logger;
+import gamedev.lwjgl.engine.data.CreditsData;
+import gamedev.lwjgl.engine.data.GameData;
+import gamedev.lwjgl.engine.data.IntroData;
+import gamedev.lwjgl.engine.data.MainMenuData;
 import gamedev.lwjgl.engine.data.MapData;
+import gamedev.lwjgl.engine.data.PhysicsData;
+import gamedev.lwjgl.engine.data.PlayerData;
 import gamedev.lwjgl.engine.data.WaterData;
 import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.font.Glyph;
@@ -77,8 +83,14 @@ public class AssetManager {
 	private static Map<String, Map<String, String>> data = new HashMap<String, Map<String, String>>();
 	private static Map<String, Sound> sounds = new HashMap<String, Sound>();
 	private static Map<String, Dialog> dialogs = new HashMap<String, Dialog>();
+	private static CreditsData creditsData;
+	private static GameData gameData;
+	private static IntroData introData;
+	private static MainMenuData mainmenuData;
+	private static PhysicsData physicsData;
+	private static PlayerData playerData;
 	
-	public static void loadAssets(String assetFile) {
+	public static void loadAssets(String assetFile) throws IOException {
 		Logger.debug("AssetManager", "------------------");
 		Logger.debug("AssetManager", "Loading assets");
 		FileReader fr = null;
@@ -139,14 +151,48 @@ public class AssetManager {
 			e.printStackTrace();
 		}
 		
+		Gson gson = new Gson();
+		
+		// --------- Load data files ---------- //
+		// Load credits state data
+		Reader reader = new FileReader(DATA_FILE_PATH + "credits.data");
+		creditsData = gson.fromJson(reader, CreditsData.class);
+		reader.close();
+		
+		// Load game data
+		reader = new FileReader(DATA_FILE_PATH + "game.data");
+		gameData = gson.fromJson(reader, GameData.class);
+		reader.close();
+		
+		// Load intro state data
+		reader = new FileReader(DATA_FILE_PATH + "intro.data");
+		introData = gson.fromJson(reader, IntroData.class);
+		reader.close();
+		
+		// Load main menu data
+		reader = new FileReader(DATA_FILE_PATH + "mainmenu.data");
+		mainmenuData = gson.fromJson(reader, MainMenuData.class);
+		reader.close();
+		
+		// Load physics data
+		reader = new FileReader(DATA_FILE_PATH + "physics.data");
+		physicsData = gson.fromJson(reader, PhysicsData.class);
+		reader.close();
+		
+		// Load player data
+		reader = new FileReader(DATA_FILE_PATH + "player.data");
+		playerData = gson.fromJson(reader, PlayerData.class);
+		reader.close();
+		
+		// ---------- Load other assets ------------ //
 		loadModels(modelNames);
 		loadTextures(textureNames);
 		loadAnimations(animationNames);
 		loadFonts(fontNames);
 		loadMaps(mapNames);
-		loadDataFiles(dataFileNames);
 		loadSoundFiles(soundFileNames);
 		loadDialogFiles(dialogNames);
+		
 		Logger.debug("AssetManager", "Assets loaded");
 		Logger.debug("AssetManager", "------------------");
 	}
@@ -244,18 +290,6 @@ public class AssetManager {
 		}
 	}
 	
-	private static void loadDataFiles(List<String> dataFileNames) {
-		for(String name : dataFileNames) {
-			if(data.containsKey(name)) {
-				Logger.message("AssetManager", "Data file with name: " + name + " already loaded");
-				continue;
-			}
-			
-			Map<String, String> map = loadDataFile(name);
-			data.put(name, map);
-		}
-	}
-	
 	private static void loadFont(String filename) {
 		Logger.debug("AssetManager", "Loading font: " + filename);
 		FileReader fr = null;
@@ -309,20 +343,6 @@ public class AssetManager {
 		fonts.put(filename, font);
 	}
 	
-	private static Map<String, String> loadDataFile(String filename) {
-		Logger.debug("AssetManager", "Loading data file: " + filename + ".data");
-		try(Reader reader = new FileReader(DATA_FILE_PATH + filename + ".data")) {
-			Gson gson = new Gson();
-			Type stringStringMap = new TypeToken<Map<String, String>>(){}.getType();
-			Map<String, String> data = gson.fromJson(reader, stringStringMap);
-			reader.close();
-			return data;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
 	private static Map<String, Dialog> loadDialogFile(String name) {
 		Logger.debug("AssetManager", "Loading dialog file: " + name + ".json");
 		try(Reader reader = new FileReader(DIALOG_PATH + name + ".json")) {
@@ -334,45 +354,6 @@ public class AssetManager {
 			e.printStackTrace();
 		}
 		return null;
-	}
-	
-	public static RawModel getModel(String filename) {
-		return models.get(filename);
-	}
-	
-	public static TexturedModel getTexturedModel(String modelName, String textureName) {
-		return new TexturedModel(getModel(modelName), getTexture(textureName));
-	}
-	
-	public static ModelTexture getTexture(String filename) {
-		return textures.get(filename);
-	}
-	
-	public static List<TextureRegion> getAnimationFrames(String filename) {
-		return animationTextures.get(filename);
-	}
-	
-	public static Font getFont(String name) {
-		return fonts.get(name);
-	}
-	
-	public static Sound getSound(String name) {
-		return sounds.get(name);
-	}
-	
-	public static Dialog getDialog(String name) {
-		return dialogs.get(name);
-	}
-	
-	public static gamedev.lwjgl.game.map.Map getMap(String name) {
-		if(maps.containsKey(name))
-			return maps.get(name);
-		else
-			return null;
-	}
-	
-	public static Map<String, String> getData(String name) {
-		return data.get(name);
 	}
 	
 	/**
@@ -621,6 +602,69 @@ public class AssetManager {
 		}
 		
 		return ts;
+	}
+	
+	public static RawModel getModel(String filename) {
+		return models.get(filename);
+	}
+	
+	public static TexturedModel getTexturedModel(String modelName, String textureName) {
+		return new TexturedModel(getModel(modelName), getTexture(textureName));
+	}
+	
+	public static ModelTexture getTexture(String filename) {
+		return textures.get(filename);
+	}
+	
+	public static List<TextureRegion> getAnimationFrames(String filename) {
+		return animationTextures.get(filename);
+	}
+	
+	public static Font getFont(String name) {
+		return fonts.get(name);
+	}
+	
+	public static Sound getSound(String name) {
+		return sounds.get(name);
+	}
+	
+	public static Dialog getDialog(String name) {
+		return dialogs.get(name);
+	}
+	
+	public static gamedev.lwjgl.game.map.Map getMap(String name) {
+		if(maps.containsKey(name))
+			return maps.get(name);
+		else
+			return null;
+	}
+	
+	public static Map<String, String> getData(String name) {
+		return data.get(name);
+	}
+	
+	public static CreditsData getCreditsData() {
+		return creditsData;
+	}
+	
+	public static GameData getGameData() {
+		return gameData;
+	}
+	
+	public static IntroData getIntroData() {
+		return introData;
+	}
+	
+	public static MainMenuData getMainMenuData() {
+		return mainmenuData;
+	}
+	
+	public static PhysicsData getPhysicsData() {
+		return physicsData;
+	}
+	
+	public static PlayerData getPlayerData() {
+		return playerData;
 	}
 	
 	public static void cleanup() {

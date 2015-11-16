@@ -1,6 +1,9 @@
 {
-	"friction": "0.75",
-	"airResistance": "0.97",
-	"waterResistance": "0.9",
-	"gravitation": "1.0"
+	"friction": 0.75,
+	"airResistance": 0.97,
+	"waterResistance": 0.9,
+	"gravitation": {
+		"x": 0.0,
+		"y": -1.0
+	}
 }

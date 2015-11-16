@@ -2,11 +2,10 @@ package gamedev.lwjgl.game.states;
 
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 
-import java.util.Map;
-
 import org.joml.Vector4f;
 
 import gamedev.lwjgl.engine.Engine;
+import gamedev.lwjgl.engine.data.MainMenuData;
 import gamedev.lwjgl.engine.input.InputListener;
 import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.textures.ModelTexture;
@@ -36,30 +35,18 @@ public class MainMenuState extends State {
 	
 	@Override
 	public void loadData() {
-		Map<String, String> data = AssetManager.getData("mainmenu");
+		MainMenuData data = AssetManager.getMainMenuData();
 		
 		// Title screen
-		String titleScreenTex = data.get("title_screen");
-		titleScreen = AssetManager.getTexture(titleScreenTex);
+		titleScreen = AssetManager.getTexture(data.title_screen);
 
 		// Title text
-		String titleTextTex = data.get("title_text");
-		titleText = AssetManager.getTexture(titleTextTex);
+		titleText = AssetManager.getTexture(data.title_text);
 		
 		// Start button data
-		String startBtnTex = data.get("start_button");
-		int startNormalX = Integer.parseInt(data.get("start_button_normal_x"));
-		int startNormalY = Integer.parseInt(data.get("start_button_normal_y"));
-		int startNormalW = Integer.parseInt(data.get("start_button_normal_width"));
-		int startNormalH = Integer.parseInt(data.get("start_button_normal_height"));
-		int startPressedX = Integer.parseInt(data.get("start_button_pressed_x"));
-		int startPressedY = Integer.parseInt(data.get("start_button_pressed_y"));
-		int startPressedW = Integer.parseInt(data.get("start_button_pressed_width"));
-		int startPressedH = Integer.parseInt(data.get("start_button_pressed_height"));
-
-		Vector4f startNormal = new Vector4f(startNormalX, startNormalY, startNormalW, startNormalH);
-		Vector4f startPressed= new Vector4f(startPressedX, startPressedY, startPressedW, startPressedH);
-		startBtn = new Button(startBtnTex, startNormal, startPressed);
+		Vector4f startNormal = new Vector4f(data.play_btn.normalx, data.play_btn.normaly, data.play_btn.normalwidth, data.play_btn.normalheight);
+		Vector4f startPressed= new Vector4f(data.play_btn.pressedx, data.play_btn.pressedy, data.play_btn.pressedwidth, data.play_btn.pressedheight);
+		startBtn = new Button(data.play_btn.texture, startNormal, startPressed);
 		startBtn.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() * 11 / 20);
 		startBtn.setSize(128, 64);
 		startBtnInput = new InputListener() {
@@ -109,20 +96,10 @@ public class MainMenuState extends State {
 		};
 		
 
-		// Options button data
-		String optionsBtnTex = data.get("options_button");
-		int optionsNormalX = Integer.parseInt(data.get("options_button_normal_x"));
-		int optionsNormalY = Integer.parseInt(data.get("options_button_normal_y"));
-		int optionsNormalW = Integer.parseInt(data.get("options_button_normal_width"));
-		int optionsNormalH = Integer.parseInt(data.get("options_button_normal_height"));
-		int optionsPressedX = Integer.parseInt(data.get("options_button_pressed_x"));
-		int optionsPressedY = Integer.parseInt(data.get("options_button_pressed_y"));
-		int optionsPressedW = Integer.parseInt(data.get("options_button_pressed_width"));
-		int optionsPressedH = Integer.parseInt(data.get("options_button_pressed_height"));
-		
-		Vector4f optionsNormal = new Vector4f(optionsNormalX, optionsNormalY, optionsNormalW, optionsNormalH);
-		Vector4f optionsPressed = new Vector4f(optionsPressedX, optionsPressedY, optionsPressedW, optionsPressedH);
-		optionsBtn = new Button(optionsBtnTex, optionsNormal, optionsPressed);
+		// Credits button data
+		Vector4f creditsNormal = new Vector4f(data.credits_btn.normalx, data.credits_btn.normaly, data.credits_btn.normalwidth, data.credits_btn.normalheight);
+		Vector4f creditsPressed= new Vector4f(data.credits_btn.pressedx, data.credits_btn.pressedy, data.credits_btn.pressedwidth, data.credits_btn.pressedheight);
+		optionsBtn = new Button(data.credits_btn.texture, creditsNormal, creditsPressed);
 		optionsBtn.setPosition(Engine.INSTANCE.camera.getWidth() / 2.0f, Engine.INSTANCE.camera.getHeight() * 2 / 5);
 		optionsBtn.setSize(203, 47);
 		optionsBtnInput = new InputListener() {
@@ -173,19 +150,9 @@ public class MainMenuState extends State {
 		
 		
 		// Exit button data
-		String exitBtnTex = data.get("exit_button");
-		int exitNormalX = Integer.parseInt(data.get("exit_button_normal_x"));
-		int exitNormalY = Integer.parseInt(data.get("exit_button_normal_y"));
-		int exitNormalW = Integer.parseInt(data.get("exit_button_normal_width"));
-		int exitNormalH = Integer.parseInt(data.get("exit_button_normal_height"));
-		int exitPressedX = Integer.parseInt(data.get("exit_button_pressed_x"));
-		int exitPressedY = Integer.parseInt(data.get("exit_button_pressed_y"));
-		int exitPressedW = Integer.parseInt(data.get("exit_button_pressed_width"));
-		int exitPressedH = Integer.parseInt(data.get("exit_button_pressed_height"));
-		
-		Vector4f exitNormal = new Vector4f(exitNormalX, exitNormalY, exitNormalW, exitNormalH);
-		Vector4f exitPressed = new Vector4f(exitPressedX, exitPressedY, exitPressedW, exitPressedH);
-		exitBtn = new Button(exitBtnTex, exitNormal, exitPressed);
+		Vector4f exitNormal = new Vector4f(data.exit_btn.normalx, data.exit_btn.normaly, data.exit_btn.normalwidth, data.exit_btn.normalheight);
+		Vector4f exitPressed= new Vector4f(data.exit_btn.pressedx, data.exit_btn.pressedy, data.exit_btn.pressedwidth, data.exit_btn.pressedheight);
+		exitBtn = new Button(data.exit_btn.texture, exitNormal, exitPressed);
 		exitBtn.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() / 4);
 		exitBtn.setSize(128, 64);
 		exitBtnInput = new InputListener() {

@@ -2,9 +2,8 @@ package gamedev.lwjgl.game.states;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 
-import java.util.Map;
-
 import gamedev.lwjgl.engine.Engine;
+import gamedev.lwjgl.engine.data.IntroData;
 import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.font.Font.Alignment;
 import gamedev.lwjgl.engine.input.InputListener;
@@ -57,19 +56,14 @@ public class IntroState extends State {
 	
 	@Override
 	public void loadData() {
-		Map<String, String> data = AssetManager.getData("intro");
+		IntroData data = AssetManager.getIntroData();
 		
-		String frame1 = data.get("frame1");
-		String frame2 = data.get("frame2");
-		String fontname = data.get("font");
-		String mainmenutex = AssetManager.getData("mainmenu").get("title_screen");
-		
-		font = AssetManager.getFont(fontname);
+		font = AssetManager.getFont(data.font);
 		font.setAlignment(Alignment.CENTER);
 
 		Scene scene1 = new Scene(0, 0, Timer.getTicks(2000));
 			SceneTexture s1Tex1 = new SceneTexture();
-			s1Tex1.setTexture(AssetManager.getTexture(mainmenutex));
+			s1Tex1.setTexture(AssetManager.getTexture(AssetManager.getMainMenuData().title_screen));
 			s1Tex1.setPosition(0, 0);
 			s1Tex1.setDimension(Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
 			scene1.addObject("Fade_texture", s1Tex1);
@@ -102,7 +96,7 @@ public class IntroState extends State {
 		
 		Scene scene4 = new Scene(Timer.getTicks(2000), Timer.getTicks(1000), Timer.getTicks(2000));
 			SceneTexture s4Text1 = new SceneTexture();
-			s4Text1.setTexture(AssetManager.getTexture(frame1));
+			s4Text1.setTexture(AssetManager.getTexture(data.frame1));
 			s4Text1.setPosition(0, 0);
 			s4Text1.setDimension(Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
 			scene4.addObject("Intro_1", s4Text1);
@@ -110,7 +104,7 @@ public class IntroState extends State {
 		
 		Scene scene5 = new Scene(Timer.getTicks(2000), Timer.getTicks(1000), Timer.getTicks(2000));
 			SceneTexture s5Tex1 = new SceneTexture();
-			s5Tex1.setTexture(AssetManager.getTexture(frame2));
+			s5Tex1.setTexture(AssetManager.getTexture(data.frame2));
 			s5Tex1.setPosition(0, 0);
 			s5Tex1.setDimension(Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
 			scene5.addObject("Intro_2", s5Tex1);
