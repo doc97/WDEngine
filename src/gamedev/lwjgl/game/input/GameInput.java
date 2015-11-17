@@ -144,4 +144,12 @@ public class GameInput implements InputListener {
 		this.leftKey = leftKey;
 		this.jumpKey = jumpKey;
 	}
+	
+	public void reset() {
+		right = false;
+		left = false;
+		jump = false;
+		jumpedOnCurrent = false;
+		doubJump = false;
+	}
 }

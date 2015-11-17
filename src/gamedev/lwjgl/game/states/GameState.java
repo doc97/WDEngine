@@ -53,6 +53,7 @@ public class GameState extends State {
 	public void pause() {
 		paused = true;
 		pauseMenu.show();
+		gameInput.reset();
 		Engine.INSTANCE.input.removeListener(gameInput);
 	}
 	
