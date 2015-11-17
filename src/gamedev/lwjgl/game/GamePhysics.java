@@ -14,7 +14,6 @@ import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.entities.Entity;
 import gamedev.lwjgl.game.entities.Item;
 import gamedev.lwjgl.game.entities.Player;
-import gamedev.lwjgl.game.map.DynamicMapObject;
 import gamedev.lwjgl.game.map.Map;
 import gamedev.lwjgl.game.ui.Inventory;
 
@@ -36,10 +35,7 @@ public class GamePhysics {
 	
 	public void update() {
 		Map m = Game.INSTANCE.container.getCurrentLevel().getMap();
-		for (DynamicMapObject dmo : m.getDynamicObjects()){
-			collisionDetection(dmo, m);
-		}
-		
+
 		for (Entity e : Game.INSTANCE.entities.getEntities()){
 			if (e.isDynamic()){
 				collisionDetection(e, m);
@@ -141,11 +137,6 @@ public class GamePhysics {
 		return null;
 	}
 	
-	public Collision calculateCollison(Line l1, Line l2, Vector2f speed) {
-		
-		return null;
-	}
-	
 	public void calculateWaves(Entity entity, Water water) {
 		Circle circle = entity.getCollisionShape().getInner();
 		float radius = circle.getRadius();
@@ -189,17 +180,6 @@ public class GamePhysics {
 				if(backSpring == null && frontSpring == null) {
 					s.setSpeed(-(yFactor + xFactor));
 				}
-			}
-		}
-	}
-	
-	public void collisionDetection(DynamicMapObject dmo, Map map){
-		ArrayList<Line> lines = dmo.getLines();
-		for (Line line : map.getCollisionMap()){
-			Vector2f speed = dmo.getSpeed();
-			for (Line l : lines){
-				Collision coll = calculateCollison(line, l, speed);
-				
 			}
 		}
 	}

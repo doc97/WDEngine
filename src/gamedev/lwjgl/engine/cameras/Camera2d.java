@@ -10,8 +10,8 @@ public class Camera2d {
 	private int upperXLimit, upperYLimit;
 	
 	public void init(DisplayManager display) {
-		width = display.getWindowWidth();
-		height = display.getWindowHeight();
+		width = 1280;
+		height = 720;
 	}
 	
 	public void update() {

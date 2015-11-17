@@ -2,20 +2,7 @@ package gamedev.lwjgl.engine.render;
 
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
 import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
-import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
-import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
-import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
-import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
-import static org.lwjgl.glfw.GLFW.glfwInit;
-import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
-import static org.lwjgl.glfw.GLFW.glfwPollEvents;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
-import static org.lwjgl.glfw.GLFW.glfwShowWindow;
-import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
-import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
-import static org.lwjgl.glfw.GLFW.glfwWindowHint;
-import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_ALPHA_TEST;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
@@ -32,6 +19,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.nio.ByteBuffer;
 
+import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
@@ -40,10 +28,13 @@ import gamedev.lwjgl.engine.Logger;
 
 public class DisplayManager {
 	
+	private static GLFWWindowSizeCallback windowResizeCallback;
+	
 	public static final String title = "LWJGL Game";
 	
 	private long window;
 	private int width, height;
+	private boolean shouldResize;
 	
 	public boolean createDisplay(int width, int height) {
 		if(window != 0) {
@@ -59,7 +50,7 @@ public class DisplayManager {
 		
 		glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 		window = glfwCreateWindow(width, height, title, NULL, NULL);
 		if(window == NULL)
 			throw new RuntimeException("Failed to create GLFW window");
@@ -69,13 +60,21 @@ public class DisplayManager {
 		
 		glfwMakeContextCurrent(window);
 		glfwSwapInterval(1);
+		glfwSetWindowSizeCallback(window, windowResizeCallback = new GLFWWindowSizeCallback() {
+			
+			@Override
+			public void invoke(long window, int width, int height) {
+				DisplayManager.this.width = width;
+				DisplayManager.this.height = height;
+				shouldResize = true;
+			}
+			
+		});
 		glfwShowWindow(window);
 		
 		GL.createCapabilities();
-		
-		glFrustum(-1.0, 1.0, -1.0, 1.0, 1.5, 20.0);
-		glEnable(GL_DEPTH_TEST | GL_ALPHA_TEST);
-		glDepthFunc(GL_LESS);
+
+		glEnable(GL_ALPHA_TEST);
 		
 		return true;
 	}
@@ -85,10 +84,14 @@ public class DisplayManager {
 	}
 	
 	public void clearDisplay() {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT);
 	}
 	
 	public void updateDisplay() {
+		if (shouldResize) {
+			GL11.glViewport(0, 0, width, height);
+			shouldResize = false;
+		}
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -112,4 +115,5 @@ public class DisplayManager {
 	public long getWindow() {
 		return window;
 	}
+	
 }
