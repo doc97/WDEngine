@@ -13,6 +13,20 @@ public class ModelTexture {
 		uvs = new float[]{0,0,1,1};
 	}
 	
+	public void setTextureID(int textureID) {
+		this.textureID = textureID;
+	}
+	
+	public void setSize(float width, float height) {
+		this.width = width;
+		this.height = height;
+	}
+	
+	public void setUVS(float[] uvs) {
+		if(uvs.length == 4)
+			this.uvs = uvs;
+	}
+	
 	public int getTextureID() {
 		return textureID;
 	}
@@ -25,11 +39,11 @@ public class ModelTexture {
 		return height;
 	}
 	
-	public float[] getUVs(){
+	public float[] getUVs() {
 		return uvs;
 	}
 	
-	public ModelTexture getTexture(){
+	public ModelTexture getTexture() {
 		return this;
 	}
 	

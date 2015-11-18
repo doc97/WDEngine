@@ -25,17 +25,19 @@ import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 
-import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.cameras.Camera2d;
+import gamedev.lwjgl.engine.shaders.HBlurShader;
+import gamedev.lwjgl.engine.shaders.Shader;
 import gamedev.lwjgl.engine.shaders.StaticShader;
+import gamedev.lwjgl.engine.shaders.VBlurShader;
 import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.textures.ModelTexture;
 
 public class SpriteBatch {
 	
-	public static final int MULTIPLY = 0;
-	public static final int ADD = 1;
-	public static final int SETCOLOR = 2;
+	public static Shader staticShader;
+	public static Shader vBlurShader;
+	public static Shader hBlurShader;
 	
 	private Camera2d camera = new Camera2d();
 	private ModelTexture lastTexture;
@@ -44,34 +46,33 @@ public class SpriteBatch {
 	private float[] vertices;
 	private float[] texCoords;
 	private float[] colors;
-	private int[] blendModes;
 	private Color currentColor;
-	private int currentBlendMode;
+	private float scale = 1;
 	private boolean isDrawing;
-	private StaticShader shader;
+	private Shader shader;
 	private int vao;
 	private int ibo;
 	private ArrayList<Integer> vbos;
-	private IntBuffer intBuff, intBuff2;
+	private IntBuffer intBuff;
 	private FloatBuffer floatBuff1, floatBuff2, floatBuff3;
 	
 	public void init() {
-		camera.init(Engine.INSTANCE.display);
-		shader = new StaticShader();
+		camera.init();
+		staticShader = new StaticShader();
+		vBlurShader = new VBlurShader();
+		hBlurShader = new HBlurShader();
+		shader = staticShader;
 		indices = new int[6000];
 		vertices = new float[12000];
 		texCoords = new float[8000];
 		colors = new float[16000];
-		blendModes = new int[4000];
 		vbos = new ArrayList<>();
 		intBuff = BufferUtils.createIntBuffer(6000);
 		floatBuff1 = BufferUtils.createFloatBuffer(12000);
 		floatBuff2 = BufferUtils.createFloatBuffer(8000);
 		floatBuff3 = BufferUtils.createFloatBuffer(16000);
 
-		intBuff2 = BufferUtils.createIntBuffer(4000);
 		currentColor = new Color(1, 1, 1, 1);
-		currentBlendMode = MULTIPLY;
 
 		for (int i = 0, j = 0; i < 6000; i += 6, j += 4){
 			indices[i] = j;
@@ -106,12 +107,6 @@ public class SpriteBatch {
 			return;
 		int sprites = idx / 12;
 		
-		if(lastTexture == null) {
-			shader.loadInt(shader.location_textures, 0);
-		} else {
-			shader.loadInt(shader.location_textures, 1);
-		}
-		
 		bindVAO();
 		loadToVAO(vertices, texCoords, colors, indices);
 		glEnableVertexAttribArray(0);
@@ -123,9 +118,10 @@ public class SpriteBatch {
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(2);
 		glDisableVertexAttribArray(3);
+		
 		unbindVAO();
 		glDeleteBuffers(ibo);
-		for (int vbo : vbos){
+		for (int vbo : vbos) {
 			glDeleteBuffers(vbo);
 		}
 		vbos.clear();
@@ -144,7 +140,7 @@ public class SpriteBatch {
 	}
 	
 	public void draw(ModelTexture texture, float xCoord, float yCoord, float width, float height) {
-		draw(texture, xCoord, yCoord, width, height, texture.getUVs(), 0,0,0);
+		draw(texture, xCoord, yCoord, width, height, texture.getUVs(), 0, 0, 0);
 	}
 	
 	public void draw(ModelTexture texture, float x, float y, float width, float height,
@@ -157,6 +153,7 @@ public class SpriteBatch {
 	public void draw(ModelTexture texture, float x1, float y1, float x2, float y2,
 			float x3, float y3, float x4, float y4, float[] uvs,
 			Color[] colours, float rotation, float anchorPX, float anchorPY) {
+		
 		if(!isDrawing)
 			return;
 		if (texture != lastTexture)
@@ -165,21 +162,19 @@ public class SpriteBatch {
 			flush();
 		
 		//coords for the vertices
-		
-		float vx1 = 2 * (-camera.getX() + x1) / camera.getWidth();
-		float vy1 = 2 * (-camera.getY() + y1) / camera.getHeight();
-		float vx2 = 2 * (-camera.getX() + x2) / camera.getWidth();
-		float vy2 = 2 * (-camera.getY() + y2) / camera.getHeight();
-		float vx3 = 2 * (-camera.getX() + x3) / camera.getWidth();
-		float vy3 = 2 * (-camera.getY() + y3) / camera.getHeight();
-		float vx4 = 2 * (-camera.getX() + x4) / camera.getWidth();
-		float vy4 = 2 * (-camera.getY() + y4) / camera.getHeight();
+		float vx1 = 2 * scale * (-camera.getX() + x1) / camera.getWidth() - (1 - scale);
+		float vy1 = 2 * scale * (-camera.getY() + y1) / camera.getHeight() - (1 - scale);
+		float vx2 = 2 * scale * (-camera.getX() + x2) / camera.getWidth() - (1 - scale);
+		float vy2 = 2 * scale * (-camera.getY() + y2) / camera.getHeight() - (1 - scale);
+		float vx3 = 2 * scale * (-camera.getX() + x3) / camera.getWidth() - (1 - scale);
+		float vy3 = 2 * scale * (-camera.getY() + y3) / camera.getHeight() - (1 - scale);
+		float vx4 = 2 * scale * (-camera.getX() + x4) / camera.getWidth() - (1 - scale);
+		float vy4 = 2 * scale * (-camera.getY() + y4) / camera.getHeight() - (1 - scale);
 		
 		int idx = this.idx;
 		int vertexCount = idx / 3;
 		int cdx = vertexCount << 2;
 		int tdx = vertexCount << 1;
-		int bdx = vertexCount;
 		
 		if (rotation != 0){
 			float p1d = (float) Math.hypot(anchorPX - vx1, anchorPY - vy1);
@@ -237,8 +232,6 @@ public class SpriteBatch {
 			colors[cdx++] = colours[i].g;
 			colors[cdx++] = colours[i].b;
 			colors[cdx++] = colours[i].a;
-
-			blendModes[bdx++] = currentBlendMode;
 		}
 		
 		this.idx = idx;
@@ -250,7 +243,6 @@ public class SpriteBatch {
 		storeDataInAttributeList(0, floatBuff1, 3, positions);
 		storeDataInAttributeList(1, floatBuff2, 2, texCoords);
 		storeDataInAttributeList(2, floatBuff3, 4, colors);
-		storeDataInAttributeList(3, intBuff2, 1, blendModes);
 	}
 	
 	private void bindVAO() {
@@ -302,12 +294,12 @@ public class SpriteBatch {
 		return buffer;
 	}
 	
-	public Color getColor(){
+	public Color getColor() {
 		return new Color(currentColor.r, currentColor.g, currentColor.b, currentColor.a);
 	}
 	
-	int getBlendMode(){
-		return currentBlendMode;
+	public void setScale(float scale) {
+		this.scale = scale;
 	}
 	
 	public void setColor(Color color) {
@@ -324,11 +316,19 @@ public class SpriteBatch {
 		currentColor.a = a;
 	}
 	
+	public void setShader(Shader shader) {
+		this.shader = shader;
+	}
+	
+	public float getScale() {
+		return scale;
+	}
+	
 	public Camera2d getCamera(){
 		return camera;
 	}
 	
-	public void setBlendMode(int blendMode){
-		currentBlendMode = blendMode;
+	public Shader getShader() {
+		return shader;
 	}
 }

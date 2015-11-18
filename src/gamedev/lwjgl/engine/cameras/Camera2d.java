@@ -1,7 +1,5 @@
 package gamedev.lwjgl.engine.cameras;
 
-import gamedev.lwjgl.engine.render.DisplayManager;
-
 public class Camera2d {
 	
 	private float x, y;
@@ -9,7 +7,7 @@ public class Camera2d {
 	private int lowerXLimit, lowerYLimit;
 	private int upperXLimit, upperYLimit;
 	
-	public void init(DisplayManager display) {
+	public void init() {
 		width = 1280;
 		height = 720;
 	}

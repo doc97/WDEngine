@@ -7,6 +7,7 @@ import org.joml.Vector4f;
 import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.data.MainMenuData;
 import gamedev.lwjgl.engine.input.InputListener;
+import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.engine.utils.AssetManager;
@@ -234,6 +235,8 @@ public class MainMenuState extends State {
 	@Override
 	public void render() {
 		Engine.INSTANCE.display.clearDisplay();
+		
+		Engine.INSTANCE.batch.setShader(SpriteBatch.staticShader);
 		Engine.INSTANCE.batch.begin();
 		Engine.INSTANCE.batch.draw(titleScreen, 0, 0,
 				Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
@@ -247,6 +250,7 @@ public class MainMenuState extends State {
 		exitBtn.render(Engine.INSTANCE.batch);
 		Engine.INSTANCE.batch.setColor(Color.WHITE);
 		Engine.INSTANCE.batch.end();
+		
 		Engine.INSTANCE.display.updateDisplay();
 	}
 	

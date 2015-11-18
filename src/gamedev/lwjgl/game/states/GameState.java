@@ -4,6 +4,7 @@ import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.data.GameData;
 import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.font.Font.Alignment;
+import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.engine.utils.Timer;
@@ -90,10 +91,6 @@ public class GameState extends State {
 			for (Entity e : Game.INSTANCE.entities.getEntities()){
 				e.update();
 			}
-			
-			Engine.INSTANCE.camera.setPosition(
-					Game.INSTANCE.container.getPlayer().getX(),
-					Game.INSTANCE.container.getPlayer().getY());
 		} else {
 			pauseMenu.update();
 		}
@@ -104,6 +101,21 @@ public class GameState extends State {
 	public void render() {
 		Engine.INSTANCE.display.clearDisplay();
 
+		// Rendering to low-res fbo for blur
+		if(paused) {
+			Engine.INSTANCE.lowResProcessor.bindFBO();
+			Engine.INSTANCE.lowResProcessor.bindTexture();
+			Engine.INSTANCE.batch.setScale(0.5f);
+			Engine.INSTANCE.uiBatch.setScale(0.5f);
+		}
+		
+		// Render game scene
+		Engine.INSTANCE.camera.setPosition(
+				Game.INSTANCE.container.getPlayer().getX(),
+				Game.INSTANCE.container.getPlayer().getY()
+		);
+
+		Engine.INSTANCE.batch.setShader(SpriteBatch.staticShader);
 		Engine.INSTANCE.batch.begin();
 		
 		Engine.INSTANCE.batch.setColor(fadeColor);
@@ -127,22 +139,11 @@ public class GameState extends State {
 		Engine.INSTANCE.batch.setColor(Color.WHITE);
 		Game.INSTANCE.dialogs.render(Engine.INSTANCE.batch);
 		
-		if(paused) {
-			Engine.INSTANCE.camera.setPosition(
-					Engine.INSTANCE.camera.getWidth() / 2,
-					Engine.INSTANCE.camera.getHeight() / 2
-					);
-			pauseMenu.render(Engine.INSTANCE.batch);
-		}
-		
 		Engine.INSTANCE.batch.setColor(Color.WHITE);
 
-		Engine.INSTANCE.camera.setPosition(
-				Game.INSTANCE.container.getPlayer().getX(),
-				Game.INSTANCE.container.getPlayer().getY());
-				
 		Engine.INSTANCE.batch.end();
 		
+		// Render UI
 		Engine.INSTANCE.uiBatch.begin();
 		
 		Engine.INSTANCE.uiBatch.getCamera().setPosition(
@@ -154,6 +155,64 @@ public class GameState extends State {
 		gameUI.render(Engine.INSTANCE.uiBatch);
 		
 		Engine.INSTANCE.uiBatch.end();
+		
+		if(paused) {
+			Engine.INSTANCE.lowResProcessor.unbindFBO();
+			Engine.INSTANCE.lowResProcessor.unbindTexture();
+			
+			Engine.INSTANCE.batch.setScale(1.0f);
+			Engine.INSTANCE.uiBatch.setScale(1.0f);
+
+			// Rendering billboard
+			Engine.INSTANCE.camera.setPosition(
+					Engine.INSTANCE.camera.getWidth() / 2,
+					Engine.INSTANCE.camera.getHeight() / 2
+			);
+			
+			// H-blur
+			Engine.INSTANCE.hBlurProcessor.bindFBO();
+			Engine.INSTANCE.hBlurProcessor.bindTexture();
+			
+			Engine.INSTANCE.batch.setShader(SpriteBatch.hBlurShader);
+			Engine.INSTANCE.batch.begin();
+			Engine.INSTANCE.batch.draw(Engine.INSTANCE.lowResProcessor.getTexture(), 0, 0, Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
+			Engine.INSTANCE.batch.end();
+			
+			Engine.INSTANCE.hBlurProcessor.unbindFBO();
+			Engine.INSTANCE.hBlurProcessor.unbindTexture();
+			
+			// V-blur
+			Engine.INSTANCE.vBlurProcessor.bindFBO();
+			Engine.INSTANCE.vBlurProcessor.bindTexture();
+			
+			Engine.INSTANCE.batch.setShader(SpriteBatch.vBlurShader);
+			Engine.INSTANCE.batch.begin();
+			Engine.INSTANCE.batch.draw(Engine.INSTANCE.hBlurProcessor.getTexture(), 0, 0, Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
+			Engine.INSTANCE.batch.end();
+			
+			Engine.INSTANCE.vBlurProcessor.unbindFBO();
+			Engine.INSTANCE.vBlurProcessor.unbindTexture();
+			
+			// Draw to screen
+			Engine.INSTANCE.batch.setShader(SpriteBatch.staticShader);
+			Engine.INSTANCE.batch.begin();
+			Engine.INSTANCE.batch.draw(Engine.INSTANCE.vBlurProcessor.getTexture(),
+					0,
+					0,
+					Engine.INSTANCE.camera.getWidth(),
+					Engine.INSTANCE.camera.getHeight()
+			);
+			Engine.INSTANCE.batch.end();
+			
+			// Render pause menu
+			Engine.INSTANCE.camera.setPosition(
+					Engine.INSTANCE.camera.getWidth() / 2,
+					Engine.INSTANCE.camera.getHeight() / 2
+					);
+			Engine.INSTANCE.batch.begin();
+			pauseMenu.render(Engine.INSTANCE.batch);
+			Engine.INSTANCE.batch.end();
+		}
 		
 		Engine.INSTANCE.display.updateDisplay();
 	}

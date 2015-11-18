@@ -9,7 +9,6 @@ public class StaticShader extends Shader {
 	private static final String SHADER_FILE = "assets/shaders/staticshader.ss";
 	
 	public int location_mvp;
-	public int location_textures;
 	
 	public StaticShader() {
 		super(SHADER_FILE);
@@ -20,13 +19,11 @@ public class StaticShader extends Shader {
 		super.bindAttribute(0, "position");
 		super.bindAttribute(1, "texcoords");
 		super.bindAttribute(2, "color");
-		super.bindAttribute(3, "colAppMeth");
 	}
 
 	@Override
 	protected void getAllUniformLocations() {
 		location_mvp = super.getUniformLocation("MVP");
-		location_textures = super.getUniformLocation("textures");
 	}
 	
 	public void loadTexture(int textureUnit) {
