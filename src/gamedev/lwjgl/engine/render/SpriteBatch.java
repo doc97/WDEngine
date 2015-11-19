@@ -27,6 +27,7 @@ import org.lwjgl.BufferUtils;
 
 import gamedev.lwjgl.engine.cameras.Camera2d;
 import gamedev.lwjgl.engine.shaders.HBlurShader;
+import gamedev.lwjgl.engine.shaders.SelectionShader;
 import gamedev.lwjgl.engine.shaders.Shader;
 import gamedev.lwjgl.engine.shaders.StaticShader;
 import gamedev.lwjgl.engine.shaders.VBlurShader;
@@ -38,6 +39,7 @@ public class SpriteBatch {
 	public static StaticShader staticShader;
 	public static VBlurShader vBlurShader;
 	public static HBlurShader hBlurShader;
+	public static SelectionShader selectShader;
 	
 	private Camera2d camera = new Camera2d();
 	private ModelTexture lastTexture;
@@ -61,6 +63,7 @@ public class SpriteBatch {
 		staticShader = new StaticShader();
 		vBlurShader = new VBlurShader();
 		hBlurShader = new HBlurShader();
+		selectShader = new SelectionShader();
 		shader = staticShader;
 		indices = new int[6000];
 		vertices = new float[12000];

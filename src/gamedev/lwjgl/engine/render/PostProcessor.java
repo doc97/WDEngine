@@ -35,9 +35,6 @@ public class PostProcessor {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texID, 0);
 		
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		    System.err.println("Framebuffer configuration error");
-		
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		
@@ -62,6 +59,14 @@ public class PostProcessor {
 	
 	public void unbindTexture() {
 		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	
+	public void clear() {
+		bindFBO();
+		bindTexture();
+		glClear(GL_COLOR_BUFFER_BIT);
+		unbindFBO();
+		unbindTexture();
 	}
 	
 	public void resize(int width, int height) {

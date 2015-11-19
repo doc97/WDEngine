@@ -77,7 +77,6 @@ public class GameState extends State {
 				fadeTimer.update();
 				float value = fadeTimer.getPercentage();
 				fadeColor.setColor(0.5f + value / 2, 0.5f + value / 2, 0.5f + value / 2, 1);
-				Engine.INSTANCE.display.setBackgroundColor(0.1f * value, 0.1f * value, 0.2f * value, 1);
 				
 				if(fadeTimer.getPercentage() == 1)
 					fadeTimer.setActive(false);
@@ -176,6 +175,9 @@ public class GameState extends State {
 			pauseMenu.render(Engine.INSTANCE.batch);
 			Engine.INSTANCE.batch.end();
 		}
+		
+		// Clear postprocessing fbos
+		Game.INSTANCE.pprocessor.clear();
 		
 		Engine.INSTANCE.display.updateDisplay();
 	}
