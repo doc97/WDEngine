@@ -22,7 +22,7 @@ public class HBlurShader extends Shader {
 	}
 	
 	@Override
-	protected void load() {
+	public void load() {
 		loadFloat(location_blurFactor, blurFactor);
 	}
 	

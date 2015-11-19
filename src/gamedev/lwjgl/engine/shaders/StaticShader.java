@@ -27,7 +27,7 @@ public class StaticShader extends Shader {
 	}
 	
 	@Override
-	protected void load() {
+	public void load() {
 		
 	}
 	

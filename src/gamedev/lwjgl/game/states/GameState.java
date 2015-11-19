@@ -6,6 +6,7 @@ import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.font.Font.Alignment;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.textures.Color;
+import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.engine.utils.Timer;
 import gamedev.lwjgl.game.Game;
@@ -103,10 +104,8 @@ public class GameState extends State {
 
 		// Rendering to low-res fbo for blur
 		if(paused) {
-			Engine.INSTANCE.lowResProcessor.bindFBO();
-			Engine.INSTANCE.lowResProcessor.bindTexture();
-			Engine.INSTANCE.batch.setScale(0.5f);
-			Engine.INSTANCE.uiBatch.setScale(0.5f);
+			Game.INSTANCE.pprocessor.screenCapture.bindFBO();
+			Game.INSTANCE.pprocessor.screenCapture.bindTexture();
 		}
 		
 		// Render game scene
@@ -157,52 +156,16 @@ public class GameState extends State {
 		Engine.INSTANCE.uiBatch.end();
 		
 		if(paused) {
-			Engine.INSTANCE.lowResProcessor.unbindFBO();
-			Engine.INSTANCE.lowResProcessor.unbindTexture();
+			Game.INSTANCE.pprocessor.screenCapture.unbindFBO();
+			Game.INSTANCE.pprocessor.screenCapture.unbindTexture();
 			
-			Engine.INSTANCE.batch.setScale(1.0f);
-			Engine.INSTANCE.uiBatch.setScale(1.0f);
-
-			// Rendering billboard
-			Engine.INSTANCE.camera.setPosition(
-					Engine.INSTANCE.camera.getWidth() / 2,
-					Engine.INSTANCE.camera.getHeight() / 2
-			);
+			ModelTexture initial = Game.INSTANCE.pprocessor.screenCapture.getTexture();
+			ModelTexture lowRes = Game.INSTANCE.pprocessor.downSample(initial, 2);
 			
-			// H-blur
-			Engine.INSTANCE.hBlurProcessor.bindFBO();
-			Engine.INSTANCE.hBlurProcessor.bindTexture();
+			ModelTexture hBlur = Game.INSTANCE.pprocessor.horizontalBlur(lowRes, 0.3f);
+			ModelTexture vBlur = Game.INSTANCE.pprocessor.verticalBlur(hBlur, 0.3f);
 			
-			Engine.INSTANCE.batch.setShader(SpriteBatch.hBlurShader);
-			Engine.INSTANCE.batch.begin();
-			Engine.INSTANCE.batch.draw(Engine.INSTANCE.lowResProcessor.getTexture(), 0, 0, Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
-			Engine.INSTANCE.batch.end();
-			
-			Engine.INSTANCE.hBlurProcessor.unbindFBO();
-			Engine.INSTANCE.hBlurProcessor.unbindTexture();
-			
-			// V-blur
-			Engine.INSTANCE.vBlurProcessor.bindFBO();
-			Engine.INSTANCE.vBlurProcessor.bindTexture();
-			
-			Engine.INSTANCE.batch.setShader(SpriteBatch.vBlurShader);
-			Engine.INSTANCE.batch.begin();
-			Engine.INSTANCE.batch.draw(Engine.INSTANCE.hBlurProcessor.getTexture(), 0, 0, Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
-			Engine.INSTANCE.batch.end();
-			
-			Engine.INSTANCE.vBlurProcessor.unbindFBO();
-			Engine.INSTANCE.vBlurProcessor.unbindTexture();
-			
-			// Draw to screen
-			Engine.INSTANCE.batch.setShader(SpriteBatch.staticShader);
-			Engine.INSTANCE.batch.begin();
-			Engine.INSTANCE.batch.draw(Engine.INSTANCE.vBlurProcessor.getTexture(),
-					0,
-					0,
-					Engine.INSTANCE.camera.getWidth(),
-					Engine.INSTANCE.camera.getHeight()
-			);
-			Engine.INSTANCE.batch.end();
+			Game.INSTANCE.pprocessor.drawToScreen(vBlur);
 			
 			// Render pause menu
 			Engine.INSTANCE.camera.setPosition(

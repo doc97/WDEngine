@@ -14,7 +14,6 @@ import org.lwjgl.opengl.GL11;
 import gamedev.lwjgl.engine.cameras.Camera2d;
 import gamedev.lwjgl.engine.input.InputManager;
 import gamedev.lwjgl.engine.render.DisplayManager;
-import gamedev.lwjgl.engine.render.PostProcessor;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 
 public enum Engine {
@@ -24,9 +23,6 @@ public enum Engine {
 	public final InputManager input = new InputManager();
 	public final SpriteBatch batch = new SpriteBatch();
 	public final SpriteBatch uiBatch = new SpriteBatch();
-	public final PostProcessor hBlurProcessor = new PostProcessor();
-	public final PostProcessor vBlurProcessor = new PostProcessor();
-	public final PostProcessor lowResProcessor = new PostProcessor();
 	public final Camera2d camera = batch.getCamera();
 	
 	
@@ -35,11 +31,6 @@ public enum Engine {
 			Logger.error("GameLauncher", "Failed to initialize render engine");
 			return;
 		}
-		
-		// TODO change to display size (pixels)
-		lowResProcessor.init(1280 / 2, 720 / 2);
-		hBlurProcessor.init(1280, 720);
-		vBlurProcessor.init(1280, 720);
 		
 		display.setBackgroundColor(0, 0, 0, 1);
 

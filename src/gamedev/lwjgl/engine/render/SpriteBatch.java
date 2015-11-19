@@ -35,9 +35,9 @@ import gamedev.lwjgl.engine.textures.ModelTexture;
 
 public class SpriteBatch {
 	
-	public static Shader staticShader;
-	public static Shader vBlurShader;
-	public static Shader hBlurShader;
+	public static StaticShader staticShader;
+	public static VBlurShader vBlurShader;
+	public static HBlurShader hBlurShader;
 	
 	private Camera2d camera = new Camera2d();
 	private ModelTexture lastTexture;
@@ -91,6 +91,7 @@ public class SpriteBatch {
 			return;
 		isDrawing = true;
 		shader.start();
+		shader.load();
 	}
 	
 	public void end() {
