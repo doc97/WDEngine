@@ -23,7 +23,12 @@ public class StaticShader extends Shader {
 
 	@Override
 	protected void getAllUniformLocations() {
-		location_mvp = super.getUniformLocation("MVP");
+		location_mvp = getUniformLocation("MVP");
+	}
+	
+	@Override
+	protected void load() {
+		
 	}
 	
 	public void loadTexture(int textureUnit) {

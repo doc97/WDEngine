@@ -6,8 +6,8 @@ attribute vec2 a_texCoord;
 varying vec2 v_texCoord;
 varying vec2 v_blurTexCoords[14];
 
-const float blurFactor = 0.42f;
- 
+uniform float blurFactor;
+
 void main()
 {
     gl_Position = a_position;
