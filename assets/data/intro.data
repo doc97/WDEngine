@@ -1,5 +1,10 @@
 {
-	"frame1": "frame1",
-	"frame2": "frame2",
+	"frames": [
+		"frame_1",
+		"frame_2",
+		"frame_3",
+		"frame_4",
+		"frame_5"
+	],
 	"font": "curly"
 }

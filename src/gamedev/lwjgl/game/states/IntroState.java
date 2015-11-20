@@ -74,8 +74,15 @@ public class IntroState extends State {
 			s2Text1.setFont(font);
 			s2Text1.setFontSize(font.getOriginalSize());
 			s2Text1.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() / 2);
-			s2Text1.setText("The Casuals");
+			s2Text1.setText("Erratum Games");
 			scene2.addObject("Team_name", s2Text1);
+			
+			SceneText s2Text2 = new SceneText();
+			s2Text2.setFont(font);
+			s2Text2.setFontSize(font.getOriginalSize() / 2);
+			s2Text2.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() * 2 / 5);
+			s2Text2.setText("presents");
+			scene2.addObject("Presents", s2Text2);
 		introScene.addScene("Team_scene", scene2);
 		
 		Scene scene3 = new Scene(Timer.getTicks(2000), Timer.getTicks(1000), Timer.getTicks(2000));
@@ -96,7 +103,7 @@ public class IntroState extends State {
 		
 		Scene scene4 = new Scene(Timer.getTicks(2000), Timer.getTicks(1000), Timer.getTicks(2000));
 			SceneTexture s4Text1 = new SceneTexture();
-			s4Text1.setTexture(AssetManager.getTexture(data.frame1));
+			s4Text1.setTexture(AssetManager.getTexture(data.frames[0]));
 			s4Text1.setPosition(0, 0);
 			s4Text1.setDimension(Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
 			scene4.addObject("Intro_1", s4Text1);
@@ -104,7 +111,7 @@ public class IntroState extends State {
 		
 		Scene scene5 = new Scene(Timer.getTicks(2000), Timer.getTicks(1000), Timer.getTicks(2000));
 			SceneTexture s5Tex1 = new SceneTexture();
-			s5Tex1.setTexture(AssetManager.getTexture(data.frame2));
+			s5Tex1.setTexture(AssetManager.getTexture(data.frames[1]));
 			s5Tex1.setPosition(0, 0);
 			s5Tex1.setDimension(Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
 			scene5.addObject("Intro_2", s5Tex1);
