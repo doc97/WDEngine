@@ -12,6 +12,8 @@ import gamedev.lwjgl.engine.textures.ModelTexture;
 
 public class PostProcessingSystem {
 	public PostProcessor screenCapture = new PostProcessor();
+	private PostProcessor selectProcessor = new PostProcessor();
+	private PostProcessor addProcessor = new PostProcessor();
 	private PostProcessor bloomProcessor = new PostProcessor();
 	private PostProcessor hBlurProcessor = new PostProcessor();
 	private PostProcessor vBlurProcessor = new PostProcessor();
@@ -20,6 +22,8 @@ public class PostProcessingSystem {
 	public void init() {
 		// TODO change to display size (pixels)
 		screenCapture.init(1280, 720);
+		selectProcessor.init(1280, 720);
+		addProcessor.init(1280, 720);
 		bloomProcessor.init(1280, 720);
 		lowResProcessor.init(1280 / 2, 720 / 2);
 		hBlurProcessor.init(1280, 720);
@@ -28,6 +32,8 @@ public class PostProcessingSystem {
 	
 	public void clear() {
 		screenCapture.clear();
+		selectProcessor.clear();
+		addProcessor.clear();
 		bloomProcessor.clear();
 		lowResProcessor.clear();
 		hBlurProcessor.clear();
@@ -96,10 +102,9 @@ public class PostProcessingSystem {
 		return vBlurProcessor.getTexture();
 	}
 	
-	public ModelTexture additiveBlend(ModelTexture initial, ModelTexture blur, float threshold) {
-		// Picking bright spots to apply additive blending to
-		bloomProcessor.bindFBO();
-		bloomProcessor.bindTexture();
+	public ModelTexture selectFromBrightness(ModelTexture texture, float threshold) {
+		selectProcessor.bindFBO();
+		selectProcessor.bindTexture();
 		
 		Engine.INSTANCE.camera.setPosition(
 				Engine.INSTANCE.camera.getWidth() / 2,
@@ -109,18 +114,20 @@ public class PostProcessingSystem {
 		SpriteBatch.selectShader.setThreshold(threshold);
 		Engine.INSTANCE.batch.setShader(SpriteBatch.selectShader);
 		Engine.INSTANCE.batch.begin();
-		Engine.INSTANCE.batch.draw(initial, 0, 0, Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
+		Engine.INSTANCE.batch.draw(texture, 0, 0, Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
 		Engine.INSTANCE.batch.end();
 		
-		bloomProcessor.unbindFBO();
-		bloomProcessor.unbindTexture();
-		
+		selectProcessor.unbindFBO();
+		selectProcessor.unbindTexture();
+		return selectProcessor.getTexture();
+	}
+	
+	public ModelTexture additiveBlend(ModelTexture base, ModelTexture bloomTexture) {
 		// Additive blending
 		glBlendFunc(GL_ONE, GL_ONE);
 		
-		screenCapture.clear();
-		screenCapture.bindFBO();
-		screenCapture.bindTexture();
+		addProcessor.bindFBO();
+		addProcessor.bindTexture();
 		
 		Engine.INSTANCE.camera.setPosition(
 				Engine.INSTANCE.camera.getWidth() / 2,
@@ -129,15 +136,15 @@ public class PostProcessingSystem {
 		
 		Engine.INSTANCE.batch.setShader(SpriteBatch.staticShader);
 		Engine.INSTANCE.batch.begin();
-		Engine.INSTANCE.batch.draw(blur, 0, 0, Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
-		Engine.INSTANCE.batch.draw(bloomProcessor.getTexture(), 0, 0, Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
+		Engine.INSTANCE.batch.draw(base, 0, 0, Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
+		Engine.INSTANCE.batch.draw(bloomTexture, 0, 0, Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
 		Engine.INSTANCE.batch.end();
 		
-		screenCapture.unbindFBO();
-		screenCapture.unbindTexture();
+		addProcessor.unbindFBO();
+		addProcessor.unbindTexture();
 		
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		return screenCapture.getTexture();
+		return addProcessor.getTexture();
 	}
 	
 	public void drawToScreen(ModelTexture tex) {
