@@ -241,8 +241,8 @@ public class PauseMenu {
 	}
 	
 	public void update() {
-		float diff = Engine.INSTANCE.input.getTranslatedMouseY() - Engine.INSTANCE.display.getWindowHeight() / 2;
-		if(diff >= 70 ) {
+		float diff = Engine.INSTANCE.input.getTranslatedMouseY() - Engine.INSTANCE.camera.getHeight() / 2;
+		if(diff >= 70) {
 			pointerY = Engine.INSTANCE.camera.getHeight() / 2 + 128;
 		} else if(diff <= -70) {
 			pointerY = Engine.INSTANCE.camera.getHeight() / 2 - 128;
