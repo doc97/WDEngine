@@ -153,18 +153,10 @@ public class GameState extends State {
 		gameUI.render(Engine.INSTANCE.uiBatch);
 		
 		Engine.INSTANCE.uiBatch.end();
-		
 		if(paused) {
-			Game.INSTANCE.pprocessor.screenCapture.unbindFBO();
-			Game.INSTANCE.pprocessor.screenCapture.unbindTexture();
-			
 			ModelTexture initial = Game.INSTANCE.pprocessor.screenCapture.getTexture();
-			ModelTexture lowRes = Game.INSTANCE.pprocessor.downSample(initial, 2);
-			
-			ModelTexture hBlur = Game.INSTANCE.pprocessor.horizontalBlur(lowRes, 0.3f);
-			ModelTexture vBlur = Game.INSTANCE.pprocessor.verticalBlur(hBlur, 0.3f);
-			
-			Game.INSTANCE.pprocessor.drawToScreen(vBlur);
+			ModelTexture blur = Game.INSTANCE.pprocessor.blur(initial, 2);
+			Game.INSTANCE.pprocessor.drawToScreen(blur);
 			
 			// Render pause menu
 			Engine.INSTANCE.camera.setPosition(
@@ -176,10 +168,10 @@ public class GameState extends State {
 			Engine.INSTANCE.batch.end();
 		}
 		
-		// Clear postprocessing fbos
-		Game.INSTANCE.pprocessor.clear();
+		
 		
 		Engine.INSTANCE.display.updateDisplay();
+		Game.INSTANCE.pprocessor.reset();
 	}
 
 	@Override
