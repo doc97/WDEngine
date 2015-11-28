@@ -51,6 +51,7 @@ import gamedev.lwjgl.engine.data.GameData;
 import gamedev.lwjgl.engine.data.IntroData;
 import gamedev.lwjgl.engine.data.MainMenuData;
 import gamedev.lwjgl.engine.data.MapData;
+import gamedev.lwjgl.engine.data.OutroData;
 import gamedev.lwjgl.engine.data.PhysicsData;
 import gamedev.lwjgl.engine.data.PlayerData;
 import gamedev.lwjgl.engine.data.WaterData;
@@ -87,6 +88,7 @@ public class AssetManager {
 	private static CreditsData creditsData;
 	private static GameData gameData;
 	private static IntroData introData;
+	private static OutroData outroData;
 	private static MainMenuData mainmenuData;
 	private static PhysicsData physicsData;
 	private static PlayerData playerData;
@@ -171,6 +173,12 @@ public class AssetManager {
 		Logger.debug("AssetManager", "Loading data file: intro.data");
 		reader = new FileReader(DATA_FILE_PATH + "intro.data");
 		introData = gson.fromJson(reader, IntroData.class);
+		reader.close();
+		
+		// Load outro state data
+		Logger.debug("AssetManager", "Loading data file: outro.data");
+		reader = new FileReader(DATA_FILE_PATH + "outro.data");
+		outroData = gson.fromJson(reader, OutroData.class);
 		reader.close();
 		
 		// Load main menu data
@@ -646,6 +654,10 @@ public class AssetManager {
 	
 	public static IntroData getIntroData() {
 		return introData;
+	}
+	
+	public static OutroData getOutroData() {
+		return outroData;
 	}
 	
 	public static MainMenuData getMainMenuData() {

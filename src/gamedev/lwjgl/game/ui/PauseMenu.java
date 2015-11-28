@@ -171,7 +171,7 @@ public class PauseMenu {
 						))
 				{
 					menuBtn.release();
-					Game.INSTANCE.states.enterState(States.MAINMENUSTATE);
+					Game.INSTANCE.states.enterState(States.OUTROSTATE);
 					return true;
 				}
 				return false;

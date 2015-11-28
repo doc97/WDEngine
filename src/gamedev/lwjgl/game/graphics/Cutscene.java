@@ -63,6 +63,11 @@ public class Cutscene {
 		sceneNames.add(name);
 	}
 	
+	public void clear() {
+		scenes.clear();
+		sceneNames.clear();
+	}
+	
 	public int getCurrentSceneIndex() {
 		return currentSceneIndex;
 	}

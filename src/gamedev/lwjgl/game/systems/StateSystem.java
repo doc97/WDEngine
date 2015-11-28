@@ -8,10 +8,11 @@ import gamedev.lwjgl.game.states.CreditsState;
 import gamedev.lwjgl.game.states.GameState;
 import gamedev.lwjgl.game.states.IntroState;
 import gamedev.lwjgl.game.states.MainMenuState;
+import gamedev.lwjgl.game.states.OutroState;
 import gamedev.lwjgl.game.states.State;
 
 public class StateSystem {
-	public enum States { MAINMENUSTATE, INTROSTATE, GAMESTATE, OPTIONSTATE, CREDITSSTATE };
+	public enum States { MAINMENUSTATE, INTROSTATE, GAMESTATE, OUTROSTATE, OPTIONSTATE, CREDITSSTATE };
 	
 	private Map<States, State> states = new EnumMap<States, State>(States.class);
 	private GameLauncher launcher;
@@ -21,6 +22,7 @@ public class StateSystem {
 		states.put(States.MAINMENUSTATE, new MainMenuState());
 		states.put(States.INTROSTATE, new IntroState());
 		states.put(States.GAMESTATE, new GameState());
+		states.put(States.OUTROSTATE, new OutroState());
 		states.put(States.CREDITSSTATE, new CreditsState());
 	}
 	
