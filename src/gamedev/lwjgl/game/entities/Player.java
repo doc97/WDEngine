@@ -26,6 +26,10 @@ public class Player extends Entity {
 	}
 	
 	private void init() {
+		loadDatafiles();
+	}
+	
+	public void loadDatafiles() {
 		PlayerData data = AssetManager.getPlayerData();
 		bodyDef = new BodyDef();
 		fixtureDef = new FixtureDef();

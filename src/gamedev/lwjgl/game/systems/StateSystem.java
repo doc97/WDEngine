@@ -34,4 +34,10 @@ public class StateSystem {
 		else
 			throw new RuntimeException("No state assigned to: " + s.toString());
 	}
+	
+	public void loadDatafiles() {
+		for(States s : states.keySet()) {
+			states.get(s).loadData();
+		}
+	}
 }

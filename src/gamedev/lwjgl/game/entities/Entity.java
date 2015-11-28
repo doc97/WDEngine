@@ -46,6 +46,18 @@ public class Entity {
 		return textures.size() - 1;
 	}
 	
+	public void changeTexture(int index, ModelTexture texture, float x, float y,
+			float width, float height, float anchorX, float anchorY, float rotation) {
+		textures.set(index, texture);
+		positions.set(2 * index, x);
+		positions.set(2 * index + 1, y);
+		dimensions.set(2 * index, width);
+		dimensions.set(2 * index + 1, height);
+		anchors.set(2 * index, anchorX);
+		anchors.set(2 * index + 1, anchorY);
+		rotations.set(index, rotation);
+	}
+	
 	public void setTexture(int index, ModelTexture texture) {
 		textures.set(index, texture);
 	}

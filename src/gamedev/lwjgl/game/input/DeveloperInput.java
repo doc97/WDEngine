@@ -22,6 +22,9 @@ public class DeveloperInput implements InputListener {
 			Game.INSTANCE.devTools.resetPlayer();
 			return true;
 		}
+		if(key == GLFW.GLFW_KEY_F3) {
+			Game.INSTANCE.devTools.reloadDatafiles();
+		}
 		
 		return false;
 	}

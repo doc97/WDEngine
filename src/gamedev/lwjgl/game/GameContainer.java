@@ -12,6 +12,10 @@ public class GameContainer {
 		player = new Player(100, 1000);
 	}
 	
+	public void loadDatafiles() {
+		player.loadDatafiles();
+	}
+	
 	public void setCurrentLevel(Level level) {
 		currentLevel = level;
 	}

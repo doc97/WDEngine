@@ -31,10 +31,15 @@ public enum Game {
 	
 	public void init(GameLauncher launcher) {
 		container.init();
-		devTools.init();
 		levels.init();
 		resources.init();
 		pprocessor.init();
 		states.create(launcher);
+	}
+	
+	public void reload() {
+		states.loadDatafiles();
+		physics.loadDatafiles();
+		container.loadDatafiles();
 	}
 }

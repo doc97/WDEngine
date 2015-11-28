@@ -41,6 +41,10 @@ public class GamePhysics implements ContactListener{
 	private ArrayList<Body> bodiesToDestroy;
 	
 	public GamePhysics() {
+		loadDatafiles();
+	}
+	
+	public void loadDatafiles() {
 		PhysicsData data = AssetManager.getPhysicsData();
 		world = new World(new Vec2(data.gravitation.x, data.gravitation.y));
 		bodies = new HashMap<Entity, Body>();

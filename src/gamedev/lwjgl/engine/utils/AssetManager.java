@@ -82,7 +82,6 @@ public class AssetManager {
 	private static Map<String, Font> fonts = new HashMap<String, Font>();
 	private static Map<String, List<TextureRegion>> animationTextures = new HashMap<String, List<TextureRegion>>();
 	private static Map<String, gamedev.lwjgl.game.map.Map> maps = new HashMap<String, gamedev.lwjgl.game.map.Map>();
-	private static Map<String, Map<String, String>> data = new HashMap<String, Map<String, String>>();
 	private static Map<String, Sound> sounds = new HashMap<String, Sound>();
 	private static Map<String, Dialog> dialogs = new HashMap<String, Dialog>();
 	private static CreditsData creditsData;
@@ -108,7 +107,6 @@ public class AssetManager {
 		List<String> animationNames = new ArrayList<String>();
 		List<String> fontNames = new ArrayList<String>();
 		List<String> mapNames = new ArrayList<String>();
-		List<String> dataFileNames = new ArrayList<String>();
 		List<String> soundFileNames = new ArrayList<String>();
 		List<String> dialogNames = new ArrayList<String>();
 		BufferedReader br = new BufferedReader(fr);
@@ -138,9 +136,6 @@ public class AssetManager {
 				} else if(line.startsWith("maps")) {
 					for(String value : values)
 						mapNames.add(value);
-				} else if(line.startsWith("datafiles")) {
-					for(String value : values)
-						dataFileNames.add(value);
 				} else if (line.startsWith("sounds")) {
 					for (String value : values)
 						soundFileNames.add(value);
@@ -154,9 +149,23 @@ public class AssetManager {
 			e.printStackTrace();
 		}
 		
+		
+		loadDataFiles();
+		loadModels(modelNames);
+		loadTextures(textureNames);
+		loadAnimations(animationNames);
+		loadFonts(fontNames);
+		loadMaps(mapNames);
+		loadSoundFiles(soundFileNames);
+		loadDialogFiles(dialogNames);
+		
+		Logger.debug("AssetManager", "Assets loaded");
+		Logger.debug("AssetManager", "------------------");
+	}
+	
+	public static void loadDataFiles() throws IOException {
 		Gson gson = new Gson();
 		
-		// --------- Load data files ---------- //
 		// Load credits state data
 		Logger.debug("AssetManager", "Loading data file: credits.data");
 		Reader reader = new FileReader(DATA_FILE_PATH + "credits.data");
@@ -198,18 +207,7 @@ public class AssetManager {
 		reader = new FileReader(DATA_FILE_PATH + "player.data");
 		playerData = gson.fromJson(reader, PlayerData.class);
 		reader.close();
-		
-		// ---------- Load other assets ------------ //
-		loadModels(modelNames);
-		loadTextures(textureNames);
-		loadAnimations(animationNames);
-		loadFonts(fontNames);
-		loadMaps(mapNames);
-		loadSoundFiles(soundFileNames);
-		loadDialogFiles(dialogNames);
-		
-		Logger.debug("AssetManager", "Assets loaded");
-		Logger.debug("AssetManager", "------------------");
+
 	}
 	
 	private static void loadSoundFiles(List<String> soundFileNames) {
@@ -638,10 +636,6 @@ public class AssetManager {
 			return maps.get(name);
 		else
 			return null;
-	}
-	
-	public static Map<String, String> getData(String name) {
-		return data.get(name);
 	}
 	
 	public static CreditsData getCreditsData() {

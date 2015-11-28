@@ -1,17 +1,13 @@
 package gamedev.lwjgl.game.dev;
 
-import gamedev.lwjgl.engine.Engine;
+import java.io.IOException;
+
+import gamedev.lwjgl.engine.Logger;
+import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.Game;
-import gamedev.lwjgl.game.input.DeveloperInput;
 
 public class DeveloperTools {
 
-	private DeveloperInput input = new DeveloperInput();
-	
-	public void init() {
-		Engine.INSTANCE.input.addListener(input);
-	}
-	
 	public void fillUpEnergy() {
 		Game.INSTANCE.resources.addEnergy(Game.INSTANCE.resources.getMaxEnergy());
 	}
@@ -21,6 +17,12 @@ public class DeveloperTools {
 	}
 	
 	public void reloadDatafiles() {
-		
+		try {
+			AssetManager.loadDataFiles();
+		} catch (IOException e) {
+			Logger.error("DeveloperTools", "Error reloading data files");
+		}
+		Game.INSTANCE.reload();
+		Logger.debug("DeveloperTools", "Data files reloaded");
 	}
 }
