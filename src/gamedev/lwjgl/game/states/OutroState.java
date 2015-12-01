@@ -1,7 +1,10 @@
 package gamedev.lwjgl.game.states;
 
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
+
 import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.data.OutroData;
+import gamedev.lwjgl.engine.input.InputListener;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.engine.utils.Timer;
 import gamedev.lwjgl.game.Game;
@@ -13,9 +16,36 @@ import gamedev.lwjgl.game.systems.StateSystem.States;
 public class OutroState extends State {
 
 	private Cutscene outroScene = new Cutscene();
-	
+	private InputListener outroInput;
+
 	public OutroState() {
 		loadData();
+		
+		outroInput = new InputListener() {
+			@Override
+			public void update() {}
+
+			@Override
+			public boolean keyPressed(int key) {
+				if(key == GLFW_KEY_ESCAPE) {
+					Game.INSTANCE.states.enterState(States.MAINMENUSTATE);
+					return true;
+				}
+				return false;
+			}
+
+			@Override
+			public boolean keyRepeat(int key) {	return false; }
+
+			@Override
+			public boolean keyReleased(int key) { return false;	}
+
+			@Override
+			public boolean mousePressed(int button) { return false;	}
+
+			@Override
+			public boolean mouseReleased(int button) { return false; }
+		};
 	}
 	
 	@Override
@@ -46,12 +76,13 @@ public class OutroState extends State {
 				Engine.INSTANCE.camera.getWidth() / 2,
 				Engine.INSTANCE.camera.getHeight() / 2
 				);
+		Engine.INSTANCE.input.addListener(outroInput);
 		outroScene.start();
 	}
 
 	@Override
 	public void exit() {
-
+		Engine.INSTANCE.input.removeListener(outroInput);
 	}
 
 	@Override
@@ -70,5 +101,4 @@ public class OutroState extends State {
 		Engine.INSTANCE.batch.end();
 		Engine.INSTANCE.display.updateDisplay();
 	}
-
 }
