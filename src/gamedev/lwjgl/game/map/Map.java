@@ -3,13 +3,14 @@ package gamedev.lwjgl.game.map;
 import java.util.ArrayList;
 import java.util.List;
 
+import gamedev.lwjgl.engine.Cleanable;
 import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.physics.Line;
 import gamedev.lwjgl.engine.physics.Water;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.textures.ModelTexture;
 
-public class Map {
+public class Map implements Cleanable {
 	private List<Line> collisionMap;
 	private ModelTexture ground;
 	private ModelTexture background1;
@@ -71,5 +72,10 @@ public class Map {
 
 	public List<Water> getWaters() {
 		return waters;
+	}
+	
+	public void cleanup() {
+		waters.clear();
+		collisionMap.clear();
 	}
 }

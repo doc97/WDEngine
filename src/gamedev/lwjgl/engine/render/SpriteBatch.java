@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 
+import gamedev.lwjgl.engine.Cleanable;
 import gamedev.lwjgl.engine.cameras.Camera2d;
 import gamedev.lwjgl.engine.shaders.HBlurShader;
 import gamedev.lwjgl.engine.shaders.SelectionShader;
@@ -34,29 +35,29 @@ import gamedev.lwjgl.engine.shaders.VBlurShader;
 import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.textures.ModelTexture;
 
-public class SpriteBatch {
+public class SpriteBatch implements Cleanable{
 	
 	public static StaticShader staticShader;
 	public static VBlurShader vBlurShader;
 	public static HBlurShader hBlurShader;
 	public static SelectionShader selectShader;
 	
+	private ArrayList<Integer> vbos;
+	private IntBuffer intBuff;
+	private FloatBuffer floatBuff1, floatBuff2, floatBuff3;
 	private Camera2d camera = new Camera2d();
 	private ModelTexture lastTexture;
+	private Color currentColor;
+	private Shader shader;
+	private int vao;
+	private int ibo;
 	private int idx = 0;
 	private int[] indices;
 	private float[] vertices;
 	private float[] texCoords;
 	private float[] colors;
-	private Color currentColor;
 	private float scale = 1;
 	private boolean isDrawing;
-	private Shader shader;
-	private int vao;
-	private int ibo;
-	private ArrayList<Integer> vbos;
-	private IntBuffer intBuff;
-	private FloatBuffer floatBuff1, floatBuff2, floatBuff3;
 	
 	public void init() {
 		camera.init();
@@ -87,6 +88,19 @@ public class SpriteBatch {
 		}
 		vao = glGenVertexArrays();
 		ibo = glGenBuffers();
+	}
+	
+	public void cleanup() {
+		glDeleteBuffers(ibo);
+		for (int vbo : vbos) {
+			glDeleteBuffers(vbo);
+		}
+		vbos.clear();
+		
+		BufferUtils.zeroBuffer(intBuff);
+		BufferUtils.zeroBuffer(floatBuff1);
+		BufferUtils.zeroBuffer(floatBuff2);
+		BufferUtils.zeroBuffer(floatBuff3);
 	}
 	
 	public void begin() {

@@ -198,4 +198,16 @@ public class PostProcessingSystem {
 		Engine.INSTANCE.batch.draw(tex, 0, 0, Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
 		Engine.INSTANCE.batch.end();
 	}
+	
+	public void cleanup() {
+		for(PostProcessor pp : usedProcessors) {
+			freeProcessor(pp);
+		}
+		
+		for(Iterator<PostProcessor> it = unusedProcessors.iterator(); it.hasNext();) {
+			PostProcessor pp = it.next();
+			pp.cleanup();
+			it.remove();
+		}
+	}
 }

@@ -1,8 +1,9 @@
 package gamedev.lwjgl.game.levels;
 
+import gamedev.lwjgl.engine.Cleanable;
 import gamedev.lwjgl.game.map.Map;
 
-public abstract class Level {
+public abstract class Level implements Cleanable {
 
 	protected Map map;
 	protected String name = "";
@@ -21,5 +22,9 @@ public abstract class Level {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public void cleanup() {
+		map.cleanup();
 	}
 }

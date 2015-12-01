@@ -4,6 +4,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
 import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
+import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
 import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
 import static org.lwjgl.glfw.GLFW.glfwInit;
@@ -15,6 +16,7 @@ import static org.lwjgl.glfw.GLFW.glfwSetWindowSizeCallback;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
+import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL11.GL_ALPHA_TEST;
@@ -33,9 +35,10 @@ import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
+import gamedev.lwjgl.engine.Cleanable;
 import gamedev.lwjgl.engine.Logger;
 
-public class DisplayManager {
+public class DisplayManager implements Cleanable {
 	
 	private static GLFWWindowSizeCallback windowResizeCallback;
 	
@@ -111,6 +114,12 @@ public class DisplayManager {
 	
 	public boolean displayShouldClose() {
 		return glfwWindowShouldClose(window) == GL_TRUE;
+	}
+	
+	public void cleanup() {
+		windowResizeCallback.release();
+		glfwDestroyWindow(window);
+		glfwTerminate();
 	}
 	
 	public int getWindowWidth() {

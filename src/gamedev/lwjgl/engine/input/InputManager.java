@@ -21,9 +21,10 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 
+import gamedev.lwjgl.engine.Cleanable;
 import gamedev.lwjgl.engine.Engine;
 
-public class InputManager {
+public class InputManager implements Cleanable {
 	private static GLFWErrorCallback errCallback;
 	private static GLFWKeyCallback keyCallback;
 	private static GLFWMouseButtonCallback mouseCallback;

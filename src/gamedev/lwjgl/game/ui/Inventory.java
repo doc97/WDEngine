@@ -3,6 +3,7 @@ package gamedev.lwjgl.game.ui;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import gamedev.lwjgl.engine.Cleanable;
 import gamedev.lwjgl.engine.cameras.Camera2d;
 import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.render.SpriteBatch;
@@ -11,18 +12,18 @@ import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.entities.Item;
 import gamedev.lwjgl.game.entities.ItemType;
 
-public class Inventory {
+public class Inventory implements Cleanable {
 	
 	private HashMap<ItemType, Integer> items;
 	private Font font;
 	
-	public Inventory(){
+	public Inventory() {
 		items = new HashMap<>();
 		font = AssetManager.getFont("basic");
 	}
 	
-	public void addItem(Item item){
-		if (items.containsKey(item.getType())){
+	public void addItem(Item item) {
+		if (items.containsKey(item.getType())) {
 			items.put(item.getType(), items.get(item.getType()) + 1);
 		} else {
 			items.put(item.getType(), 1);
@@ -33,7 +34,7 @@ public class Inventory {
 		
 	}
 	
-	public void render(SpriteBatch batch){
+	public void render(SpriteBatch batch) {
 		int itemsAmount = items.entrySet().size();
 		Camera2d c = batch.getCamera();
 		for (Entry<ItemType, Integer> e : items.entrySet()){
@@ -44,8 +45,11 @@ public class Inventory {
 		}
 	}
 	
-	public boolean contains(Item item){
+	public boolean contains(Item item) {
 		return items.containsKey(item);
 	}
 	
+	public void cleanup() {
+		items.clear();
+	}
 }

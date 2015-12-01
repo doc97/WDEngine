@@ -3,10 +3,11 @@ package gamedev.lwjgl.game.systems;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import gamedev.lwjgl.engine.Cleanable;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.game.Interaction;
 
-public class InteractionSystem {
+public class InteractionSystem implements Cleanable {
 
 	private ArrayList<Interaction> interactions = new ArrayList<Interaction>();
 	
@@ -37,5 +38,9 @@ public class InteractionSystem {
 	public void render(SpriteBatch batch) {
 		for(Interaction i : interactions)
 			i.render(batch);
+	}
+	
+	public void cleanup() {
+		interactions.clear();
 	}
 }

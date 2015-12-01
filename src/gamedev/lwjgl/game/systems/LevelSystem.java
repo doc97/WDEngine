@@ -3,12 +3,13 @@ package gamedev.lwjgl.game.systems;
 import java.util.HashMap;
 import java.util.Map;
 
+import gamedev.lwjgl.engine.Cleanable;
 import gamedev.lwjgl.engine.Logger;
 import gamedev.lwjgl.game.Game;
 import gamedev.lwjgl.game.levels.Level;
 import gamedev.lwjgl.game.levels.Level1;
 
-public class LevelSystem {
+public class LevelSystem implements Cleanable {
 	private Map<String, Level> levels = new HashMap<String, Level>();
 	
 	public void init() {
@@ -31,4 +32,10 @@ public class LevelSystem {
 		}
 	}
 	
+	public void cleanup() {
+		for(String s : levels.keySet()) {
+			levels.get(s).cleanup();
+		}
+		levels.clear();
+	}
 }

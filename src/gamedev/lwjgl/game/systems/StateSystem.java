@@ -40,4 +40,8 @@ public class StateSystem {
 			states.get(s).loadData();
 		}
 	}
+	
+	public void cleanup() {
+		states.clear();
+	}
 }

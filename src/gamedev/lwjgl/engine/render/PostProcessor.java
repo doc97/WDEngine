@@ -2,8 +2,8 @@ package gamedev.lwjgl.engine.render;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.*;
-import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL32.*;
 
 import java.nio.ByteBuffer;
@@ -109,5 +109,10 @@ public class PostProcessor {
 	
 	public int getFBO() {
 		return fbo;
+	}
+	
+	public void cleanup() {
+		glDeleteTextures(texture.getTextureID());
+		glDeleteFramebuffers(fbo);
 	}
 }

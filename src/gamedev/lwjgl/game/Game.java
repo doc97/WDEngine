@@ -1,5 +1,6 @@
 package gamedev.lwjgl.game;
 
+import gamedev.lwjgl.engine.Cleanable;
 import gamedev.lwjgl.engine.sound.SoundSystem;
 import gamedev.lwjgl.game.dev.DeveloperTools;
 import gamedev.lwjgl.game.systems.DialogSystem;
@@ -12,7 +13,7 @@ import gamedev.lwjgl.game.systems.QuestSystem;
 import gamedev.lwjgl.game.systems.ResourceSystem;
 import gamedev.lwjgl.game.systems.StateSystem;
 
-public enum Game {
+public enum Game implements Cleanable {
 	INSTANCE;
 	
 	public final StateSystem states = new StateSystem();
@@ -41,5 +42,15 @@ public enum Game {
 		states.loadDatafiles();
 		physics.loadDatafiles();
 		container.loadDatafiles();
+	}
+	
+	public void cleanup() {
+		states.cleanup();
+		entities.cleanup();
+		pprocessor.cleanup();
+		container.cleanup();
+		quests.cleanup();
+		interactions.cleanup();
+		levels.cleanup();
 	}
 }

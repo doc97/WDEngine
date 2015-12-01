@@ -6,13 +6,14 @@ import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 
+import gamedev.lwjgl.engine.Cleanable;
 import gamedev.lwjgl.engine.data.PlayerData;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.Game;
 import gamedev.lwjgl.game.ui.Inventory;
 
-public class Player extends Entity {
+public class Player extends Entity implements Cleanable {
 
 	private Inventory inventory;
 	private Dash dash;
@@ -27,6 +28,10 @@ public class Player extends Entity {
 	
 	private void init() {
 		loadDatafiles();
+	}
+	
+	public void cleanup() {
+		inventory.cleanup();
 	}
 	
 	public void loadDatafiles() {

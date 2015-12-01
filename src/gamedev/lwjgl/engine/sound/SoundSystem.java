@@ -2,28 +2,28 @@ package gamedev.lwjgl.engine.sound;
 
 public class SoundSystem {
 	
-	public void playSound(Sound sound){
+	public void playSound(Sound sound) {
 		sound.stop();
 		sound.play();
 	}
 	
-	public void stopSound(Sound sound){
+	public void stopSound(Sound sound) {
 		sound.stop();
 	}
 	
-	public void loopSound(Sound sound){
+	public void loopSound(Sound sound) {
 		sound.loop();
 	}
 	
-	public void loopSound(Sound sound, int times){
+	public void loopSound(Sound sound, int times) {
 		sound.loop(times);
 	}
 	
-	public boolean isSoundPlaying(Sound sound){
+	public boolean isSoundPlaying(Sound sound) {
 		return sound.isPlaying();
 	}
 	
-	public void setVolume(Sound sound, float level){
+	public void setVolume(Sound sound, float level) {
 		if (level < 0 || level > 100)
 			return;
 		boolean b = false;
@@ -35,7 +35,7 @@ public class SoundSystem {
 			sound.continuu();
 	}
 	
-	public void setBalance(Sound sound, float balance){
+	public void setBalance(Sound sound, float balance) {
 		if (balance < -1 || balance > 1)
 			return;
 		boolean b = false;
@@ -46,5 +46,4 @@ public class SoundSystem {
 		if (b)
 			sound.continuu();
 	}
-	
 }

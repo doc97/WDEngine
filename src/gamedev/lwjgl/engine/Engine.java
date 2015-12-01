@@ -1,7 +1,5 @@
 package gamedev.lwjgl.engine;
 
-import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
-import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
@@ -23,7 +21,6 @@ public enum Engine {
 	public final SpriteBatch batch = new SpriteBatch();
 	public final SpriteBatch uiBatch = new SpriteBatch();
 	public final Camera2d camera = batch.getCamera();
-	
 	
 	public void init() {
 		if(!display.createDisplay(1280, 720)) {
@@ -54,8 +51,8 @@ public enum Engine {
 	
 	public void cleanup() {
 		input.cleanup();
-		
-		glfwDestroyWindow(display.getWindow());
-		glfwTerminate();
+		batch.cleanup();
+		uiBatch.cleanup();
+		display.cleanup();
 	}
 }

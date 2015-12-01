@@ -3,14 +3,15 @@ package gamedev.lwjgl.engine.font;
 import java.util.HashMap;
 import java.util.Map;
 
+import gamedev.lwjgl.engine.Cleanable;
 import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.Logger;
-import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.render.SpriteBatch;
+import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.engine.utils.Timer;
 
-public class Font {
+public class Font implements Cleanable {
 	public enum Alignment {
 		LEFT, RIGHT, CENTER;
 	}
@@ -122,5 +123,9 @@ public class Font {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public void cleanup() {
+		glyphs.clear();
 	}
 }
