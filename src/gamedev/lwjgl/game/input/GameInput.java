@@ -2,7 +2,7 @@ package gamedev.lwjgl.game.input;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-import org.joml.Vector2f;
+import org.jbox2d.common.Vec2;
 import org.lwjgl.glfw.GLFW;
 
 import gamedev.lwjgl.engine.input.InputListener;
@@ -29,28 +29,25 @@ public class GameInput implements InputListener {
 	}
 	
 	public void update() {
-		float dx = 0;
-		if(right)	dx += 2;
-		if(left)	dx -= 2;
-		
-		Vector2f speed = player.getSpeed();
-		float maxSpeed = player.getMaxSpeed();
-		if(!player.isDashing()) {
-			if((speed.x + dx) * (speed.x + dx) > maxSpeed * maxSpeed) {
-				speed.x = Math.signum(speed.x) * maxSpeed;
-			} else {
-				speed.x += dx;
-			}
+		if(right) {
+			Game.INSTANCE.physics.applyForceToMiddle(Game.INSTANCE.container.getPlayer(), new Vec2(10f, 0));
 		}
+		if(left) {
+			Game.INSTANCE.physics.applyForceToMiddle(Game.INSTANCE.container.getPlayer(), new Vec2(-10f, 0));
+		}
+		
 		if (doubJump && (player.isInWater() || player.isOnGround()))
 			doubJump = false;
 		if (jump) {
 			if ((player.isOnGround() || player.isInWater()) && !jumpedOnCurrent) {
-				speed.y = 20.0f;
+				Game.INSTANCE.physics.setEntitySpeed(Game.INSTANCE.container.getPlayer(), new Vec2(0, 0), false, true);
+				Game.INSTANCE.physics.applyForceToMiddle(Game.INSTANCE.container.getPlayer(), new Vec2(0, 400));
 				doubJump = false;
 				jumpedOnCurrent = true;
 			} else if (!doubJump && !jumpedOnCurrent) {
-				speed.y = 20.0f;
+				Game.INSTANCE.physics.setEntitySpeed(Game.INSTANCE.container.getPlayer(), new Vec2(0, 0), false, true);
+
+				Game.INSTANCE.physics.applyForceToMiddle(Game.INSTANCE.container.getPlayer(), new Vec2(0, 400));
 				doubJump = true;
 				jumpedOnCurrent = true;
 			}

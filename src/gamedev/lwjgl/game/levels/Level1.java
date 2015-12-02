@@ -24,6 +24,17 @@ public class Level1 extends Level {
 
 	@Override
 	public void load() {
+		System.out.println(Game.INSTANCE.container.getPlayer().getFixtureDef().getShape().m_radius);
+		Game.INSTANCE.entities.addEntity(Game.INSTANCE.container.getPlayer());		
+		Game.INSTANCE.physics.setMap(map);
+		Game.INSTANCE.physics.addEntity(Game.INSTANCE.container.getPlayer());
+		
+		Game.INSTANCE.container.getPlayer().setEntityPosition(100, 1000);
+		
+		Item energy = new Item(ItemType.ENERGY, 2300, 800, 0.1f, false);
+		Game.INSTANCE.entities.addEntity(energy);
+		Game.INSTANCE.physics.addEntity(energy);
+		
 		Game.INSTANCE.interactions.addInteraction(new Interaction() {
 			@Override
 			public void init() {
@@ -41,8 +52,12 @@ public class Level1 extends Level {
 				Game.INSTANCE.dialogs.getCurrentDialog().show();
 				
 				if (Game.INSTANCE.dialogs.getCurrentDialog().getCurrentTextIndex() == -1) {
-					if(Game.INSTANCE.entities.getEntities().size() == 1)
-						Game.INSTANCE.entities.addEntity(new Item(ItemType.ENERGY, 2300, 800, 0.1f, false));
+					if(Game.INSTANCE.entities.getEntities().size() == 1) {
+						Item i = new Item(ItemType.ENERGY, 2300, 800, 0.1f, false);
+						Game.INSTANCE.entities.addEntity(i);
+						Game.INSTANCE.physics.addEntity(i);
+					}
+						
 				}
 			}
 			
@@ -106,6 +121,7 @@ public class Level1 extends Level {
 	
 	@Override
 	public void unload() {
+		Game.INSTANCE.physics.reset();
 		Game.INSTANCE.interactions.clear();
 	}
 	

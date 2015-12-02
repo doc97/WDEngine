@@ -12,7 +12,6 @@ import gamedev.lwjgl.engine.utils.Timer;
 import gamedev.lwjgl.game.Game;
 import gamedev.lwjgl.game.entities.Entity;
 import gamedev.lwjgl.game.entities.Item;
-import gamedev.lwjgl.game.entities.ItemType;
 import gamedev.lwjgl.game.input.DeveloperInput;
 import gamedev.lwjgl.game.input.GameInput;
 import gamedev.lwjgl.game.ui.GameUI;
@@ -179,8 +178,6 @@ public class GameState extends State {
 		if(!initialized)
 			init();
 		
-		Game.INSTANCE.container.getPlayer().setEntityPosition(100, 1000);
-		addEntity(Game.INSTANCE.container.getPlayer());
 		Engine.INSTANCE.input.addListener(gameInput);
 		Engine.INSTANCE.input.addListener(devInput);
 		
@@ -206,15 +203,6 @@ public class GameState extends State {
 		fadeTimer.set(60);
 		fadeTimer.setActive(true);
 		paused = false;
-		
-		addEnergyGem();
-	}
-	
-	public void addEnergyGem() {
-		if (Game.INSTANCE.entities.getEntities().size() != 1)
-			return;
-		Item energyGem = new Item(ItemType.ENERGY, 2300, 800, 0.1f, false);
-		addEntity(energyGem);
 	}
 	
 	@Override

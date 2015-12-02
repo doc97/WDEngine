@@ -30,6 +30,7 @@ public class EntitySystem {
 	
 	public void addEntity(Entity entity) {
 		entities.add(entity);
+		
 	}
 	
 	public void removeEntity(Entity entity) {

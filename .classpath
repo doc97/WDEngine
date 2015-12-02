@@ -15,5 +15,6 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/WDEngine/lib/gson/gson-2.4-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/JBox2D/JBox2D.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

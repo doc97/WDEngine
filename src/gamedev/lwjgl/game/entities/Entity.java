@@ -3,10 +3,11 @@ package gamedev.lwjgl.game.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joml.Vector2f;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.FixtureDef;
 
 import gamedev.lwjgl.engine.Engine;
-import gamedev.lwjgl.engine.physics.CollisionBox;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.sound.Sound;
 import gamedev.lwjgl.engine.textures.ModelTexture;
@@ -19,16 +20,14 @@ public class Entity {
 	private List<Float> dimensions = new ArrayList<Float>();
 	private List<Float> anchors = new ArrayList<Float>();
 	private List<Float> rotations = new ArrayList<Float>();
-	protected Vector2f speed = new Vector2f();
-	protected float maxSpeed = 8;
 	protected float x, y;
 	private float anchorX, anchorY;
 	private float rotation;
-	protected CollisionBox collisionShape;
 	protected boolean dynamic;
-	private Vector2f waterLift = new Vector2f();
 	private boolean isInWater;
 	private boolean isOnGround;
+	protected BodyDef bodyDef;
+	protected FixtureDef fixtureDef;
 	
 	public Entity(float x, float y) {
 		this.x = x;
@@ -52,48 +51,30 @@ public class Entity {
 	}
 	
 	public void update() {
+		x = Game.INSTANCE.physics.currentEntityPosition(this).x;
+		y = Game.INSTANCE.physics.currentEntityPosition(this).y;
 	}
 	
 	public void render(SpriteBatch batch) {
 		for(int i = 0; i < textures.size(); i++) {
-			batch.draw(textures.get(i), collisionShape.getInner().getPosition().x + positions.get(2 * i),
-					collisionShape.getInner().getPosition().y + positions.get(2 * i + 1),
+			batch.draw(textures.get(i), x + positions.get(2 * i),
+					y + positions.get(2 * i + 1),
 					dimensions.get(2 * i), dimensions.get(2 * i + 1), textures.get(i).getUVs(),
 					rotation + rotations.get(i), anchorX + anchors.get(2 * i), anchorY + anchors.get(2 * i + 1));
 		}
 	}
 	
-	public void addEntityPosition(float dx, float dy) {
-		collisionShape.addPosistion(dx, dy);
-		this.x += dx;
-		this.y += dy;
-	}
-	
 	public void addEntityRotation(float rotation) {
 		this.rotation += rotation;
 	}
-	
-	public void addSpeed(float dx, float dy) {
-		speed.x += dx;
-		speed.y += dy;
-	}
 
 	public void setEntityPosition(float x, float y) {
-		collisionShape.setPosition(x, y);
-		this.x = x;
-		this.y = y;
+		Game.INSTANCE.physics.setEntityPosition(this, new Vec2(x, y));
 	}
 	
 	public void setEntityAnchorPoint(float x, float y) {
 		anchorX = x;
 		anchorY = y;
-	}
-	
-	public void setSpeed(float dx, float dy) {
-		speed.x = dx;
-		speed.y = dy;
-		if(Math.abs(speed.x) < 0.01f) speed.x = 0;
-		if(Math.abs(speed.y) < 0.01f) speed.y = 0;
 	}
 	
 	public void setEntityRotation(float rotation) {
@@ -133,10 +114,6 @@ public class Entity {
 		rotations.set(textureIndex, rotation);
 	}
 	
-	public void setWaterLift(float lift) {
-		waterLift.y = lift;
-	}
-	
 	public void setInWater(boolean b){
 		if (b && !isInWater && x > Game.INSTANCE.container.getPlayer().x - Engine.INSTANCE.camera.getWidth() / 2
 				&& x < Game.INSTANCE.container.getPlayer().x + Engine.INSTANCE.camera.getWidth() / 2) {
@@ -161,31 +138,14 @@ public class Entity {
 	public float getY() {
 		return y;
 	}
-
-	public float getMaxSpeed() {
-		return maxSpeed;
-	}
-	
-	public Vector2f getSpeed() {
-		return speed;
-	}
-	
+		
 	public boolean isDynamic() {
 		return dynamic;
 	}
 	
 	public ModelTexture getTexture(int i) {
 		return textures.get(i);
-	}
-
-	public Vector2f getWaterLift() {
-		return waterLift;
-	}
-	
-	public CollisionBox getCollisionShape(){
-		return collisionShape;
-	}
-	
+	}	
 
 	public boolean isInWater() {
 		return isInWater;
@@ -194,5 +154,13 @@ public class Entity {
 	public boolean isOnGround() {
 		return isOnGround;
 	}
-
+	
+	public BodyDef getBodyDef() {
+		return bodyDef;
+	}
+	
+	public FixtureDef getFixtureDef() {
+		return fixtureDef;
+	}
+	
 }

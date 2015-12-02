@@ -1,268 +1,261 @@
 package gamedev.lwjgl.game;
 
+import java.awt.Shape;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
+import org.jbox2d.callbacks.ContactImpulse;
+import org.jbox2d.callbacks.ContactListener;
+import org.jbox2d.collision.Manifold;
+import org.jbox2d.collision.shapes.ChainShape;
+import org.jbox2d.collision.shapes.CircleShape;
+import org.jbox2d.collision.shapes.EdgeShape;
+import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.collision.shapes.ShapeType;
+import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.Fixture;
+import org.jbox2d.dynamics.FixtureDef;
+import org.jbox2d.dynamics.World;
+import org.jbox2d.dynamics.contacts.Contact;
 import org.joml.Vector2f;
 
+import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.data.PhysicsData;
-import gamedev.lwjgl.engine.physics.Circle;
-import gamedev.lwjgl.engine.physics.Collision;
 import gamedev.lwjgl.engine.physics.Line;
 import gamedev.lwjgl.engine.physics.Spring;
 import gamedev.lwjgl.engine.physics.Water;
+import gamedev.lwjgl.engine.render.DisplayManager;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.entities.Entity;
 import gamedev.lwjgl.game.entities.Item;
+import gamedev.lwjgl.game.entities.ItemType;
 import gamedev.lwjgl.game.entities.Player;
+import gamedev.lwjgl.game.map.CollisionMap;
 import gamedev.lwjgl.game.map.Map;
 import gamedev.lwjgl.game.ui.Inventory;
 
-public class GamePhysics {
+public class GamePhysics implements ContactListener{
 	
-	private float friction;
-	private float airResistance;
-	private float waterResistance;
-	private Vector2f gravitation;
-
+	private World world;
+	private Body ground;
+	private HashMap<Entity, Body> bodies;
+	private final float ppm = 32;
+	private ArrayList<Body> bodiesToDestroy;
 	
 	public GamePhysics() {
 		PhysicsData data = AssetManager.getPhysicsData();
-		friction = data.friction;
-		airResistance = data.airResistance;
-		waterResistance = data.waterResistance;
-		gravitation = new Vector2f(data.gravitation.x, data.gravitation.y);
+		world = new World(new Vec2(data.gravitation.x, data.gravitation.y));
+		bodies = new HashMap<Entity, Body>();
+		bodiesToDestroy = new ArrayList<Body>();
 	}
 	
 	public void update() {
-		Map m = Game.INSTANCE.container.getCurrentLevel().getMap();
-
-		for (Entity e : Game.INSTANCE.entities.getEntities()){
-			if (e.isDynamic()){
-				collisionDetection(e, m);
-			}
+		world.step(0.04f, 1, 1);
+		for (Body b : bodiesToDestroy) {
+			world.destroyBody(b);
 		}
-		
-		Player pl = Game.INSTANCE.container.getPlayer();
-		ArrayList<Item> toRemove = new ArrayList<Item>();
-		
-		for (Entity e : Game.INSTANCE.entities.getEntities()){
-			if (e instanceof Item){
-				if (isColliding(e, pl)){
-					Game.INSTANCE.sounds.playSound(AssetManager.getSound("testSound"));
-					toRemove.add((Item) e);
-				}
-			}
-		}
-		
-		Inventory inv = pl.getInventory();
-		for (Item i : toRemove){
-			switch(i.getType()) {
-			case ENERGY :
-				if (Game.INSTANCE.resources.getEnergy() >= Game.INSTANCE.resources.getMaxEnergy())
-					continue;
-				Game.INSTANCE.resources.addEnergy(1);
-				break;
-			case COIN :
-				inv.addItem(i);
-				break;
-			}
-			Game.INSTANCE.entities.removeEntity(i);
-		}
-		
-		
-		updatePositions();
-		updateForces();
+		bodiesToDestroy.clear();
 	}
 	
-	public void updateForces() {
-		for(int i = 0; i < Game.INSTANCE.entities.getEntities().size(); i++) {
-			Entity e = Game.INSTANCE.entities.getEntities().get(i);
-			if(e.isDynamic()) {
-				// Applying gravitation
-				e.getSpeed().add(gravitation);
-				
-				// Add water lift
-				if(e.getWaterLift().lengthSquared() > 0) {
-					e.getSpeed().add(e.getWaterLift());
-					e.getSpeed().mul(waterResistance);
-				} else {
-					// Applying air resistance
-					e.getSpeed().mul(airResistance);
-				}
-			}
+	public void setMap(Map map) {
+		
+		BodyDef bd = new BodyDef();
+		bd.type = BodyType.STATIC;
+		bd.position.set(0, 0);
+		
+		Body ground = world.createBody(bd);
+		
+		EdgeShape es = new EdgeShape();
+		
+		FixtureDef fd = new FixtureDef();
+		fd.shape = es;
+		fd.density = 0;
+		fd.friction = 0.3f;
+		
+		for (Line line : map.getCollisionMap()) {
+			es.set(new Vec2(line.a.x / ppm, line.a.y / ppm), new Vec2(line.b.x / ppm, line.b.y / ppm));
+			ground.createFixture(fd);
 		}
+		
+		this.ground = ground;
+		
 	}
 	
-	public void updatePositions() {
-		for(int i = 0; i < Game.INSTANCE.entities.getEntities().size(); i++) {
-			Entity e = Game.INSTANCE.entities.getEntities().get(i);
-			if(e.isDynamic())
-				e.addEntityPosition(e.getSpeed().x, e.getSpeed().y);
+	public void reset() {
+		world.destroyBody(ground);
+		for (Entity e : bodies.keySet()) {
+			world.destroyBody(bodies.get(e));
 		}
+		world.clearForces();
+		bodies.clear();
 	}
-
-	public Collision calculateCollision(Line line, Vector2f pos, Vector2f speed, float radius) {
-		Vector2f end = new Vector2f(pos.x + speed.x, pos.y + speed.y);
-		Vector2f pt = new Vector2f();
-		Vector2f projUnit = new Vector2f();
-		Vector2f projVec = new Vector2f();
-		Vector2f closest = new Vector2f();
-		Vector2f distance = new Vector2f();
-		Collision collision = new Collision();
-		
-		// Calculate closest point on line
-		if(line.vector.lengthSquared() == 0) return null;
-		Vector2f.sub(end, line.a, pt);
-		line.vector.normalize(projUnit);
-		
-		float dot = pt.dot(projUnit);
-		if(dot <= 0) {
-			closest = line.a;
-		} else if(dot * dot >= line.vector.lengthSquared()) {
-			closest = line.b;
-		} else {
-			projVec.set(projUnit.x * dot, projUnit.y * dot);
-			Vector2f.add(projVec, line.a, closest);
+	
+	public void addEntity(Entity entity) {
+		BodyDef bd = entity.getBodyDef();
+		bd.position.set(bd.position.x / ppm, bd.position.y / ppm);
+		Body body = world.createBody(entity.getBodyDef());
+		bodies.put(entity, body);
+		world.setContactListener(this);
+		FixtureDef fd = entity.getFixtureDef();
+		FixtureDef nfd = new FixtureDef();
+		switch (fd.shape.m_type) {
+		case CHAIN:
+			ChainShape chaShape = (ChainShape)fd.shape;
+			ChainShape newShape = new ChainShape();
+			nfd.shape = newShape;
+			newShape.setRadius(chaShape.getRadius() / ppm);
+			newShape.m_vertices = new Vec2[chaShape.m_vertices.length];
+			for (int i = 0; i < chaShape.m_vertices.length; i++) {
+				newShape.m_vertices[i].x = chaShape.m_vertices[i].x / ppm;
+				newShape.m_vertices[i].y = chaShape.m_vertices[i].y / ppm;
+			}
+			break;
+		case CIRCLE:
+			CircleShape cirShape = (CircleShape)fd.shape;
+			CircleShape cs = new CircleShape();
+			nfd.shape = cs;
+			cs.m_p.x = cirShape.m_p.x / ppm;
+			cs.m_p.y = cirShape.m_p.y / ppm;
+			cs.m_radius = cirShape.getRadius() / ppm;
+			break;
+		case EDGE:
+			EdgeShape edgShape = (EdgeShape)fd.shape;
+			EdgeShape nes = new EdgeShape();
+			nfd.shape = nes;
+			nes.m_radius = edgShape.m_radius / ppm;
+			break;
+		case POLYGON:
+			PolygonShape polShape = (PolygonShape)fd.shape;
+			PolygonShape nps = new PolygonShape();
+			nfd.shape = nps;
+			nps.set(polShape.m_vertices, polShape.m_count);
+			for (int i = 0; i < nps.m_normals.length; i++) {
+				nps.m_normals[i].x /= ppm;
+				nps.m_normals[i].y /= ppm;
+			}
+			for (int i = 0; i < nps.m_vertices.length; i++) {
+				nps.m_vertices[i].x /= ppm;
+				nps.m_vertices[i].y /= ppm;
+			}
+			nps.m_centroid.x = polShape.m_centroid.x / ppm;
+			nps.m_centroid.y = polShape.m_centroid.y / ppm;
+			nps.m_radius = polShape.m_radius / ppm;
+			break;
+		default:
+			break;
 		}
-
-		// Calculate offset
-		Vector2f.sub(end, closest, distance);
 		
-		if(distance.length() <= radius) {
-			collision.setContactPoint(closest);
-			collision.setDistance(distance);
-			collision.setProjectionUnit(projUnit);
-			return collision;
+		body.createFixture(nfd);
+	}
+	
+	public void removeEntity(Entity entity) {
+		world.destroyBody(bodies.remove(entity));
+	}
+	
+	public Vec2 currentEntityPosition(Entity entity) {
+		Vec2 pos = bodies.get(entity).getWorldCenter();
+		return new Vec2(pos.x * ppm, pos.y * ppm);
+	}
+	
+	public Vec2 currentEntitySpeed(Entity entity) {
+		Vec2 speed = bodies.get(entity).getLinearVelocity();
+		return new Vec2(speed.x, speed.y);
+	}
+	
+	public void applyForceToMiddle(Entity entity, Vec2 force) {
+		bodies.get(entity).applyForceToCenter(force);
+	}
+	
+	public void setEntityPosition(Entity entity, Vec2 pos) {
+		pos.x /= ppm;
+		pos.y /= ppm;
+		bodies.get(entity).setTransform(pos, 0);
+	}
+	
+	public void setEntitySpeed(Entity entity, Vec2 speed, boolean x, boolean y) {
+		Body b = bodies.get(entity);
+		if (x)
+			b.setLinearVelocity(new Vec2(speed.x, b.m_linearVelocity.y));
+		if (y)
+			b.setLinearVelocity(new Vec2(b.m_linearVelocity.x, speed.y));
+	}
+	
+	private Entity getEntity(Body body) {
+		for (Entry<Entity, Body> entry : bodies.entrySet()) {
+			if (body == entry.getValue()) {
+				return entry.getKey();
+			}
 		}
 		return null;
 	}
 	
-	public void calculateWaves(Entity entity, Water water) {
-		Circle circle = entity.getCollisionShape().getInner();
-		float radius = circle.getRadius();
-		
-		for(int j = 0; j < water.getSprings().length - 1; j++) {
-			Spring s = water.getSprings()[j];
-			Spring s2 = water.getSprings()[j + 1];
-			Line line = new Line(new Vector2f(s.getX(), s.getHeight()), new Vector2f(s2.getX(), s2.getHeight()));
-			Collision repulsion = calculateCollision(line, circle.getPosition(), entity.getSpeed(), radius);
-			if(repulsion != null) {
-				Vector2f x = new Vector2f(1, 0);
-				Vector2f y = new Vector2f(0, 1);
-				float xDot = entity.getSpeed().dot(x);
-				float yDot = entity.getSpeed().dot(y);
-				
-				Spring frontSpring = null;
-				Spring backSpring = null;
-				
-				if(xDot != 0) {
-					frontSpring = water.getSpring(entity.getX() + entity.getCollisionShape().getInner().getRadius() * Math.signum(xDot));
-					backSpring = water.getSpring(entity.getX() - entity.getCollisionShape().getInner().getRadius() * Math.signum(xDot));
-				}
-
-				float yFactor = 0;
-				float xFactor = Math.abs(xDot);
-				if(yDot < 0) {
-					yFactor = y.y * yDot / 2.0f;
-					xFactor /= 2.0f;
-				} else if(yDot > 0) {
-					yFactor = y.y * yDot / 4.0f;
-					xFactor /= 4.0f;
-				}
-				
-				if(frontSpring != null) {
-					frontSpring.setSpeed(-(yFactor - xFactor));
-				}
-				if(backSpring != null) {
-					backSpring.setSpeed(yFactor - xFactor);
-				}
-				
-				if(backSpring == null && frontSpring == null) {
-					s.setSpeed(-(yFactor + xFactor));
-				}
-			}
-		}
-	}
-	
-	public void collisionDetection(Entity entity, Map map) {
-		Circle circle = entity.getCollisionShape().getOuter();
-		Circle circle2 = entity.getCollisionShape().getInner();
-		float radius = circle.getRadius();
-		
-		entity.setOnGround(false);
-		for(Line line : map.getCollisionMap()) {
-			Vector2f speed = entity.getSpeed();
-			Collision collision = calculateCollision(line, circle.getPosition(), speed, radius);
+	@Override
+	public void beginContact(Contact c) {
+		Body b1 = c.m_fixtureA.getBody();
+		Body b2 = c.m_fixtureB.getBody();
+		if (b1 == ground) {
+			Entity e = getEntity(b2);
+			if (e != null)
+				e.setOnGround(true);
+		} else if (b2 == ground) {
+			Entity e = getEntity(b1);
+			if (e != null)
+				e.setOnGround(true);
+		} else {
+			Entity e1 = getEntity(b1);
+			Entity e2 = getEntity(b2);
 			
-			if(collision != null) {
-				Vector2f projUnit = collision.getProjectionUnit();
-				float speedDot = speed.dot(projUnit);
-				Vector2f speedProj = new Vector2f(projUnit.x * speedDot, projUnit.y * speedDot);
-				
-				Vector2f normal = new Vector2f();
-				Vector2f.sub(collision.getContactPoint(), circle.getPosition(), normal);
-				float normalAngle = (float) Math.atan2(normal.y, normal.x);
-				float margin = (float) (Math.PI / 10);
-				if((normalAngle > -Math.PI + margin && normalAngle < -margin) ||
-						(normalAngle > Math.PI + margin && normalAngle < 2 * Math.PI - margin)) {
-					entity.setOnGround(true);
-				}
-				
-				if(speedProj.lengthSquared() == 0) {
-					entity.setSpeed(0, 0);
-					continue;
-				}
-				
-				// Applying friction
-				Vector2f frictionSpeed = new Vector2f();
-				speedProj.normalize(frictionSpeed);
-				frictionSpeed.mul(-friction);
-				entity.setSpeed(speedProj.x, speedProj.y);
-				
-				if(entity.getSpeed().lengthSquared() < frictionSpeed.lengthSquared())
-					entity.setSpeed(0, 0);
-				else
-					entity.addSpeed(frictionSpeed.x, frictionSpeed.y);
-			}
-		}
-		
-		for(int i = 0; i < map.getWaters().size(); i++) {
-			Water w = map.getWaters().get(i);
-			Spring s = w.getSpring(entity.getX());
-			
-			calculateWaves(entity, w);
-
-			if(s != null && circle2.getPosition().y >= s.getY() && circle2.getPosition().y <= s.getTargetHeight()) {
-				float limit = s.getTargetHeight() + circle2.getRadius() / 2;
-				entity.setWaterLift(0.999f + 2 * (limit - circle2.getPosition().y) / limit);
-			} else {
-				if (s != null) {
-					if (circle2.getPosition().y - circle2.getRadius() >= s.getHeight()) {
-						entity.setInWater(false);
-					} else {
-						entity.setInWater(true);
+			if (e1 instanceof Item) {
+				Item i = (Item) e1;
+				if (e2 == Game.INSTANCE.container.getPlayer()) {
+					if (i.getType() == ItemType.ENERGY) {
+						c.setEnabled(false);
+						Game.INSTANCE.resources.addEnergy(1);
+						Game.INSTANCE.entities.removeEntity(e1);
+						bodiesToDestroy.add(b1);
 					}
 				}
-				entity.setWaterLift(0);
+			} else if (e2 instanceof Item) {
+				Item i = (Item) e2;
+				if (e1 == Game.INSTANCE.container.getPlayer()) {
+					if (i.getType() == ItemType.ENERGY) {
+						c.setEnabled(false);
+						Game.INSTANCE.resources.addEnergy(1);
+						Game.INSTANCE.entities.removeEntity(e2);
+						bodiesToDestroy.add(b2);
+					}
+				}
 			}
 		}
 	}
-	
-	public boolean isColliding(Entity ent1, Entity ent2){
-		Circle circ1 = ent1.getCollisionShape().getInner();
-		Circle circ2 = ent2.getCollisionShape().getInner();
+
+	@Override
+	public void endContact(Contact c) {
+		Body b1 = c.m_fixtureA.getBody();
+		Body b2 = c.m_fixtureB.getBody();
+		if (b1 == ground) {
+			Entity e = getEntity(b2);
+			if (e != null)
+				e.setOnGround(false);
+		} else if (b2 == ground) {
+			Entity e = getEntity(b1);
+			if (e != null)
+				e.setOnGround(false);
+		} 
+	}
+
+	@Override
+	public void postSolve(Contact c, ContactImpulse i) {
 		
-		Vector2f pos1 = circ1.getPosition() , pos2 = circ2.getPosition();
+	}
+
+	@Override
+	public void preSolve(Contact c, Manifold m) {
 		
-		float distanceSqrd = (pos1.x - pos2.x) * (pos1.x - pos2.x) + (pos1.y - pos2.y) * (pos1.y - pos2.y);
-		
-		float radSumSqrd = (circ1.getRadius() + circ2.getRadius()) * (circ1.getRadius() + circ2.getRadius());
-		
-		if (distanceSqrd < radSumSqrd){
-			return true;
-		}
-		
-		return false;
 	}
 	
 }

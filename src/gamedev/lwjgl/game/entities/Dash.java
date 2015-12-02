@@ -1,9 +1,11 @@
 package gamedev.lwjgl.game.entities;
 
+import org.jbox2d.common.Vec2;
 import org.joml.Vector2f;
 
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.utils.Timer;
+import gamedev.lwjgl.game.Game;
 import gamedev.lwjgl.game.graphics.effects.Trail;
 
 public class Dash {
@@ -24,17 +26,21 @@ public class Dash {
 			deactivate();
 		
 		if(dashTimer.isActive()) {
-			float innerRadius = player.getCollisionShape().getInner().getRadius();
-			Vector2f pos = player.getCollisionShape().getInner().getPosition();
+			float innerRadius = player.getFixtureDef().getShape().getRadius();
+			Vec2 pos = Game.INSTANCE.physics.currentEntityPosition(player);
+			Vec2 speed = Game.INSTANCE.physics.currentEntitySpeed(player);
 			dashTrail.addTrailPart(player.getTexture(0),
-					pos.x - innerRadius - player.speed.x / 2,
-					pos.y - innerRadius - player.speed.y / 2,
+					pos.x - innerRadius - speed.x / 2,
+					pos.y - innerRadius - speed.y / 2,
 					2 * innerRadius, 2 * innerRadius);
 			dashTrail.addTrailPart(player.getTexture(0),
 					pos.x - innerRadius,
 					pos.y - innerRadius,
 					2 * innerRadius, 2 * innerRadius);
-			player.speed.set(Math.signum(player.speed.x) * 5 * player.maxSpeed, 0);
+			if (speed.x < 0)
+				Game.INSTANCE.physics.applyForceToMiddle(player, new Vec2(-50, 0));
+			else
+				Game.INSTANCE.physics.applyForceToMiddle(player, new Vec2(50, 0));
 		}
 	}
 	
@@ -45,10 +51,13 @@ public class Dash {
 	public void activate() {
 		dashTimer.set(10);
 		dashTimer.setActive(true);
+		player.getBodyDef().setGravityScale(0);
+		Game.INSTANCE.physics.setEntitySpeed(player, new Vec2(0, 0), false, true);
 	}
 	
 	public void deactivate() {
 		dashTimer.setActive(false);
+		player.getBodyDef().setGravityScale(1);
 	}
 	
 	public boolean isActive() {
