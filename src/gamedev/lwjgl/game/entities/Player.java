@@ -16,7 +16,6 @@ public class Player extends Entity {
 
 	private Inventory inventory;
 	private Dash dash;
-	private float sin;
 	
 	public Player(float x, float y) {
 		super(x, y);
@@ -42,7 +41,6 @@ public class Player extends Entity {
 		fixtureDef.friction = 1;
 		
 		float inner = data.innerRadius;
-		float outer = data.outerRadius;
  		addTexture(AssetManager.getTexture(data.texture), -inner, -inner, 2 * inner, 2 * inner, 0, 0, 0);
 	}
 	
@@ -67,6 +65,7 @@ public class Player extends Entity {
 //			sin += 1 / 18.0f;
 //		}
 		// Add particles
+		System.out.println(x + "   " + y);
 		int xoffset = 30;
 		int yoffset = 30;
 		Vec2 speed = Game.INSTANCE.physics.currentEntitySpeed(this);

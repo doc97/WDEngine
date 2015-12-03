@@ -27,8 +27,6 @@ public class Map {
 	public void update() {
 		camX = Engine.INSTANCE.camera.getX();
 		camY = Engine.INSTANCE.camera.getY();
-		for(Water w : waters)
-			w.update();
 	}
 	
 	public void renderParallax(SpriteBatch batch) {

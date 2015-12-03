@@ -1,6 +1,5 @@
 package gamedev.lwjgl.game;
 
-import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -12,37 +11,32 @@ import org.jbox2d.collision.shapes.ChainShape;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.EdgeShape;
 import org.jbox2d.collision.shapes.PolygonShape;
-import org.jbox2d.collision.shapes.ShapeType;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
-import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
-import org.joml.Vector2f;
+import org.jbox2d.particle.ParticleBodyContact;
+import org.jbox2d.particle.ParticleGroup;
+import org.jbox2d.particle.ParticleGroupDef;
 
-import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.data.PhysicsData;
 import gamedev.lwjgl.engine.physics.Line;
-import gamedev.lwjgl.engine.physics.Spring;
 import gamedev.lwjgl.engine.physics.Water;
-import gamedev.lwjgl.engine.render.DisplayManager;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.entities.Entity;
 import gamedev.lwjgl.game.entities.Item;
 import gamedev.lwjgl.game.entities.ItemType;
-import gamedev.lwjgl.game.entities.Player;
-import gamedev.lwjgl.game.map.CollisionMap;
 import gamedev.lwjgl.game.map.Map;
-import gamedev.lwjgl.game.ui.Inventory;
 
 public class GamePhysics implements ContactListener{
 	
 	private World world;
 	private Body ground;
 	private HashMap<Entity, Body> bodies;
+	private HashMap<Water, ParticleGroup> waters;
 	private final float ppm = 32;
 	private ArrayList<Body> bodiesToDestroy;
 	
@@ -50,11 +44,32 @@ public class GamePhysics implements ContactListener{
 		PhysicsData data = AssetManager.getPhysicsData();
 		world = new World(new Vec2(data.gravitation.x, data.gravitation.y));
 		bodies = new HashMap<Entity, Body>();
+		waters = new HashMap<Water, ParticleGroup>();
 		bodiesToDestroy = new ArrayList<Body>();
+		world.setWarmStarting(true);
 	}
 	
 	public void update() {
 		world.step(0.04f, 1, 1);
+		ParticleBodyContact[] contacts = world.getParticleBodyContacts();
+		ArrayList<Entity> entities = new ArrayList<Entity>();
+		entities.addAll(bodies.keySet());
+		int[] contactAmount = new int[entities.size()];
+		for (int i = 0; i < contacts.length; i++) {
+			Entity e = getEntity(contacts[i].body);
+			if (e != null) {
+				contactAmount[entities.indexOf(e)]++;
+			}
+		}
+
+		for (Entity e : entities) {
+			if (contactAmount[entities.indexOf(e)] > 2) {
+				e.setInWater(true);
+			} else {
+				e.setInWater(false);
+			}
+		}
+		
 		for (Body b : bodiesToDestroy) {
 			world.destroyBody(b);
 		}
@@ -83,6 +98,60 @@ public class GamePhysics implements ContactListener{
 		
 		this.ground = ground;
 		
+		world.setParticleRadius(0.25f);
+		world.setParticleDensity(0.2f);
+		world.setParticleGravityScale(0.8f);
+		
+		for (Water water : map.getWaters()) {
+			ParticleGroupDef pgd = new ParticleGroupDef();
+			ParticleGroupDef waterDef = water.getParticleGroupDef();
+			
+			pgd.position.set(waterDef.position.x / 32, waterDef.position.y / 32);
+			
+			pgd.shape = waterDef.shape.clone();
+			
+			switch (pgd.shape.m_type) {
+			case CHAIN:
+				ChainShape chaShape = (ChainShape)pgd.shape;
+				chaShape.m_radius /= ppm;
+				for (int i = 0; i < chaShape.m_vertices.length; i++) {
+					chaShape.m_vertices[i].x /= ppm;
+					chaShape.m_vertices[i].y /= ppm;
+				}
+				break;
+			case CIRCLE:
+				CircleShape cirShape = (CircleShape)pgd.shape;
+				cirShape.m_p.x /= ppm;
+				cirShape.m_p.y /= ppm;
+				cirShape.m_radius /= ppm;
+				break;
+			case EDGE:
+				EdgeShape edgShape = (EdgeShape)pgd.shape;
+				edgShape.m_radius /= ppm;
+				break;
+			case POLYGON:
+				PolygonShape polShape = (PolygonShape)pgd.shape;
+				for (int i = 0; i < polShape.m_normals.length; i++) {
+					polShape.m_normals[i].x /= ppm;
+					polShape.m_normals[i].y /= ppm;
+				}
+				for (int i = 0; i < polShape.m_vertices.length; i++) {
+					polShape.m_vertices[i].x /= ppm;
+					polShape.m_vertices[i].y /= ppm;
+				}
+				polShape.m_centroid.x /= ppm;
+				polShape.m_centroid.y /= ppm;
+				polShape.m_radius /= ppm;
+				break;
+			default:
+				break;
+			}
+						
+			ParticleGroup  pg = world.createParticleGroup(pgd);
+			waters.put(water, pg);
+			
+		}
+		
 	}
 	
 	public void reset() {
@@ -90,7 +159,11 @@ public class GamePhysics implements ContactListener{
 		for (Entity e : bodies.keySet()) {
 			world.destroyBody(bodies.get(e));
 		}
+		for (Water w : waters.keySet()) {
+			world.destroyParticlesInGroup(waters.get(w));
+		}
 		world.clearForces();
+		waters.clear();
 		bodies.clear();
 	}
 	
@@ -191,6 +264,16 @@ public class GamePhysics implements ContactListener{
 			}
 		}
 		return null;
+	}
+	
+	public Vec2[] getWaterParticles(Water water) {
+		ParticleGroup pg = waters.get(water);
+		Vec2[] positions = new Vec2[pg.getParticleCount()];
+		for (int i = 0; i < positions.length; i++) {
+			Vec2 pos = world.getParticlePositionBuffer()[pg.getBufferIndex() + i];
+			positions[i] = new Vec2(pos.x * ppm, pos.y * ppm);
+		}
+		return positions;
 	}
 	
 	@Override

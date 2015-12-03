@@ -1,7 +1,6 @@
 package gamedev.lwjgl.game.entities;
 
 import org.jbox2d.common.Vec2;
-import org.joml.Vector2f;
 
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.utils.Timer;
