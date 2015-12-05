@@ -1,3 +1,85 @@
 {
-	"font": "curly"
+	"font": "curly",
+	"texts": [
+		{
+			"text": "CREDITS",
+			"type": "title"
+		},
+		{
+			"text": "PROGRAMMERS",
+			"type": "title"
+		},
+		{
+			"text": "Daniel Riissanen",
+			"type": "content"
+		},
+		{
+			"text": "Wilhelm von Bergmann",
+			"type": "content"
+		},
+		{
+			"text": "ARTISTS",
+			"type": "title"
+		},
+		{
+			"text": "Reetu Laine",
+			"type": "content"
+		},
+		{
+			"text": "Charlotta Laine",
+			"type": "content"
+		},
+		{
+			"text": "GAME DESIGN",
+			"type": "title"
+		},
+		{
+			"text": "Riku Kanervo",
+			"type": "content"
+		},
+		{
+			"text": "Daniel Riissanen",
+			"type": "content"
+		},
+		{
+			"text": "Reetu Laine",
+			"type": "content"
+		},
+		{
+			"text": "LEVEL DESIGN",
+			"type": "title"
+		},
+		{
+			"text": "Charlotta Laine",
+			"type": "content"
+		},
+		{
+			"text": "LIBRARIES",
+			"type": "title"
+		},
+		{
+			"text": "lwjgl 3 - Lightweight Java Game Library 3",
+			"type": "content"
+		},
+		{
+			"text": "JBox2D",
+			"type": "content"
+		},
+		{
+			"text": "JOML - Java OpenGL Math Library",
+			"type": "content"
+		},
+		{
+			"text": "PNGDecoder",
+			"type": "content"
+		},
+		{
+			"text": "gson - Google JavaScript Object Notation",
+			"type": "content"
+		},
+		{
+			"text": "slick-util",
+			"type": "content"
+		}
+	]
 }
