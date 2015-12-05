@@ -125,7 +125,8 @@ public class GameState extends State {
 		Game.INSTANCE.particles.render(Engine.INSTANCE.batch);
 		Game.INSTANCE.container.getCurrentLevel().getMap().renderWater(Engine.INSTANCE.batch);
 		Game.INSTANCE.container.getCurrentLevel().getMap().renderGround(Engine.INSTANCE.batch);
-		
+		Game.INSTANCE.container.getCurrentLevel().getMap().renderForeground(Engine.INSTANCE.batch);
+
 		for (Item item : Game.INSTANCE.quests.getAllItems())
 			item.render(Engine.INSTANCE.batch);
 		

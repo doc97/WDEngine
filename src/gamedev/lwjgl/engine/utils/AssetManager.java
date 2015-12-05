@@ -404,10 +404,10 @@ public class AssetManager {
             
             List<Line> lines = new ArrayList<Line>();
             List<Water> waters = new ArrayList<Water>();
-            ModelTexture ground = getTexture(m.ground);
-    		ModelTexture foreground = getTexture(m.foreground);
-    		ModelTexture background1 = getTexture(m.background1);
-    		ModelTexture background2 = getTexture(m.background2);
+            List<ModelTexture> textures = new ArrayList<ModelTexture>();
+            
+            for(String name : m.textures)
+            	textures.add(getTexture(name));
             
     		// Load collision map
     		for(String name : m.objs)
@@ -417,10 +417,15 @@ public class AssetManager {
     		for(WaterData wd : m.waters)
     			waters.add(new Water(wd.x, wd.y, wd.width, wd.height));
     		
-            gamedev.lwjgl.game.map.Map map = new gamedev.lwjgl.game.map.Map();
-            map.setTextures(ground, foreground, background1, background2);
-    		map.setCollisionMap(lines);
-    		map.setWaters(waters);
+    		gamedev.lwjgl.game.map.Map map = null;
+    		if(m.name.equals("demomap"))
+    			map = new gamedev.lwjgl.game.map.Map1();
+    		
+    		if(map != null) {
+    			map.setTextures(textures);
+    			map.setCollisionMap(lines);
+    			map.setWaters(waters);
+    		}
     		return map;
 		} catch (IOException e) {
 			e.printStackTrace();
