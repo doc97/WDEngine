@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 import gamedev.lwjgl.engine.Logger;
 
@@ -16,13 +17,22 @@ public class OBJConverter {
 	}
 	
 	public static void main(String[] args) {
-		String filename = "assets/maps/level1/outline";
-		String source = OBJConverter.getSource(filename + ".obj");
-		source = OBJConverter.convert(ConvertType.TRIM, source, 0.01f);
-		//source = OBJConverter.convert(ConvertType.SCALE, source, 0.1f);
-		OBJConverter.write(filename + "_converted.obj", source);
+		List<String> filenames = new ArrayList<String>();
+		for(int i = 0; i < 23; i++)
+			filenames.add("assets/maps/level2/branch_" + i);
 		
-		Logger.message("OBJ Converter", "Done.");
+		filenames.add("assets/maps/level2/border");
+		filenames.add("assets/maps/level2/root");
+		filenames.add("assets/maps/level2/cliff");
+		filenames.add("assets/maps/level2/ground_0");
+		
+		for(String s : filenames) {
+			String source = OBJConverter.getSource(s + ".obj");
+			source = OBJConverter.convert(ConvertType.TRIM, source, 0.01f, 0);
+			source = OBJConverter.convert(ConvertType.SCALE, source, 450.7f, 450.9090909f);
+			OBJConverter.write(s + "_converted.obj", source);
+			Logger.message("OBJ Converter", "Done.");
+		}
 	}
 	
 	private static String getSource(String filename) {
@@ -52,7 +62,7 @@ public class OBJConverter {
 		}
 	}
 	
-	private static String convert(ConvertType type, String content, float value) {
+	private static String convert(ConvertType type, String content, float value, float value2) {
 		ArrayList<String> parts = new ArrayList<String>();
 		StringBuilder builder = new StringBuilder();
 		String floatPattern = "-*\\d+\\.\\d+";
@@ -64,9 +74,15 @@ public class OBJConverter {
 				if(param.matches(floatPattern)) {
 					float fValue = Float.parseFloat(param);
 					if(type == ConvertType.SCALE) {
-						param = String.valueOf(fValue * value);
+						if(i == 1)
+							param = String.valueOf(fValue * value);
+						else if(i == 2)
+							param = String.valueOf(fValue * value2);
 					} else if(type == ConvertType.TRANSLATE) {
-						param = String.valueOf(fValue + value);
+						if(i == 1)
+							param = String.valueOf(fValue + value);
+						else if(i == 2)
+							param = String.valueOf(fValue + value2);
 					} else if(type == ConvertType.TRIM) {
 						if(fValue * fValue <= value * value)
 							param = "0.0";
