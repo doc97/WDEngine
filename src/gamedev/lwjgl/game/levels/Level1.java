@@ -24,7 +24,6 @@ public class Level1 extends Level {
 
 	@Override
 	public void load() {
-		System.out.println(Game.INSTANCE.container.getPlayer().getFixtureDef().getShape().m_radius);
 		Game.INSTANCE.entities.addEntity(Game.INSTANCE.container.getPlayer());		
 		Game.INSTANCE.physics.setMap(map);
 		Game.INSTANCE.physics.addEntity(Game.INSTANCE.container.getPlayer());

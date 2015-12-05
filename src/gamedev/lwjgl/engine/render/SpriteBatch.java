@@ -295,6 +295,7 @@ public class SpriteBatch implements Cleanable{
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	
+	@SuppressWarnings("unused")
 	private void storeDataInAttributeList(int attribute, IntBuffer buffer, int size, int[] data) {
 		int vbo = glGenBuffers();
 		vbos.add(vbo);

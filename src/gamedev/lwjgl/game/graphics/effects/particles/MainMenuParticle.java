@@ -35,7 +35,6 @@ public class MainMenuParticle extends Particle {
 
 		boolean outX = x + size / 2 < 0 || x - size / 2 > Engine.INSTANCE.camera.getWidth();
 		boolean outY = y + size / 2 < 0 || y - size / 2 > Engine.INSTANCE.camera.getHeight();
-		System.out.println(outX + ", " + outY);
 		return outX || outY;
 	}
 

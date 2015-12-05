@@ -32,6 +32,7 @@ public class Player extends Entity implements Cleanable {
 	
 	public void cleanup() {
 		inventory.cleanup();
+		System.out.println("");
 	}
 	
 	public void loadDatafiles() {
@@ -74,7 +75,6 @@ public class Player extends Entity implements Cleanable {
 //			sin += 1 / 18.0f;
 //		}
 		// Add particles
-		System.out.println(x + "   " + y);
 		int xoffset = 30;
 		int yoffset = 30;
 		Vec2 speed = Game.INSTANCE.physics.currentEntitySpeed(this);
