@@ -185,21 +185,14 @@ public class GameState extends State {
 		Engine.INSTANCE.batch.setColor(fadeColor);
 		Engine.INSTANCE.display.setBackgroundColor(0, 0, 0, 1);
 		
-		Engine.INSTANCE.camera.setUpperLimits(
-				1920 * 2 - Engine.INSTANCE.camera.getWidth() / 2,
-				1080 - Engine.INSTANCE.camera.getHeight() / 2
-				);
-		Engine.INSTANCE.camera.setLowerLimits(
-				Engine.INSTANCE.camera.getWidth() / 2,
-				Engine.INSTANCE.camera.getHeight() / 2
-				);
 		Engine.INSTANCE.camera.setPosition(
 						Game.INSTANCE.container.getPlayer().getX(),
-						Game.INSTANCE.container.getPlayer().getY());
+						Game.INSTANCE.container.getPlayer().getY()
+						);
 		
 		Game.INSTANCE.sounds.loopSound(AssetManager.getSound("background"));
 		
-		Game.INSTANCE.levels.changeLevel("level1");
+		Game.INSTANCE.levels.changeLevel("level2");
 		
 		fadeTimer.set(60);
 		fadeTimer.setActive(true);

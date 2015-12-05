@@ -1,5 +1,6 @@
 package gamedev.lwjgl.game.levels;
 
+import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.Logger;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.utils.AssetManager;
@@ -24,15 +25,22 @@ public class Level1 extends Level {
 
 	@Override
 	public void load() {
-		Game.INSTANCE.entities.addEntity(Game.INSTANCE.container.getPlayer());		
-		Game.INSTANCE.physics.setMap(map);
-		Game.INSTANCE.physics.addEntity(Game.INSTANCE.container.getPlayer());
-		
+		super.load();
+
 		Game.INSTANCE.container.getPlayer().setEntityPosition(100, 1000);
 		
 		Item energy = new Item(ItemType.ENERGY, 2300, 800, 0.1f, false);
 		Game.INSTANCE.entities.addEntity(energy);
 		Game.INSTANCE.physics.addEntity(energy);
+		
+		Engine.INSTANCE.camera.setUpperLimits(
+				1920 * 2 - Engine.INSTANCE.camera.getWidth() / 2,
+				1080 - Engine.INSTANCE.camera.getHeight() / 2
+				);
+		Engine.INSTANCE.camera.setLowerLimits(
+				Engine.INSTANCE.camera.getWidth() / 2,
+				Engine.INSTANCE.camera.getHeight() / 2
+				);
 		
 		Game.INSTANCE.interactions.addInteraction(new Interaction() {
 			@Override
@@ -120,8 +128,6 @@ public class Level1 extends Level {
 	
 	@Override
 	public void unload() {
-		Game.INSTANCE.physics.reset();
-		Game.INSTANCE.interactions.clear();
+		super.unload();
 	}
-	
 }

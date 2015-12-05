@@ -10,6 +10,7 @@ import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.textures.ModelTexture;
 
 public abstract class Map implements Cleanable {
+	protected String name;
 	protected List<Line> collisionMap = new ArrayList<Line>();
 	protected List<ModelTexture> textures = new ArrayList<ModelTexture>();
 	protected List<Water> waters = new ArrayList<Water>();
@@ -24,6 +25,10 @@ public abstract class Map implements Cleanable {
 			w.render(batch);
 	}
 	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	public void setWaters(List<Water> waters) {
 		this.waters = waters;
 	}
@@ -34,6 +39,10 @@ public abstract class Map implements Cleanable {
 	
 	public void setCollisionMap(List<Line> lines) {
 		collisionMap = lines;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	public List<Line> getCollisionMap() {

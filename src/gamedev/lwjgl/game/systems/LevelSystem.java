@@ -8,12 +8,14 @@ import gamedev.lwjgl.engine.Logger;
 import gamedev.lwjgl.game.Game;
 import gamedev.lwjgl.game.levels.Level;
 import gamedev.lwjgl.game.levels.Level1;
+import gamedev.lwjgl.game.levels.Level2;
 
 public class LevelSystem implements Cleanable {
 	private Map<String, Level> levels = new HashMap<String, Level>();
 	
 	public void init() {
 		addLevel(new Level1());
+		addLevel(new Level2());
 	}
 	
 	private void addLevel(Level level) {

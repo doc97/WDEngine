@@ -420,8 +420,11 @@ public class AssetManager {
     		gamedev.lwjgl.game.map.Map map = null;
     		if(m.name.equals("demomap"))
     			map = new gamedev.lwjgl.game.map.Map1();
+    		else if(m.name.equals("beginnings"))
+    			map = new gamedev.lwjgl.game.map.Map2();
     		
     		if(map != null) {
+    			map.setName(m.name);
     			map.setTextures(textures);
     			map.setCollisionMap(lines);
     			map.setWaters(waters);
@@ -453,7 +456,7 @@ public class AssetManager {
 				if(data[0].equals("v")) {
 					Vector2f vertex = new Vector2f(Float.parseFloat(data[1]), Float.parseFloat(data[2]));
 					vertices.add(vertex);
-				} else if(data[0].equals("f")) {
+				} else if(data[0].equals("f") || data[0].equals("l")) {
 					Line edge = new Line(vertices.get(Integer.parseInt(data[1]) - 1),
 							vertices.get(Integer.parseInt(data[2]) - 1));
 					edges.add(edge);

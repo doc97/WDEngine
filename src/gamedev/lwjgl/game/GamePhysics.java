@@ -59,10 +59,12 @@ public class GamePhysics implements ContactListener{
 		ArrayList<Entity> entities = new ArrayList<Entity>();
 		entities.addAll(bodies.keySet());
 		int[] contactAmount = new int[entities.size()];
-		for (int i = 0; i < contacts.length; i++) {
-			Entity e = getEntity(contacts[i].body);
-			if (e != null) {
-				contactAmount[entities.indexOf(e)]++;
+		if(contacts != null) {
+			for (int i = 0; i < contacts.length; i++) {
+				Entity e = getEntity(contacts[i].body);
+				if (e != null) {
+					contactAmount[entities.indexOf(e)]++;
+				}
 			}
 		}
 
