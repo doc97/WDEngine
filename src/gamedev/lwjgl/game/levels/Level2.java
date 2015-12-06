@@ -22,7 +22,7 @@ public class Level2 extends Level {
 	@Override
 	public void load() {
 		super.load();
-		Game.INSTANCE.container.getPlayer().setEntityPosition(100, 1000);
+		Game.INSTANCE.container.getPlayer().setEntityPosition(100, 200);
 		
 		Engine.INSTANCE.camera.setUpperLimits(
 				4507 - Engine.INSTANCE.camera.getWidth() / 2,

@@ -18,19 +18,29 @@ public class OBJConverter {
 	
 	public static void main(String[] args) {
 		List<String> filenames = new ArrayList<String>();
-		for(int i = 0; i < 23; i++)
-			filenames.add("assets/maps/level2/branch_" + i);
+		/*
+		 for(int i = 0; i < 22; i++)
+		 	filenames.add("assets/maps/level2/branch_" + i);
+			
 		
 		filenames.add("assets/maps/level2/border");
 		filenames.add("assets/maps/level2/root");
 		filenames.add("assets/maps/level2/cliff");
-		filenames.add("assets/maps/level2/ground_0");
+		filenames.add("assets/maps/level2/ground_1");
+		*/
+		
+		filenames.add("assets/maps/level2/branch_10");
+		filenames.add("assets/maps/level2/branch_15");
+		filenames.add("assets/maps/level2/branch_17");
+
 		
 		for(String s : filenames) {
-			String source = OBJConverter.getSource(s + ".obj");
+			String source = OBJConverter.getSource(s + "_blender.obj");
+			if(source == null)
+				continue;
 			source = OBJConverter.convert(ConvertType.TRIM, source, 0.01f, 0);
 			source = OBJConverter.convert(ConvertType.SCALE, source, 450.7f, 450.9090909f);
-			OBJConverter.write(s + "_converted.obj", source);
+			OBJConverter.write(s + ".obj", source);
 			Logger.message("OBJ Converter", "Done.");
 		}
 	}
@@ -46,8 +56,10 @@ public class OBJConverter {
 			source = String.valueOf(arr);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			return null;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return null;
 		}
 		return source;
 	}
