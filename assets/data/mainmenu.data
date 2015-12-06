@@ -1,6 +1,6 @@
 {
 	"title_screen": "title_screen",
-	"title_text": "title_text",
+	"title_text": "titlescreen",
 	"play_btn": {
 		"texture": "mainmenu_play",
 		"normalx": 0.0,

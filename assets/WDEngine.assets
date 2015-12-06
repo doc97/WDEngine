@@ -1,6 +1,6 @@
 models=
 textures=lwjgl;Player;willowis2;map_background;map_parallax1;map_parallax2;intro_texture;frames;title_screen;button;coin
-textures=energy_gem
+textures=energy_gem;title_screen_animation
 textures=pausemenu_resume;pausemenu_options;pausemenu_mainmenu;pausemenu_frame;pausemenu_pointer
 textures=title_text;mainmenu_play;mainmenu_credits;mainmenu_exit
 textures=intro_frame_1;intro_frame_2;outro_frame_1;outro_frame_2;player_particle;player_particle_2;water_particle
@@ -8,7 +8,7 @@ textures=level_01_ground;level_01_background_1;level_01_background_2;level_01_fo
 textures=level_02_background
 textures=UI_energy;UI_energy_glow;interact_ball
 sounds=testSound;splash;intro;background;atmospheric_water
-animations=Cutscene
+animations=Cutscene;titlescreen
 fonts=basic;curly
 maps=level1;level2
 datafiles=player;physics;intro;outro;game;mainmenu;credits

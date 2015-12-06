@@ -8,8 +8,10 @@ import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.data.MainMenuData;
 import gamedev.lwjgl.engine.input.InputListener;
 import gamedev.lwjgl.engine.render.SpriteBatch;
+import gamedev.lwjgl.engine.textures.AnimatedTexture;
 import gamedev.lwjgl.engine.textures.Color;
 import gamedev.lwjgl.engine.textures.ModelTexture;
+import gamedev.lwjgl.engine.textures.TextureRegion;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.engine.utils.Timer;
 import gamedev.lwjgl.game.Game;
@@ -19,7 +21,7 @@ import gamedev.lwjgl.game.ui.Button;
 public class MainMenuState extends State {
 
 	private ModelTexture titleScreen;
-	private ModelTexture titleText;
+	private AnimatedTexture titleText;
 	private Button startBtn;
 	private Button optionsBtn;
 	private Button exitBtn;
@@ -42,16 +44,15 @@ public class MainMenuState extends State {
 		titleScreen = AssetManager.getTexture(data.title_screen);
 
 		// Title text
-		titleText = AssetManager.getTexture(data.title_text);
+		titleText = new AnimatedTexture(AssetManager.getAnimationFrames(data.title_text), Timer.getTicks(1000.0f / 6.0f), true);
 		
 		// Start button data
 		Vector4f startNormal = new Vector4f(data.play_btn.normalx, data.play_btn.normaly, data.play_btn.normalwidth, data.play_btn.normalheight);
-		Vector4f startPressed= new Vector4f(data.play_btn.pressedx, data.play_btn.pressedy, data.play_btn.pressedwidth, data.play_btn.pressedheight);
+		Vector4f startPressed = new Vector4f(data.play_btn.pressedx, data.play_btn.pressedy, data.play_btn.pressedwidth, data.play_btn.pressedheight);
 		startBtn = new Button(data.play_btn.texture, startNormal, startPressed);
 		startBtn.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() * 11 / 20);
 		startBtn.setSize(128, 64);
 		startBtnInput = new InputListener() {
-			
 			@Override
 			public void update() {}
 			
@@ -104,7 +105,6 @@ public class MainMenuState extends State {
 		optionsBtn.setPosition(Engine.INSTANCE.camera.getWidth() / 2.0f, Engine.INSTANCE.camera.getHeight() * 2 / 5);
 		optionsBtn.setSize(203, 47);
 		optionsBtnInput = new InputListener() {
-			
 			@Override
 			public void update() {}
 			
@@ -157,7 +157,6 @@ public class MainMenuState extends State {
 		exitBtn.setPosition(Engine.INSTANCE.camera.getWidth() / 2, Engine.INSTANCE.camera.getHeight() / 4);
 		exitBtn.setSize(128, 64);
 		exitBtnInput = new InputListener() {
-			
 			@Override
 			public void update() {}
 			
@@ -220,6 +219,7 @@ public class MainMenuState extends State {
 	@Override
 	public void update() {
 		Engine.INSTANCE.update();
+		titleText.update();
 		
 		if(fadeTimer.isActive()) {
 			fadeTimer.update();
@@ -241,10 +241,11 @@ public class MainMenuState extends State {
 		Engine.INSTANCE.batch.draw(titleScreen, 0, 0,
 				Engine.INSTANCE.camera.getWidth(), Engine.INSTANCE.camera.getHeight());
 		Engine.INSTANCE.batch.setColor(color);
-		Engine.INSTANCE.batch.draw(titleText,
-				(Engine.INSTANCE.camera.getWidth() - titleText.getWidth()) / 2,
-				Engine.INSTANCE.camera.getHeight() - titleText.getHeight() * 3 / 2,
-				titleText.getWidth(), titleText.getHeight());
+		TextureRegion current = titleText.getCurrent();
+		Engine.INSTANCE.batch.draw(current,
+				(Engine.INSTANCE.camera.getWidth() - current.getRegionWidth()) / 2,
+				Engine.INSTANCE.camera.getHeight() - current.getRegionHeight() * 3 / 2,
+				current.getRegionWidth(), current.getRegionHeight());
 		startBtn.render(Engine.INSTANCE.batch);
 		optionsBtn.render(Engine.INSTANCE.batch);
 		exitBtn.render(Engine.INSTANCE.batch);
