@@ -36,15 +36,15 @@ public class CreditsState extends State {
 	public void loadData() {
 		CreditsData data = AssetManager.getCreditsData();
 		font = AssetManager.getFont(data.font);
-		scale = font.getOriginalSize() / 16;
+		scale = font.getOriginalSize() / 16.0f;
 		
 		texts = data.texts;
 		for(int i = 0; i < texts.length; i++) {
 			String type = texts[i].type;
 			if(type.equals("title"))
-				lengthY -= 75;
+				lengthY -= 30;
 			else if(type.equals("content"))
-				lengthY -= 25;
+				lengthY -= 10;
 		}
 	}
 
@@ -81,11 +81,11 @@ public class CreditsState extends State {
 		for(int i = 0; i < texts.length; i++) {
 			String type = texts[i].type;
 			if(type.equals("title")) {
-				offsetY -= 75;
-				fontSizeFactor = 1.0f;
-			} else if(type.equals("content")) {
-				offsetY -= 25;
+				offsetY -= 30;
 				fontSizeFactor = 0.5f;
+			} else if(type.equals("content")) {
+				offsetY -= 10;
+				fontSizeFactor = 0.25f;
 			}
 			
 			font.drawString(Engine.INSTANCE.batch, texts[i].text, (int) (fontSizeFactor * font.getOriginalSize()),

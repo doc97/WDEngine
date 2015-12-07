@@ -1,5 +1,5 @@
 {
-	"font": "curly",
+	"font": "absara",
 	"texts": [
 		{
 			"text": "CREDITS",
@@ -58,11 +58,11 @@
 			"type": "title"
 		},
 		{
-			"text": "lwjgl 3 - Lightweight Java Game Library 3",
+			"text": "lwjgl - Lightweight Java Game Library",
 			"type": "content"
 		},
 		{
-			"text": "JBox2D",
+			"text": "JBoxTwoD",
 			"type": "content"
 		},
 		{
