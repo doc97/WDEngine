@@ -29,7 +29,7 @@ public class Level1 extends Level {
 
 		Game.INSTANCE.container.getPlayer().setEntityPosition(100, 1000);
 		
-		Item energy = new Item(ItemType.ENERGY, 2300, 800, 0.1f, false);
+		Item energy = new Item(ItemType.ENERGY, 2300, 800, 0.2f, false);
 		Game.INSTANCE.entities.addEntity(energy);
 		Game.INSTANCE.physics.addEntity(energy);
 		

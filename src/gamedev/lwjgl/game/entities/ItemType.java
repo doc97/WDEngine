@@ -8,7 +8,7 @@ import gamedev.lwjgl.engine.utils.AssetManager;
 public enum ItemType {
 	
 	COIN(AssetManager.getTexture("coin"), Color.WHITE),
-	ENERGY(AssetManager.getTexture("energy_gem"), new Color(10f / 255f, 240f / 255f, 200f / 255f, 1));
+	ENERGY(AssetManager.getTexture("energy_orb"), new Color(10f / 255f, 240f / 255f, 200f / 255f, 1));
 
 	private final ModelTexture texture;
 	private final Color tintColor;
