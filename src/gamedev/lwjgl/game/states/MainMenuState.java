@@ -44,7 +44,7 @@ public class MainMenuState extends State {
 		titleScreen = AssetManager.getTexture(data.title_screen);
 
 		// Title text
-		titleText = new AnimatedTexture(AssetManager.getAnimationFrames(data.title_text), Timer.getTicks(1000.0f / 6.0f), true);
+		titleText = new AnimatedTexture(AssetManager.getAnimationFrames(data.title_text), Timer.getTicks(120), true);
 		
 		// Start button data
 		Vector4f startNormal = new Vector4f(data.play_btn.normalx, data.play_btn.normaly, data.play_btn.normalwidth, data.play_btn.normalheight);
