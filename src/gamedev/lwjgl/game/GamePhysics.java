@@ -2,11 +2,13 @@ package gamedev.lwjgl.game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.collision.Manifold;
+import org.jbox2d.collision.WorldManifold;
 import org.jbox2d.collision.shapes.ChainShape;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.EdgeShape;
@@ -34,11 +36,12 @@ import gamedev.lwjgl.game.map.Map;
 public class GamePhysics implements ContactListener{
 	
 	private World world;
-	private Body ground;
+	private Body solidGround;
+	private Body semiSolidGround;
 	private HashMap<Entity, Body> bodies;
 	private HashMap<Water, ParticleGroup> waters;
+	private List<Body> bodiesToDestroy;
 	private final float ppm = 32;
-	private ArrayList<Body> bodiesToDestroy;
 	
 	public GamePhysics() {
 		loadDatafiles();
@@ -84,25 +87,43 @@ public class GamePhysics implements ContactListener{
 	
 	public void setMap(Map map) {
 		
+		// Solid ground
 		BodyDef bd = new BodyDef();
 		bd.type = BodyType.STATIC;
 		bd.position.set(0, 0);
 		
-		Body ground = world.createBody(bd);
-		
+		Body solidGround = world.createBody(bd);
 		EdgeShape es = new EdgeShape();
-		
 		FixtureDef fd = new FixtureDef();
 		fd.shape = es;
 		fd.density = 0;
 		fd.friction = 0.3f;
 		
-		for (Line line : map.getCollisionMap()) {
+		for (Line line : map.getSolidLines()) {
 			es.set(new Vec2(line.a.x / ppm, line.a.y / ppm), new Vec2(line.b.x / ppm, line.b.y / ppm));
-			ground.createFixture(fd);
+			solidGround.createFixture(fd);
 		}
 		
-		this.ground = ground;
+		this.solidGround = solidGround;
+		
+		
+		// Jump-through ground
+		BodyDef bd2 = new BodyDef();
+		bd2.type = BodyType.STATIC;
+		bd2.position.set(0, 0);
+		
+		Body semiSolidGround = world.createBody(bd2);
+		EdgeShape es2 = new EdgeShape();
+		FixtureDef fd2 = new FixtureDef();
+		fd2.shape = es2;
+		fd2.density = 0;
+		fd2.friction = 0.3f;
+		
+		for(Line line : map.getSemiSolidLines()) {
+			es2.set(new Vec2(line.a.x / ppm, line.a.y / ppm), new Vec2(line.b.x / ppm, line.b.y / ppm));
+			semiSolidGround.createFixture(fd2);
+		}
+		this.semiSolidGround = semiSolidGround;
 		
 		world.setParticleRadius(0.25f);
 		world.setParticleDensity(0.2f);
@@ -161,7 +182,8 @@ public class GamePhysics implements ContactListener{
 	}
 	
 	public void reset() {
-		world.destroyBody(ground);
+		world.destroyBody(solidGround);
+		world.destroyBody(semiSolidGround);
 		for (Entity e : bodies.keySet()) {
 			world.destroyBody(bodies.get(e));
 		}
@@ -286,11 +308,11 @@ public class GamePhysics implements ContactListener{
 	public void beginContact(Contact c) {
 		Body b1 = c.m_fixtureA.getBody();
 		Body b2 = c.m_fixtureB.getBody();
-		if (b1 == ground) {
+		if (b1 == solidGround) {
 			Entity e = getEntity(b2);
 			if (e != null)
 				e.setOnGround(true);
-		} else if (b2 == ground) {
+		} else if (b2 == solidGround) {
 			Entity e = getEntity(b1);
 			if (e != null)
 				e.setOnGround(true);
@@ -326,11 +348,11 @@ public class GamePhysics implements ContactListener{
 	public void endContact(Contact c) {
 		Body b1 = c.m_fixtureA.getBody();
 		Body b2 = c.m_fixtureB.getBody();
-		if (b1 == ground) {
+		if (b1 == solidGround) {
 			Entity e = getEntity(b2);
 			if (e != null)
 				e.setOnGround(false);
-		} else if (b2 == ground) {
+		} else if (b2 == solidGround) {
 			Entity e = getEntity(b1);
 			if (e != null)
 				e.setOnGround(false);
@@ -344,7 +366,39 @@ public class GamePhysics implements ContactListener{
 
 	@Override
 	public void preSolve(Contact c, Manifold m) {
-		
+		Body b1 = c.m_fixtureA.getBody();
+		Body b2 = c.m_fixtureB.getBody();
+
+		if(b1 == semiSolidGround) {
+			Entity e = getEntity(b2);
+			if(e != null) {
+				WorldManifold worldManifold = new WorldManifold();
+				c.getWorldManifold(worldManifold);
+				
+				Vec2 vel1 = b1.getLinearVelocityFromWorldPoint(worldManifold.points[0]);
+				Vec2 vel2 = b2.getLinearVelocityFromWorldPoint(worldManifold.points[0]);
+				Vec2 impactVel = new Vec2(vel1.x - vel2.x, vel1.y - vel2.y);
+				
+				if(impactVel.y < 0)
+					c.setEnabled(false);
+				else
+					e.setOnGround(true);
+			}
+		} else if(b2 == semiSolidGround) {
+			Entity e = getEntity(b1);
+			if(e != null) {
+				WorldManifold worldManifold = new WorldManifold();
+				c.getWorldManifold(worldManifold);
+				
+				Vec2 vel1 = b1.getLinearVelocityFromWorldPoint(worldManifold.points[0]);
+				Vec2 vel2 = b2.getLinearVelocityFromWorldPoint(worldManifold.points[0]);
+				Vec2 impactVel = new Vec2(vel2.x - vel1.x, vel2.y - vel1.y);
+
+				if(impactVel.y < 0)
+					c.setEnabled(false);
+				else
+					e.setOnGround(true);
+			}
+		}
 	}
-	
 }

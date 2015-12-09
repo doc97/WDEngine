@@ -6,9 +6,12 @@
 		"level_01_ground",
 		"level_01_foreground",
 	],
-	"objs": [
+	"solidMap": [
 		"outline",
 		"branch"
+	],
+	"semiSolidMap": [
+	
 	],
 	"waters": [
 		{

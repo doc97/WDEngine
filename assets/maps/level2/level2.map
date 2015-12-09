@@ -3,14 +3,11 @@
 	"textures": [
 		"level_02_background"
 	],
-	"objs": [
+	"solidMap": [
 		"ground_1",
 		"border",
 		"root",
 		"cliff",
-		"branch_1",
-		"branch_2",
-		"branch_3",
 		"branch_4",
 		"branch_5",
 		"branch_6",
@@ -30,6 +27,11 @@
 		"branch_19",
 		"branch_20",
 		"branch_21"
+	],
+	"semiSolidMap": [
+		"branch_1",
+		"branch_2",
+		"branch_3"
 	],
 	"waters": [
 	

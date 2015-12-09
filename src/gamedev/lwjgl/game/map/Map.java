@@ -11,7 +11,8 @@ import gamedev.lwjgl.engine.textures.ModelTexture;
 
 public abstract class Map implements Cleanable {
 	protected String name;
-	protected List<Line> collisionMap = new ArrayList<Line>();
+	protected List<Line> solidLines = new ArrayList<Line>();
+	protected List<Line> semiSolidLines = new ArrayList<Line>();
 	protected List<ModelTexture> textures = new ArrayList<ModelTexture>();
 	protected List<Water> waters = new ArrayList<Water>();
 	
@@ -37,16 +38,21 @@ public abstract class Map implements Cleanable {
 		this.textures = textures;
 	}
 	
-	public void setCollisionMap(List<Line> lines) {
-		collisionMap = lines;
+	public void setCollisionMap(List<Line> solidLines, List<Line> semiSolidLines) {
+		this.solidLines = solidLines;
+		this.semiSolidLines = semiSolidLines;
 	}
 	
 	public String getName() {
 		return name;
 	}
 	
-	public List<Line> getCollisionMap() {
-		return collisionMap;
+	public List<Line> getSolidLines() {
+		return solidLines;
+	}
+	
+	public List<Line> getSemiSolidLines() {
+		return semiSolidLines;
 	}
 
 	public List<Water> getWaters() {
@@ -56,6 +62,7 @@ public abstract class Map implements Cleanable {
 	public void cleanup() {
 		waters.clear();
 		textures.clear();
-		collisionMap.clear();
+		solidLines.clear();
+		semiSolidLines.clear();
 	}
 }

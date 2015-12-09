@@ -402,7 +402,8 @@ public class AssetManager {
 			Gson gson = new Gson();
             MapData m = gson.fromJson(reader, MapData.class);
             
-            List<Line> lines = new ArrayList<Line>();
+            List<Line> solidLines = new ArrayList<Line>();
+            List<Line> semiSolidLines = new ArrayList<Line>();
             List<Water> waters = new ArrayList<Water>();
             List<ModelTexture> textures = new ArrayList<ModelTexture>();
             
@@ -410,9 +411,11 @@ public class AssetManager {
             	textures.add(getTexture(name));
             
     		// Load collision map
-    		for(String name : m.objs)
-    			lines.addAll(loadLineSegments(filename + "/" + name));
-    		
+    		for(String name : m.solidMap)
+    			solidLines.addAll(loadLineSegments(filename + "/" + name));
+    		for(String name : m.semiSolidMap)
+    			semiSolidLines.addAll(loadLineSegments(filename + "/" + name));
+
     		// Load waters
     		for(WaterData wd : m.waters)
     			waters.add(new Water(wd.x, wd.y, wd.width, wd.height));
@@ -426,7 +429,7 @@ public class AssetManager {
     		if(map != null) {
     			map.setName(m.name);
     			map.setTextures(textures);
-    			map.setCollisionMap(lines);
+    			map.setCollisionMap(solidLines, semiSolidLines);
     			map.setWaters(waters);
     		}
     		return map;
