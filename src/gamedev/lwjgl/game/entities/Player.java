@@ -32,7 +32,6 @@ public class Player extends Entity implements Cleanable {
 	
 	public void cleanup() {
 		inventory.cleanup();
-		System.out.println("");
 	}
 	
 	public void loadDatafiles() {
@@ -42,7 +41,7 @@ public class Player extends Entity implements Cleanable {
 		
 		bodyDef.type = BodyType.DYNAMIC;
 		bodyDef.position = new Vec2(x, y);
-		bodyDef.setLinearDamping(1);
+		bodyDef.setLinearDamping(1f);
 		
 		CircleShape cs = new CircleShape();
 		cs.setRadius(data.innerRadius);

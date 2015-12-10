@@ -372,6 +372,7 @@ public class GamePhysics implements ContactListener{
 		if(b1 == semiSolidGround) {
 			Entity e = getEntity(b2);
 			if(e != null) {
+				c.setEnabled(false);
 				WorldManifold worldManifold = new WorldManifold();
 				c.getWorldManifold(worldManifold);
 				
@@ -379,10 +380,14 @@ public class GamePhysics implements ContactListener{
 				Vec2 vel2 = b2.getLinearVelocityFromWorldPoint(worldManifold.points[0]);
 				Vec2 impactVel = new Vec2(vel1.x - vel2.x, vel1.y - vel2.y);
 				
-				if(impactVel.y < 0)
-					c.setEnabled(false);
-				else
+				Vec2 center1 = worldManifold.points[0];
+				Vec2 center2 = b2.getWorldCenter();
+				float entY = center2.y - c.m_fixtureB.m_shape.m_radius * 4 / 5f;
+				
+				if(impactVel.y > 0 && entY > center1.y) {
+					c.setEnabled(true);
 					e.setOnGround(true);
+				}
 			}
 		} else if(b2 == semiSolidGround) {
 			Entity e = getEntity(b1);
@@ -394,7 +399,12 @@ public class GamePhysics implements ContactListener{
 				Vec2 vel2 = b2.getLinearVelocityFromWorldPoint(worldManifold.points[0]);
 				Vec2 impactVel = new Vec2(vel2.x - vel1.x, vel2.y - vel1.y);
 
-				if(impactVel.y < 0)
+				Vec2 center1 = worldManifold.points[0];
+				Vec2 center2 = b2.getWorldCenter();
+				float entY = center1.y - c.m_fixtureA.m_shape.m_radius * 4 / 5f;
+
+				
+				if(impactVel.y < 0 && entY > center2.y)
 					c.setEnabled(false);
 				else
 					e.setOnGround(true);

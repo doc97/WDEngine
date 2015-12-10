@@ -8,6 +8,7 @@
 		"border",
 		"root",
 		"cliff",
+		"branch_3",
 		"branch_4",
 		"branch_5",
 		"branch_6",
@@ -31,7 +32,6 @@
 	"semiSolidMap": [
 		"branch_1",
 		"branch_2",
-		"branch_3"
 	],
 	"waters": [
 	
