@@ -4,34 +4,11 @@
 		"level_02_background"
 	],
 	"solidMap": [
-		"ground_1",
 		"border",
-		"root",
-		"cliff",
-		"branch_3",
-		"branch_4",
-		"branch_5",
-		"branch_6",
-		"branch_7",
-		"branch_7",
-		"branch_8",
-		"branch_9",
-		"branch_10",
-		"branch_11",
-		"branch_12",
-		"branch_13",
-		"branch_14",
-		"branch_15",
-		"branch_16",
-		"branch_17",
-		"branch_18",
-		"branch_19",
-		"branch_20",
-		"branch_21"
+		"solid_collision_map"
 	],
 	"semiSolidMap": [
-		"branch_1",
-		"branch_2"
+
 	],
 	"waters": [
 	
