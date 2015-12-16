@@ -1,6 +1,7 @@
 package gamedev.lwjgl.game.entities;
 
 import org.jbox2d.collision.shapes.CircleShape;
+import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
@@ -36,19 +37,31 @@ public class Player extends Entity implements Cleanable {
 	
 	public void loadDatafiles() {
 		PlayerData data = AssetManager.getPlayerData();
-		bodyDef = new BodyDef();
-		fixtureDef = new FixtureDef();
 		
+		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DYNAMIC;
 		bodyDef.position = new Vec2(x, y);
 		bodyDef.setLinearDamping(1f);
 		
+		PolygonShape ps = new PolygonShape();
+		ps.setAsBox(3 * data.innerRadius, data.innerRadius);
+		
 		CircleShape cs = new CircleShape();
 		cs.setRadius(data.innerRadius);
 		
-		fixtureDef.shape = cs;
-		fixtureDef.friction = 1;
+		FixtureDef baseFixtureDef = new FixtureDef();
+		baseFixtureDef.shape = cs;
+		baseFixtureDef.friction = 1;
+		baseFixtureDef.userData = "base";
+		addFixtureDef(baseFixtureDef);
 		
+		FixtureDef grabFixtureDef = new FixtureDef();
+		grabFixtureDef.shape = ps;
+		grabFixtureDef.friction = 1;
+		grabFixtureDef.isSensor = true;
+		grabFixtureDef.userData = "grab";
+		addFixtureDef(grabFixtureDef);
+
 		float inner = data.innerRadius;
  		addTexture(AssetManager.getTexture(data.texture), -inner, -inner, 2 * inner, 2 * inner, 0, 0, 0);
 	}
@@ -85,12 +98,12 @@ public class Player extends Entity implements Cleanable {
 					0, -0.1f, 8, 0.1f);
 		} else if (speed.x < 0) {
 			Game.INSTANCE.particles.createPlayerParticle(
-					(float) (pos.x + getFixtureDef().shape.getRadius() / 3 + Math.random() * xoffset - xoffset / 2),
+					(float) (pos.x + getFixtureDef("base").shape.getRadius() / 3 + Math.random() * xoffset - xoffset / 2),
 					(float) (pos.y + Math.random() * yoffset - yoffset / 4),
 					0, -0.1f, 8, 0.1f);
 		} else if (speed.x > 0) {
 			Game.INSTANCE.particles.createPlayerParticle(
-					(float) (pos.x - getFixtureDef().shape.getRadius() / 3 + Math.random() * xoffset - xoffset / 2),
+					(float) (pos.x - getFixtureDef("base").shape.getRadius() / 3 + Math.random() * xoffset - xoffset / 2),
 					(float) (pos.y + Math.random() * yoffset - yoffset / 4),
 					0, -0.1f, 6, 0.1f);
 		}

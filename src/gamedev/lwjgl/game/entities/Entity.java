@@ -1,7 +1,9 @@
 package gamedev.lwjgl.game.entities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyDef;
@@ -27,7 +29,7 @@ public class Entity {
 	private boolean isInWater;
 	private boolean isOnGround;
 	protected BodyDef bodyDef;
-	protected FixtureDef fixtureDef;
+	protected Map<String, FixtureDef> fixtureDefs = new HashMap<String, FixtureDef>();
 	
 	public Entity(float x, float y) {
 		this.x = x;
@@ -143,6 +145,10 @@ public class Entity {
 		isOnGround = b;
 	}
 
+	public void addFixtureDef(FixtureDef fixDef) {
+		fixtureDefs.put((String) fixDef.userData, fixDef);
+	}
+
 	public float getX() {
 		return x;
 	}
@@ -171,8 +177,11 @@ public class Entity {
 		return bodyDef;
 	}
 	
-	public FixtureDef getFixtureDef() {
-		return fixtureDef;
+	public FixtureDef getFixtureDef(String key) {
+		return fixtureDefs.get(key);
 	}
 	
+	public Map<String, FixtureDef> getFixtureDefs() {
+		return fixtureDefs;
+	}
 }

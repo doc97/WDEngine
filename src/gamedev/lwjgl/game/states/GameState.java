@@ -87,9 +87,11 @@ public class GameState extends State {
 			Game.INSTANCE.interactions.update();
 			gameUI.update();
 			
-			for (Entity e : Game.INSTANCE.entities.getEntities()){
+			for(Entity e : Game.INSTANCE.entities.getEntities())
 				e.update();
-			}
+			for(Entity e : Game.INSTANCE.container.getCurrentLevel().getMapObjects())
+				e.update();
+
 		} else {
 			pauseMenu.update();
 		}
@@ -118,19 +120,21 @@ public class GameState extends State {
 		Engine.INSTANCE.batch.setColor(fadeColor);
 		Game.INSTANCE.container.getCurrentLevel().getMap().renderBackground(Engine.INSTANCE.batch);
 		
-		for(Entity entity : Game.INSTANCE.entities.getEntities()) {
+		for(Entity entity : Game.INSTANCE.entities.getEntities())
 			entity.render(Engine.INSTANCE.batch);
-		}
 		
 		Game.INSTANCE.particles.render(Engine.INSTANCE.batch);
 		Game.INSTANCE.container.getCurrentLevel().getMap().renderWater(Engine.INSTANCE.batch);
 		Game.INSTANCE.container.getCurrentLevel().getMap().renderGround(Engine.INSTANCE.batch);
-		Game.INSTANCE.container.getCurrentLevel().getMap().renderForeground(Engine.INSTANCE.batch);
 
+		for(Entity entity : Game.INSTANCE.container.getCurrentLevel().getMapObjects())
+			entity.render(Engine.INSTANCE.batch);
+		
 		for (Item item : Game.INSTANCE.quests.getAllItems())
 			item.render(Engine.INSTANCE.batch);
 		
 		Game.INSTANCE.interactions.render(Engine.INSTANCE.batch);
+		Game.INSTANCE.container.getCurrentLevel().getMap().renderForeground(Engine.INSTANCE.batch);
 		
 		Engine.INSTANCE.batch.setColor(Color.WHITE);
 

@@ -18,7 +18,6 @@ public class Item extends Entity {
 		super(x, y);
 		this.type = type;
 		bodyDef = new BodyDef();
-		fixtureDef = new FixtureDef();
 		
 		bodyDef.type = BodyType.DYNAMIC;
 		bodyDef.position = new Vec2(x, y);
@@ -31,8 +30,12 @@ public class Item extends Entity {
 		CircleShape cs = new CircleShape();
 		cs.setRadius((texture.getWidth() / 2) * scale);
 		
+		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = cs;
 		fixtureDef.friction = 1;
+		fixtureDef.userData = "base";
+		addFixtureDef(fixtureDef);
+
 		this.dynamic = dynamic;
 	}
 	

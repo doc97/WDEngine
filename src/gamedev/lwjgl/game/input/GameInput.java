@@ -46,7 +46,6 @@ public class GameInput implements InputListener {
 				jumpedOnCurrent = true;
 			} else if (!doubJump && !jumpedOnCurrent) {
 				Game.INSTANCE.physics.setEntitySpeed(Game.INSTANCE.container.getPlayer(), new Vec2(0, 0), false, true);
-
 				Game.INSTANCE.physics.applyForceToMiddle(Game.INSTANCE.container.getPlayer(), new Vec2(0, 400));
 				doubJump = true;
 				jumpedOnCurrent = true;
@@ -59,44 +58,34 @@ public class GameInput implements InputListener {
 		if(key == rightKey) {
 			right = true;
 			return true;
-		}
-		if(key == leftKey) {
+		} else if(key == leftKey) {
 			left = true;
 			return true;
-		}
-		if(key == jumpKey) {
+		} else if(key == jumpKey) {
 			jump = true;
 			return true;
-		}
-		if(key == dashKey) {
+		} else if(key == dashKey) {
 			player.dash();
 			return true;
-		}
-		if(key == interactKey) {
+		} else if(key == interactKey) {
 			Game.INSTANCE.interactions.interact();
 			return true;
-		}
-		if(key == GLFW.GLFW_KEY_ESCAPE) {
+		} else if(key == GLFW.GLFW_KEY_ESCAPE) {
 			gs.pause();
 			return true;
-		}
-		if(key == GLFW.GLFW_KEY_UP) {
+		} else if(key == GLFW.GLFW_KEY_UP) {
 			Game.INSTANCE.sounds.setVolume(AssetManager.getSound("background"), v = Math.min(v += 10, 100));
 			return true;
-		}
-		else if(key == GLFW.GLFW_KEY_DOWN) {
+		} else if(key == GLFW.GLFW_KEY_DOWN) {
 			Game.INSTANCE.sounds.setVolume(AssetManager.getSound("background"), v = Math.max(v -= 10, 0));
 			return true;
-		}
-		if(key == GLFW.GLFW_KEY_RIGHT) {
+		} else if(key == GLFW.GLFW_KEY_RIGHT) {
 			Game.INSTANCE.sounds.setBalance(AssetManager.getSound("background"), Sound.RIGHT);
 			return true;
-		}
-		if (key == GLFW.GLFW_KEY_LEFT) {
+		} else if (key == GLFW.GLFW_KEY_LEFT) {
 			Game.INSTANCE.sounds.setBalance(AssetManager.getSound("background"), Sound.LEFT);
 			return true;
-		}
-		if (key == GLFW.GLFW_KEY_ENTER) {
+		} else if (key == GLFW.GLFW_KEY_ENTER) {
 			Game.INSTANCE.sounds.setBalance(AssetManager.getSound("background"), Sound.CENTER);
 			return true;
 		}

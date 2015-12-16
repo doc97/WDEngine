@@ -1,6 +1,6 @@
 models=
 textures=lwjgl;Player;willowis2;map_background;map_parallax1;map_parallax2;intro_texture;frames;title_screen;button;coin
-textures=energy_gem;energy_orb;title_screen_animation
+textures=energy_gem;energy_orb;title_screen_animation;white_pixel
 textures=pausemenu_resume;pausemenu_options;pausemenu_mainmenu;pausemenu_frame;pausemenu_pointer
 textures=title_text;mainmenu_play;mainmenu_credits;mainmenu_exit
 textures=intro_frame_1;intro_frame_2;outro_frame_1;outro_frame_2;player_particle;player_particle_2;water_particle

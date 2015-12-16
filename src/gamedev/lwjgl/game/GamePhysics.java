@@ -201,56 +201,61 @@ public class GamePhysics implements ContactListener{
 		Body body = world.createBody(entity.getBodyDef());
 		bodies.put(entity, body);
 		world.setContactListener(this);
-		FixtureDef fd = entity.getFixtureDef();
-		FixtureDef nfd = new FixtureDef();
-		switch (fd.shape.m_type) {
-		case CHAIN:
-			ChainShape chaShape = (ChainShape)fd.shape;
-			ChainShape newShape = new ChainShape();
-			nfd.shape = newShape;
-			newShape.setRadius(chaShape.getRadius() / ppm);
-			newShape.m_vertices = new Vec2[chaShape.m_vertices.length];
-			for (int i = 0; i < chaShape.m_vertices.length; i++) {
-				newShape.m_vertices[i].x = chaShape.m_vertices[i].x / ppm;
-				newShape.m_vertices[i].y = chaShape.m_vertices[i].y / ppm;
+		for(String s : entity.getFixtureDefs().keySet()) {
+			FixtureDef fd = entity.getFixtureDef(s);
+			FixtureDef nfd = new FixtureDef();
+			// Common variables
+			nfd.userData = fd.userData;
+			nfd.isSensor = fd.isSensor;
+			switch (fd.shape.m_type) {
+			case CHAIN:
+				ChainShape chaShape = (ChainShape)fd.shape;
+				ChainShape newShape = new ChainShape();
+				nfd.shape = newShape;
+				newShape.setRadius(chaShape.getRadius() / ppm);
+				newShape.m_vertices = new Vec2[chaShape.m_vertices.length];
+				for (int i = 0; i < chaShape.m_vertices.length; i++) {
+					newShape.m_vertices[i].x = chaShape.m_vertices[i].x / ppm;
+					newShape.m_vertices[i].y = chaShape.m_vertices[i].y / ppm;
+				}
+				break;
+			case CIRCLE:
+				CircleShape cirShape = (CircleShape)fd.shape;
+				CircleShape cs = new CircleShape();
+				nfd.shape = cs;
+				cs.m_p.x = cirShape.m_p.x / ppm;
+				cs.m_p.y = cirShape.m_p.y / ppm;
+				cs.m_radius = cirShape.getRadius() / ppm;
+				break;
+			case EDGE:
+				EdgeShape edgShape = (EdgeShape)fd.shape;
+				EdgeShape nes = new EdgeShape();
+				nfd.shape = nes;
+				nes.m_radius = edgShape.m_radius / ppm;
+				break;
+			case POLYGON:
+				PolygonShape polShape = (PolygonShape)fd.shape;
+				PolygonShape nps = new PolygonShape();
+				nfd.shape = nps;
+				nps.set(polShape.m_vertices, polShape.m_count);
+				for (int i = 0; i < nps.m_normals.length; i++) {
+					nps.m_normals[i].x /= ppm;
+					nps.m_normals[i].y /= ppm;
+				}
+				for (int i = 0; i < nps.m_vertices.length; i++) {
+					nps.m_vertices[i].x /= ppm;
+					nps.m_vertices[i].y /= ppm;
+				}
+				nps.m_centroid.x = polShape.m_centroid.x / ppm;
+				nps.m_centroid.y = polShape.m_centroid.y / ppm;
+				nps.m_radius = polShape.m_radius / ppm;
+				break;
+			default:
+				break;
 			}
-			break;
-		case CIRCLE:
-			CircleShape cirShape = (CircleShape)fd.shape;
-			CircleShape cs = new CircleShape();
-			nfd.shape = cs;
-			cs.m_p.x = cirShape.m_p.x / ppm;
-			cs.m_p.y = cirShape.m_p.y / ppm;
-			cs.m_radius = cirShape.getRadius() / ppm;
-			break;
-		case EDGE:
-			EdgeShape edgShape = (EdgeShape)fd.shape;
-			EdgeShape nes = new EdgeShape();
-			nfd.shape = nes;
-			nes.m_radius = edgShape.m_radius / ppm;
-			break;
-		case POLYGON:
-			PolygonShape polShape = (PolygonShape)fd.shape;
-			PolygonShape nps = new PolygonShape();
-			nfd.shape = nps;
-			nps.set(polShape.m_vertices, polShape.m_count);
-			for (int i = 0; i < nps.m_normals.length; i++) {
-				nps.m_normals[i].x /= ppm;
-				nps.m_normals[i].y /= ppm;
-			}
-			for (int i = 0; i < nps.m_vertices.length; i++) {
-				nps.m_vertices[i].x /= ppm;
-				nps.m_vertices[i].y /= ppm;
-			}
-			nps.m_centroid.x = polShape.m_centroid.x / ppm;
-			nps.m_centroid.y = polShape.m_centroid.y / ppm;
-			nps.m_radius = polShape.m_radius / ppm;
-			break;
-		default:
-			break;
+			
+			body.createFixture(nfd);
 		}
-		
-		body.createFixture(nfd);
 	}
 	
 	public void removeEntity(Entity entity) {
@@ -308,57 +313,92 @@ public class GamePhysics implements ContactListener{
 	public void beginContact(Contact c) {
 		Body b1 = c.m_fixtureA.getBody();
 		Body b2 = c.m_fixtureB.getBody();
+		if(beginCheckGround(c, b1, b2)) return;
+		if(beginCheckItems(c, b1, b2)) return;
+	}
+	
+	private boolean beginCheckGround(Contact c, Body b1, Body b2) {
 		if (b1 == solidGround) {
 			Entity e = getEntity(b2);
-			if (e != null)
+			if (e != null) {
 				e.setOnGround(true);
+				return true;
+			}
 		} else if (b2 == solidGround) {
 			Entity e = getEntity(b1);
-			if (e != null)
+			if (e != null) {
 				e.setOnGround(true);
-		} else {
-			Entity e1 = getEntity(b1);
-			Entity e2 = getEntity(b2);
-			
-			if (e1 instanceof Item) {
-				Item i = (Item) e1;
-				if (e2 == Game.INSTANCE.container.getPlayer()) {
-					if (i.getType() == ItemType.ENERGY) {
-						c.setEnabled(false);
-						Game.INSTANCE.resources.addEnergy(1);
-						Game.INSTANCE.entities.removeEntity(e1);
-						bodiesToDestroy.add(b1);
-					}
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean beginCheckItems(Contact c, Body b1, Body b2) {
+		Entity e1 = getEntity(b1);
+		Entity e2 = getEntity(b2);
+		if (e1 instanceof Item) {
+			Item i = (Item) e1;
+			if (e2 == Game.INSTANCE.container.getPlayer()) {
+				if (i.getType() == ItemType.ENERGY) {
+					c.setEnabled(false);
+					Game.INSTANCE.resources.addEnergy(1);
+					Game.INSTANCE.entities.removeEntity(e1);
+					bodiesToDestroy.add(b1);
+					return true;
 				}
-			} else if (e2 instanceof Item) {
-				Item i = (Item) e2;
-				if (e1 == Game.INSTANCE.container.getPlayer()) {
-					if (i.getType() == ItemType.ENERGY) {
-						c.setEnabled(false);
-						Game.INSTANCE.resources.addEnergy(1);
-						Game.INSTANCE.entities.removeEntity(e2);
-						bodiesToDestroy.add(b2);
-					}
+			}
+		} else if (e2 instanceof Item) {
+			Item i = (Item) e2;
+			if (e1 == Game.INSTANCE.container.getPlayer()) {
+				if (i.getType() == ItemType.ENERGY) {
+					c.setEnabled(false);
+					Game.INSTANCE.resources.addEnergy(1);
+					Game.INSTANCE.entities.removeEntity(e2);
+					bodiesToDestroy.add(b2);
+					return true;
 				}
 			}
 		}
+		return false;
 	}
-
+	
 	@Override
 	public void endContact(Contact c) {
 		Body b1 = c.m_fixtureA.getBody();
 		Body b2 = c.m_fixtureB.getBody();
+		if(endCheckGround(c, b1, b2)) return;
+	}
+	
+	private boolean endCheckGround(Contact c, Body b1, Body b2) {
 		if (b1 == solidGround) {
 			Entity e = getEntity(b2);
-			if (e != null)
+			if (e != null) {
 				e.setOnGround(false);
+				return true;
+			}
 		} else if (b2 == solidGround) {
 			Entity e = getEntity(b1);
-			if (e != null)
+			if (e != null) {
 				e.setOnGround(false);
-		} 
+				return true;
+			}
+		} else if(b1 == semiSolidGround) {
+			Entity e = getEntity(b1);
+			if(e != null) {
+				e.setOnGround(false);
+				return true;
+			}
+		} else if(b2 == semiSolidGround) {
+			Entity e = getEntity(b2);
+			if(e != null) {
+				e.setOnGround(false);
+				return true;
+			}
+		}
+		return false;
 	}
-
+	
 	@Override
 	public void postSolve(Contact c, ContactImpulse i) {
 		
@@ -373,6 +413,8 @@ public class GamePhysics implements ContactListener{
 			Entity e = getEntity(b2);
 			if(e != null) {
 				c.setEnabled(false);
+				e.setOnGround(false);
+				
 				WorldManifold worldManifold = new WorldManifold();
 				c.getWorldManifold(worldManifold);
 				
@@ -392,6 +434,9 @@ public class GamePhysics implements ContactListener{
 		} else if(b2 == semiSolidGround) {
 			Entity e = getEntity(b1);
 			if(e != null) {
+				c.setEnabled(false);
+				e.setOnGround(false);
+
 				WorldManifold worldManifold = new WorldManifold();
 				c.getWorldManifold(worldManifold);
 				
@@ -400,14 +445,14 @@ public class GamePhysics implements ContactListener{
 				Vec2 impactVel = new Vec2(vel2.x - vel1.x, vel2.y - vel1.y);
 
 				Vec2 center1 = worldManifold.points[0];
-				Vec2 center2 = b2.getWorldCenter();
-				float entY = center1.y - c.m_fixtureA.m_shape.m_radius * 4 / 5f;
+				Vec2 center2 = b1.getWorldCenter();
+				float entY = center2.y - c.m_fixtureA.m_shape.m_radius * 4 / 5f;
 
 				
-				if(impactVel.y < 0 && entY > center2.y)
-					c.setEnabled(false);
-				else
+				if(impactVel.y > 0 && entY > center1.y) {
+					c.setEnabled(true);
 					e.setOnGround(true);
+				}
 			}
 		}
 	}
