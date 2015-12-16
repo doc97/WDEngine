@@ -41,7 +41,7 @@ public enum Game implements Cleanable {
 	public void reload() {
 		states.loadDatafiles();
 		physics.loadDatafiles();
-		container.loadDatafiles();
+		container.reload();
 	}
 	
 	public void cleanup() {

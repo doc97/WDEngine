@@ -196,6 +196,7 @@ public class GameState extends State {
 		
 		Game.INSTANCE.sounds.loopSound(AssetManager.getSound("background"));
 		
+		Game.INSTANCE.container.reload();
 		Game.INSTANCE.levels.changeLevel("level2");
 		
 		fadeTimer.set(60);
@@ -207,6 +208,7 @@ public class GameState extends State {
 	public void exit() {
 		Game.INSTANCE.entities.clear();
 		Game.INSTANCE.particles.clear();
+		Game.INSTANCE.container.cleanup();
 		Game.INSTANCE.sounds.stopSound(AssetManager.getSound("background"));
 		Engine.INSTANCE.input.removeListener(gameInput);
 		Engine.INSTANCE.input.removeListener(devInput);

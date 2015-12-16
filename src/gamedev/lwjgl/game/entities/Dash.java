@@ -25,7 +25,7 @@ public class Dash {
 			deactivate();
 		
 		if(dashTimer.isActive()) {
-			float innerRadius = player.getFixtureDef("base").getShape().getRadius();
+			float innerRadius = player.getFixtureDef("base").getShape().getRadius() * Game.INSTANCE.physics.ppm;
 			Vec2 pos = Game.INSTANCE.physics.currentEntityPosition(player);
 			Vec2 speed = Game.INSTANCE.physics.currentEntitySpeed(player);
 			dashTrail.addTrailPart(player.getTexture(0),

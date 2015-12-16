@@ -32,6 +32,7 @@ public class Player extends Entity implements Cleanable {
 	}
 	
 	public void cleanup() {
+		super.cleanup();
 		inventory.cleanup();
 	}
 	
@@ -57,7 +58,6 @@ public class Player extends Entity implements Cleanable {
 		
 		FixtureDef grabFixtureDef = new FixtureDef();
 		grabFixtureDef.shape = ps;
-		grabFixtureDef.friction = 1;
 		grabFixtureDef.isSensor = true;
 		grabFixtureDef.userData = "grab";
 		addFixtureDef(grabFixtureDef);

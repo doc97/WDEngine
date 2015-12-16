@@ -15,9 +15,11 @@ public class GameContainer implements Cleanable {
 	
 	public void cleanup() {
 		player.cleanup();
+		currentLevel.unload();
+		currentLevel = null;
 	}
 	
-	public void loadDatafiles() {
+	public void reload() {
 		player.loadDatafiles();
 	}
 	

@@ -30,6 +30,11 @@ public class Inventory implements Cleanable {
 		}
 	}
 	
+	public void removeItem(Item item) {
+		if(items.containsKey(item.getType()))
+			items.remove(item);
+	}
+	
 	public void update(float delta){
 		
 	}
@@ -46,7 +51,7 @@ public class Inventory implements Cleanable {
 	}
 	
 	public boolean contains(Item item) {
-		return items.containsKey(item);
+		return items.containsKey(item.getType());
 	}
 	
 	public void cleanup() {

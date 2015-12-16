@@ -41,7 +41,7 @@ public class GamePhysics implements ContactListener{
 	private HashMap<Entity, Body> bodies;
 	private HashMap<Water, ParticleGroup> waters;
 	private List<Body> bodiesToDestroy;
-	private final float ppm = 32;
+	public final float ppm = 32;
 	
 	public GamePhysics() {
 		loadDatafiles();

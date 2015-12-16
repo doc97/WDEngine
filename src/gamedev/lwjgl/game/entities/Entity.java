@@ -9,6 +9,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.FixtureDef;
 
+import gamedev.lwjgl.engine.Cleanable;
 import gamedev.lwjgl.engine.Engine;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.sound.Sound;
@@ -16,7 +17,7 @@ import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.Game;
 
-public class Entity {
+public class Entity implements Cleanable {
 	private List<ModelTexture> textures = new ArrayList<ModelTexture>();
 	private List<Float> positions = new ArrayList<Float>();
 	private List<Float> dimensions = new ArrayList<Float>();
@@ -183,5 +184,15 @@ public class Entity {
 	
 	public Map<String, FixtureDef> getFixtureDefs() {
 		return fixtureDefs;
+	}
+
+	@Override
+	public void cleanup() {
+		textures.clear();
+		positions.clear();
+		dimensions.clear();
+		anchors.clear();
+		rotations.clear();
+		fixtureDefs.clear();
 	}
 }

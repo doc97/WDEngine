@@ -19,7 +19,6 @@ public abstract class Level implements Cleanable {
 	public void load() {
 		Game.INSTANCE.entities.addEntity(Game.INSTANCE.container.getPlayer());		
 		Game.INSTANCE.physics.setMap(map);
-		System.out.println(map.getName());
 		Game.INSTANCE.physics.addEntity(Game.INSTANCE.container.getPlayer());
 	}
 

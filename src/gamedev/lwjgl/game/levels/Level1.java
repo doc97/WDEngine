@@ -82,7 +82,8 @@ public class Level1 extends Level {
 							x - inRangeTexture.getWidth() / 4,
 							y - inRangeTexture.getHeight() / 4,
 							inRangeTexture.getWidth() / 2,
-							inRangeTexture.getHeight() / 2);
+							inRangeTexture.getHeight() / 2
+							);
 				}
 			}
 		});
