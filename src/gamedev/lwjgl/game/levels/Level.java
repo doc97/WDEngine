@@ -25,6 +25,7 @@ public abstract class Level implements Cleanable {
 	public void unload() {
 		Game.INSTANCE.physics.reset();
 		Game.INSTANCE.interactions.clear();
+		mapObjects.clear();
 	}
 	
 	public void update() {

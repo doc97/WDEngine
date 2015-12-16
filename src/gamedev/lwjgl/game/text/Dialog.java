@@ -2,15 +2,16 @@ package gamedev.lwjgl.game.text;
 
 import java.util.ArrayList;
 
+import gamedev.lwjgl.engine.data.FontData;
 import gamedev.lwjgl.engine.font.Font;
+import gamedev.lwjgl.engine.font.Font.Alignment;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.utils.AssetManager;
 
 public class Dialog {
 	private ArrayList<String> texts = new ArrayList<String>();
 	private String currentText;
-	private String fontName;
-	private int fontSize;
+	private FontData fontData;
 	private float x, y;
 	private boolean showing;
 	
@@ -30,11 +31,11 @@ public class Dialog {
 	}
 	
 	public void setFontName(String fontName) {
-		this.fontName = fontName;
+		fontData.name = fontName;
 	}
 	
 	public void setFontSize(int fontSize) {
-		this.fontSize = fontSize;
+		fontData.size = fontSize;
 	}
 	
 	public void setPosition(float x, float y) {
@@ -51,7 +52,7 @@ public class Dialog {
 	}
 	
 	public Font getFont() {
-		return AssetManager.getFont(fontName);
+		return AssetManager.getFont(fontData.name);
 	}
 	
 	public void show() {
@@ -65,10 +66,19 @@ public class Dialog {
 	public void render(SpriteBatch batch) {
 		if(showing && currentText != null) {
 			getFont().setFadeEffect(false);
+
+			// Setting font's alignment
+			if(fontData.alignment.equals("LEFT"))
+				getFont().setAlignment(Alignment.LEFT);
+			else if(fontData.alignment.equals("CENTER"))
+				getFont().setAlignment(Alignment.CENTER);
+			else if(fontData.alignment.equals("RIGHT"))
+				getFont().setAlignment(Alignment.RIGHT);
+
 			getFont().drawString(
 					batch,
 					currentText,
-					fontSize,
+					fontData.size,
 					x, y
 					);
 		}

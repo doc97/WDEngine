@@ -9,7 +9,6 @@ import gamedev.lwjgl.engine.font.Font;
 import gamedev.lwjgl.engine.render.SpriteBatch;
 import gamedev.lwjgl.engine.textures.ModelTexture;
 import gamedev.lwjgl.engine.utils.AssetManager;
-import gamedev.lwjgl.game.entities.Item;
 import gamedev.lwjgl.game.entities.ItemType;
 
 public class Inventory implements Cleanable {
@@ -18,21 +17,21 @@ public class Inventory implements Cleanable {
 	private Font font;
 	
 	public Inventory() {
-		items = new HashMap<>();
+		items = new HashMap<ItemType, Integer>();
 		font = AssetManager.getFont("basic");
 	}
 	
-	public void addItem(Item item) {
-		if (items.containsKey(item.getType())) {
-			items.put(item.getType(), items.get(item.getType()) + 1);
+	public void addItem(ItemType type) {
+		if (items.containsKey(type)) {
+			items.put(type, items.get(type) + 1);
 		} else {
-			items.put(item.getType(), 1);
+			items.put(type, 1);
 		}
 	}
 	
-	public void removeItem(Item item) {
-		if(items.containsKey(item.getType()))
-			items.remove(item);
+	public void removeItem(ItemType type) {
+		if(items.containsKey(type))
+			items.remove(type);
 	}
 	
 	public void update(float delta){
@@ -50,8 +49,8 @@ public class Inventory implements Cleanable {
 		}
 	}
 	
-	public boolean contains(Item item) {
-		return items.containsKey(item.getType());
+	public boolean contains(ItemType type) {
+		return items.containsKey(type);
 	}
 	
 	public void cleanup() {

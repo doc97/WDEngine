@@ -5,8 +5,11 @@
       "What's up?",
       "Goodbye."
     ],
-    "fontName": "curly",
-    "fontSize": 16,
+	"fontData": {
+  	  "name": "absara",
+  	  "size": 16,
+  	  "alignment": "LEFT"
+  	},
     "x": 550.0,
     "y": 550.0,
     "showing": false
@@ -17,10 +20,40 @@
       "Are you up for one?",
       "I'll meet you there."
     ],
-    "fontName": "curly",
-    "fontSize": 16,
+	"fontData": {
+  	  "name": "absara",
+  	  "size": 16,
+  	  "alignment": "LEFT"
+  	},
     "x": 3630.0,
     "y": 130.0,
     "showing": false
+  },
+  "L02_pickup_text": {
+  	"texts": [
+  	  "Pick up"
+  	],
+	"fontData": {
+  	  "name": "absara",
+  	  "size": 16,
+  	  "alignment": "CENTER"
+  	},
+  	"x": 250.0,
+  	"y": 270.0,
+  	"showing": false
+  },
+  "L02_place_here": {
+  	"texts": [
+      "Place here",
+      "Nothing to place"
+  	],
+  	"fontData": {
+  	  "name": "absara",
+  	  "size": 16,
+  	  "alignment": "CENTER"
+  	},
+  	"x": 550.0,
+  	"y": 770.0,
+  	"showing": false
   }
 }
