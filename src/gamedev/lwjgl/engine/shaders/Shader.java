@@ -69,7 +69,7 @@ public abstract class Shader {
 		
 		if(glGetShaderi(vertShader, GL_COMPILE_STATUS) == GL_FALSE) {
 			Logger.debug("Shader", glGetShaderInfoLog(vertShader, 500));
-			Logger.error("Shader", "Couldn't compile vertex shader");
+			Logger.error("Shader", shaderFile + ", Couldn't compile vertex shader");
 			System.exit(1);
 		}
 		
@@ -81,7 +81,7 @@ public abstract class Shader {
 		if(glGetShaderi(fragShader, GL_COMPILE_STATUS) == GL_FALSE) {
 			if(Logger.isDebug())
 				Logger.message("Shader", glGetShaderInfoLog(fragShader, 500));
-			Logger.error("Shader", "Couldn't compile fragment shader");
+			Logger.error("Shader", shaderFile + ", Couldn't compile fragment shader");
 			System.exit(1);
 		}
 		
