@@ -7,6 +7,7 @@ import gamedev.lwjgl.engine.utils.AssetManager;
 import gamedev.lwjgl.game.Game;
 import gamedev.lwjgl.game.Interaction;
 import gamedev.lwjgl.game.entities.Box;
+import gamedev.lwjgl.game.entities.Item;
 import gamedev.lwjgl.game.entities.ItemType;
 
 public class Level2 extends Level {
@@ -37,7 +38,20 @@ public class Level2 extends Level {
 				Engine.INSTANCE.camera.getHeight() / 2
 				);
 		
+		// Items
+		Item orb1 = new Item(ItemType.ORB, 2065, 2150, 0.2f, false);
+		Game.INSTANCE.entities.addEntity(orb1);
+		Game.INSTANCE.physics.addEntity(orb1);
+
+		Item orb2 = new Item(ItemType.ORB, 140, 2210, 0.2f, false);
+		Game.INSTANCE.entities.addEntity(orb2);
+		Game.INSTANCE.physics.addEntity(orb2);
 		
+		Item orb3 = new Item(ItemType.ORB, 1130, 3650, 0.2f, false);
+		Game.INSTANCE.entities.addEntity(orb3);
+		Game.INSTANCE.physics.addEntity(orb3);
+
+		// -------- Interaction ----------- //
 		// Pick-up
 		Game.INSTANCE.interactions.addInteraction(new Interaction() {
 			@Override
@@ -100,11 +114,11 @@ public class Level2 extends Level {
 			@Override
 			public void interact() {
 				if(Game.INSTANCE.container.getPlayer().getInventory().contains(ItemType.BOX)) {
-					Game.INSTANCE.container.getPlayer().getInventory().removeItem(ItemType.BOX);
 					Box box = new Box(x + 25, y + 100, 40, 40);
 					box.init();
-					Game.INSTANCE.physics.addEntity(box);
 					mapObjects.add(box);
+					Game.INSTANCE.physics.addEntity(box);
+					Game.INSTANCE.container.getPlayer().getInventory().removeItem(ItemType.BOX);
 					Game.INSTANCE.dialogs.setCurrentDialog("L02_place_here");
 					Game.INSTANCE.dialogs.getCurrentDialog().hide();
 					finished = true;

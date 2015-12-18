@@ -9,6 +9,7 @@ public enum ItemType {
 	
 	COIN(AssetManager.getTexture("coin"), Color.WHITE),
 	ENERGY(AssetManager.getTexture("energy_orb"), new Color(10f / 255f, 240f / 255f, 200f / 255f, 1)),
+	ORB(AssetManager.getTexture("energy_orb"), new Color(220f / 255f, 180f / 255f, 20f / 255f, 1)),
 	BOX(AssetManager.getTexture("white_pixel"), Color.WHITE);
 
 	private final ModelTexture texture;

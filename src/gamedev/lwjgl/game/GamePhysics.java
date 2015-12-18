@@ -346,6 +346,11 @@ public class GamePhysics implements ContactListener{
 					Game.INSTANCE.entities.removeEntity(e1);
 					bodiesToDestroy.add(b1);
 					return true;
+				} else if(i.getType() == ItemType.ORB) {
+					c.setEnabled(false);
+					Game.INSTANCE.container.getPlayer().getInventory().addItem(ItemType.ORB);
+					Game.INSTANCE.entities.removeEntity(e1);
+					bodiesToDestroy.add(b1);
 				}
 			}
 		} else if (e2 instanceof Item) {
@@ -357,7 +362,13 @@ public class GamePhysics implements ContactListener{
 					Game.INSTANCE.entities.removeEntity(e2);
 					bodiesToDestroy.add(b2);
 					return true;
+				} else if(i.getType() == ItemType.ORB) {
+					c.setEnabled(false);
+					Game.INSTANCE.container.getPlayer().getInventory().addItem(ItemType.ORB);
+					Game.INSTANCE.entities.removeEntity(e2);
+					bodiesToDestroy.add(b2);
 				}
+
 			}
 		}
 		return false;

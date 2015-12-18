@@ -53,6 +53,12 @@ public class Inventory implements Cleanable {
 		return items.containsKey(type);
 	}
 	
+	public int amount(ItemType type) {
+		if(!contains(type))
+			return 0;
+		return items.get(type);
+	}
+	
 	public void cleanup() {
 		items.clear();
 	}
