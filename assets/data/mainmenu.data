@@ -5,33 +5,33 @@
 		"texture": "mainmenu_play",
 		"normalx": 0.0,
 		"normaly": 0,
-		"normalwidth": 128,
-		"normalheight": 64,
-		"pressedx": 129,
+		"normalwidth": 126,
+		"normalheight": 36,
+		"pressedx": 127,
 		"pressedy": 0,
-		"pressedwidth": 128,
-		"pressedheight": 64
+		"pressedwidth": 126,
+		"pressedheight": 36
 	},
 	"credits_btn": {
 		"texture": "mainmenu_credits",
 		"normalx": 0,
 		"normaly": 0,
-		"normalwidth": 203,
-		"normalheight": 47,
-		"pressedx": 204,
+		"normalwidth": 187,
+		"normalheight": 48,
+		"pressedx": 188,
 		"pressedy": 0,
-		"pressedwidth": 203,
-		"pressedheight": 47
+		"pressedwidth": 187,
+		"pressedheight": 48
 	},
 	"exit_btn": {
 		"texture": "mainmenu_exit",
 		"normalx": 0,
 		"normaly": 0,
-		"normalwidth": 128,
-		"normalheight": 64,
-		"pressedx": 129,
+		"normalwidth": 104,
+		"normalheight": 43,
+		"pressedx": 105,
 		"pressedy": 0,
-		"pressedwidth": 128,
-		"pressedheight": 64
+		"pressedwidth": 104,
+		"pressedheight": 43
 	}
 }
